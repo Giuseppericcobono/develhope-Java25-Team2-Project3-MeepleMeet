@@ -1,71 +1,33 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import co.develhope.team2.meeplemeet_project_team2.entities.Event;
+import co.develhope.team2.meeplemeet_project_team2.repository.EventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
+@Controller
+@RequestMapping("/events")
 public class EventController {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private  Integer id;
+    @Autowired
+    private EventRepository eventRepository;
 
-    private  String name;
-    private LocalDateTime dateTime;
-    private Integer maxCapacity;
-    private String location;
-
-    public EventController(){}
-
-    public EventController(Integer id, String name, LocalDateTime dateTime, Integer maxCapacity, String location) {
-        this.id = id;
-        this.name = name;
-        this.dateTime = dateTime;
-        this.maxCapacity = maxCapacity;
-        this.location = location;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public Integer getMaxCapacity() {
-        return maxCapacity;
-    }
-
-    public void setMaxCapacity(Integer maxCapacity) {
-        this.maxCapacity = maxCapacity;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
+//    @PatchMapping
+//    public ResponseEntity<Event> createEvent(@RequestBody Event event){
+//        Event eventSaves = eventRepository.save(event);
+//        return new ResponseEntity<>(eventSaves, HttpStatus.CREATED);
+//    }
+//    @GetMapping
+//    public List<Event>getAllEvents(){
+//        return eventRepository.findAll();
+//    }
 }
-
 
