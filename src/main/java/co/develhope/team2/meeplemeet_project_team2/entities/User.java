@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
+import co.develhope.team2.meeplemeet_project_team2.enumerated.UserType;
 import jakarta.persistence.*;
 
 @Entity
@@ -22,14 +23,18 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private UserType userType;
+
     public User() {}
 
-    public User(Integer id, String firstName, String lastName, Byte age, String email) {
+    public User(Integer id, String firstName, String lastName, Byte age, String email, UserType userType) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
+        this.userType = userType;
     }
 
     public Integer getId() {
@@ -70,5 +75,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public UserType getUserType() {
+        return userType;
+    }
+
+    public void setUserType(UserType userType) {
+        this.userType = userType;
     }
 }
