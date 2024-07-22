@@ -21,25 +21,30 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/search/list")
     public @ResponseBody List<User> getList() {
         return userRepository.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/search/{id}")
     public @ResponseBody User getWithId(@PathVariable Integer id) {
         Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public @ResponseBody User update(@PathVariable Integer id, @RequestBody @NotNull User user) {
         user.setId(id);
         return userRepository.save(user);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Integer id) {
         userRepository.deleteById(id);
+    }
+
+    @DeleteMapping("/delete/all")
+    public void deleteAll() {
+        userRepository.deleteAll();
     }
 }
