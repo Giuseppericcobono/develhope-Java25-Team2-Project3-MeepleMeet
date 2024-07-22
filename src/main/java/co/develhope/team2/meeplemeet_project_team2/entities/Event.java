@@ -1,23 +1,32 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "events")
 public class Event {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Integer id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String nameGame;
+
+    @Column(nullable = false)
     private String descriptionGame;
+
+    @Column(nullable = false)
     private LocalDateTime dateTimeEvent;
+
+    @Column(nullable = false)
     private Integer maxCapacity;
+
+    @Column(nullable = false)
     private String location;
 
     public Event(){}

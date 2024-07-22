@@ -1,7 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
-import co.develhope.team2.meeplemeet_project_team2.repository.UserRepository;
+import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

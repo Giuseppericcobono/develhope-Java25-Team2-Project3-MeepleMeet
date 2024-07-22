@@ -1,33 +1,43 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
-import co.develhope.team2.meeplemeet_project_team2.entities.Event;
-import co.develhope.team2.meeplemeet_project_team2.repository.EventRepository;
+
+import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.*;
+import co.develhope.team2.meeplemeet_project_team2.entities.Event;
+import co.develhope.team2.meeplemeet_project_team2.repositories.EventRepository;
 import java.util.List;
+import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/events")
 public class EventController {
 
     @Autowired
     private EventRepository eventRepository;
 
-//    @PatchMapping
-//    public ResponseEntity<Event> createEvent(@RequestBody Event event){
-//        Event eventSaves = eventRepository.save(event);
-//        return new ResponseEntity<>(eventSaves, HttpStatus.CREATED);
-//    }
-//    @GetMapping
-//    public List<Event>getAllEvents(){
-//        return eventRepository.findAll();
-//    }
+    @PostMapping("/create")
+    public @ResponseBody Event createUser(@RequestBody Event event){
+        return eventRepository.save(event);
+    }
+
+    @GetMapping("/list")
+    public @ResponseBody List<Event> getList() {
+        return eventRepository.findAll();
+    }
+    @GetMapping("/{id}")
+    public @ResponseBody Event getWithId(@PathVariable Integer id) {
+        Optional<Event> event = eventRepository.findById(id);
+        return event.orElse(null);
+    }
+    @PutMapping("/{id}")
+    public @ResponseBody Event update(@PathVariable Integer id, @RequestBody @NotNull Event event) {
+        event.setId(id);
+        return eventRepository.save(event);
+    }
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        eventRepository.deleteById(id);
+    }
 }
 
