@@ -17,27 +17,33 @@ public class EventController {
     private EventRepository eventRepository;
 
     @PostMapping("/create")
-    public @ResponseBody Event createUser(@RequestBody Event event){
+    public @ResponseBody Event createEvent(@RequestBody Event event){
         return eventRepository.save(event);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/search/list")
     public @ResponseBody List<Event> getList() {
         return eventRepository.findAll();
     }
-    @GetMapping("/{id}")
+
+    @GetMapping("/search/{id}")
     public @ResponseBody Event getWithId(@PathVariable Integer id) {
         Optional<Event> event = eventRepository.findById(id);
         return event.orElse(null);
     }
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public @ResponseBody Event update(@PathVariable Integer id, @RequestBody @NotNull Event event) {
         event.setId(id);
         return eventRepository.save(event);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void delete(@PathVariable Integer id) {
         eventRepository.deleteById(id);
+    }
+
+    @DeleteMapping("/delete/all")
+    public void deleteAllEvent() {
+        eventRepository.deleteAll();
     }
 }
 
