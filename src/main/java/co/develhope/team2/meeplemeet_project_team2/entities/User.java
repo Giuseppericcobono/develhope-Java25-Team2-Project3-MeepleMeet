@@ -1,6 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
-import co.develhope.team2.meeplemeet_project_team2.enumerated.UserType;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import jakarta.persistence.*;
 
 @Entity

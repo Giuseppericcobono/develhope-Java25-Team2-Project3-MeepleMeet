@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class Event {
     private String descriptionGame;
 
     @Column(nullable = false)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTimeEvent;
 
     @Column(nullable = false)
