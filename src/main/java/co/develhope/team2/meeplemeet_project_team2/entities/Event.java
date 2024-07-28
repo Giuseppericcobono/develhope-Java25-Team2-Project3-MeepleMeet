@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -31,9 +32,12 @@ public class Event {
     @Column(nullable = false)
     private String location;
 
+    @Column(nullable = false)
+    private EventStatusEnum  eventStatusEnum;
+
     public Event(){}
 
-    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, String location) {
+    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, String location, EventStatusEnum eventStatusEnum) {
         this.id = id;
         this.name = name;
         this.nameGame = nameGame;
@@ -41,6 +45,7 @@ public class Event {
         this.dateTimeEvent = dateTimeEvent;
         this.maxCapacity = maxCapacity;
         this.location = location;
+        this.eventStatusEnum = eventStatusEnum;
     }
 
     public Integer getId() {
@@ -97,5 +102,13 @@ public class Event {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public EventStatusEnum getEventStatusEnum() {
+        return eventStatusEnum;
+    }
+
+    public void setEventStatusEnum(EventStatusEnum eventStatusEnum) {
+        this.eventStatusEnum = eventStatusEnum;
     }
 }
