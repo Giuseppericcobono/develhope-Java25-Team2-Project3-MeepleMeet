@@ -39,6 +39,7 @@ public class User {
         this.age = age;
         this.email = email;
         this.userType = userType;
+
     }
 
     public Integer getId() {
