@@ -1,6 +1,5 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
-import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
