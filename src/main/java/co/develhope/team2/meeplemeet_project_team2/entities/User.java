@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import jakarta.persistence.*;
 
@@ -26,12 +27,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    @Enumerated(EnumType.STRING)
+    private RecordStatus recordStatus;
 
     public User() {}
 
-    public User(Integer id, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
+    public User(Integer id, String username, String firstName, String lastName, Byte age, String email, UserType userType, RecordStatus recordStatus) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -39,6 +43,7 @@ public class User {
         this.age = age;
         this.email = email;
         this.userType = userType;
+        this.recordStatus = recordStatus;
     }
 
     public Integer getId() {
@@ -95,5 +100,13 @@ public class User {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public RecordStatus getRecordStatus() {
+        return recordStatus;
+    }
+
+    public void setRecordStatus(RecordStatus recordStatus) {
+        this.recordStatus = recordStatus;
     }
 }
