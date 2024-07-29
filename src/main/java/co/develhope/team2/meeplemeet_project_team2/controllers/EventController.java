@@ -25,25 +25,25 @@ public class EventController {
     }
     @GetMapping("/list")
     public @ResponseBody ResponseEntity<List<Event>> getList() {
-        List<Event> eventList = eventService.getAllUser();
+        List<Event> eventList = eventService.getAllEvent();
         return new ResponseEntity<>(eventList, HttpStatus.OK);
     }
 
     @GetMapping("/search/{id}")
     public @ResponseBody ResponseEntity<Optional<Event>> getWithId(@PathVariable Integer id) {
-        Optional<Event> event = eventService.getUsertById(id);
+        Optional<Event> event = eventService.getEventById(id);
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
     public @ResponseBody ResponseEntity<Event> update(@PathVariable Integer id, @RequestBody @NotNull Event event ) {
-        Event updateEvent = eventService.updateUser(id,event);
+        Event updateEvent = eventService.updateEvent(id,event);
         return new ResponseEntity<>(updateEvent,HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Event> delete(@PathVariable Integer id) {
-        Event deletedEvent = eventService.deleteUserById(id);
+        Event deletedEvent = eventService.deleteEventById(id);
         return new ResponseEntity<>(deletedEvent, HttpStatus.OK);
     }
 }

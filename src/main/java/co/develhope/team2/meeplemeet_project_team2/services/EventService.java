@@ -20,15 +20,15 @@ public class EventService {
         return eventRepository.save(event);
     }
 
-    public List<Event> getAllUser() {
+    public List<Event> getAllEvent() {
         return eventRepository.findAll();
     }
 
-    public Optional<Event> getUsertById(Integer id) {
+    public Optional<Event> getEventById(Integer id) {
         return eventRepository.findById(id);
     }
 
-    public Event updateUser(Integer id, Event updatedEvent) {
+    public Event updateEvent(Integer id, Event updatedEvent) {
         Optional<Event> userOptional = eventRepository.findById(id);
         if(userOptional.isPresent()){
             eventRepository.save(updatedEvent);
@@ -40,7 +40,7 @@ public class EventService {
         return updatedEvent;
     }
 
-    public Event deleteUserById(Integer id) {
+    public Event deleteEventById(Integer id) {
         eventRepository.deleteById(id);
         return null;
     }
