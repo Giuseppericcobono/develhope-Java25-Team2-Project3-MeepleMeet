@@ -27,16 +27,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RecordStatus recordStatus;
 
     public User() {}
 
-    public User(Integer id, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
+    public User(Integer id, String username, String firstName, String lastName, Byte age, String email, UserType userType, RecordStatus recordStatus) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -44,7 +43,7 @@ public class User {
         this.age = age;
         this.email = email;
         this.userType = userType;
-        this.recordStatus = RecordStatus.ACTIVE;
+        this.recordStatus = recordStatus;
     }
 
     public Integer getId() {
