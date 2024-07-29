@@ -2,7 +2,7 @@ package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 
-import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
+import co.develhope.team2.meeplemeet_project_team2.services.PlaceService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,37 +15,35 @@ import java.util.Optional;
 public class PlaceController {
 
     @Autowired
-    private PlaceRepository placeRepository;
+    private PlaceService placeService;
 
     @PostMapping("/create")
     public @ResponseBody Place createPlace(@RequestBody Place place) {
-        return placeRepository.save(place);
+        return placeService.createAPlace(place);
     }
 
     @GetMapping("/search/list")
     public @ResponseBody List<Place> placeList() {
-        return placeRepository.findAll();
+        return placeService.getListOfPlaces();
     }
 
     @GetMapping("/search/{id}")
     public @ResponseBody Place searchPlace(@PathVariable Integer id) {
-        Optional<Place> place = placeRepository.findById(id);
-        return place.orElse(null);
+        placeService.getPlaceById(id);
     }
 
     @PutMapping("/update/{id}")
     public @ResponseBody Place updatePlace(@PathVariable Integer id, @RequestBody @NotNull Place place) {
-        place.setId(id);
-        return placeRepository.save(place);
+        placeService.updatePlace(id, place);
     }
 
     @DeleteMapping("/delete/{id}")
     public void deletePlace(@PathVariable Integer id) {
-        placeRepository.deleteById(id);
+        placeService.deletePlaceById(id);
     }
 
     @DeleteMapping("/delete/all")
     public void deleteAllPlace() {
-        placeRepository.deleteAll();
+        placeService.deleteAllPlace();
     }
 }
