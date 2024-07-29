@@ -27,6 +27,7 @@ public class Event {
     private LocalDateTime dateTimeEvent;
 
     @Column(nullable = false)
+
     private Integer maxCapacity;
 
     @Column(nullable = false)
