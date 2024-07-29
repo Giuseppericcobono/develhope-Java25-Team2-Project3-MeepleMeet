@@ -1,6 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStatusEnum;
 import co.develhope.team2.meeplemeet_project_team2.repositories.EventRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +44,5 @@ public class EventService {
         eventRepository.deleteById(id);
         return null;
     }
+
 }

@@ -33,6 +33,7 @@ public class Event {
     private String location;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private EventStatusEnum  eventStatusEnum;
 
     public Event(){}
