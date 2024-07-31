@@ -13,6 +13,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     private Integer id;
 
     @Column(nullable = false, unique = true)
@@ -33,6 +34,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
+
     @Enumerated(EnumType.STRING)
     private RecordStatus recordStatus;
 
@@ -41,7 +43,7 @@ public class User {
 
     public User() {}
 
-    public User(Integer id, String username, String firstName, String lastName, Byte age, String email, UserType userType, RecordStatus recordStatus) {
+    public User(Integer id, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -49,7 +51,7 @@ public class User {
         this.age = age;
         this.email = email;
         this.userType = userType;
-        this.recordStatus = recordStatus;
+        this.recordStatus = RecordStatus.ACTIVE;
     }
 
     public Integer getId() {
