@@ -1,6 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -15,9 +16,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -47,14 +45,20 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public @ResponseBody ResponseEntity<User> delete(@PathVariable Integer id) {
-        userRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public @ResponseBody ResponseEntity<User> delete(@PathVariable Integer id, @RequestBody @NotNull User user) {
+        if(userService.getUserById(id).isPresent()){
+            User deletedUser = userService.updateUser(id, user);
+            deletedUser.setRecordStatus(RecordStatus.DELETED);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
-    @DeleteMapping("/delete/all")
-    public @ResponseBody ResponseEntity<User> deleteAll() {
-        userRepository.deleteAll();
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @DeleteMapping("/delete/all")
+//    public @ResponseBody ResponseEntity<User> deleteAll() {
+//        userService.deleteAll();
+//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//    }
 }
