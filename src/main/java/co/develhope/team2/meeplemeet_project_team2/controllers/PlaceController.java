@@ -1,9 +1,12 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
-import co.develhope.team2.meeplemeet_project_team2.repository.PlaceRepository;
+
+import co.develhope.team2.meeplemeet_project_team2.services.PlaceService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,37 +17,41 @@ import java.util.Optional;
 public class PlaceController {
 
     @Autowired
-    private PlaceRepository placeRepository;
+    private PlaceService placeService;
 
     @PostMapping("/create")
-    public @ResponseBody Place createPlace(@RequestBody Place place) {
-        return placeRepository.save(place);
+    public ResponseEntity<Place> createPlace(@RequestBody Place place) {
+        Place newPlace = placeService.createAPlace(place);
+        return new ResponseEntity<>(newPlace, HttpStatus.CREATED);
     }
 
     @GetMapping("/search/list")
-    public @ResponseBody List<Place> placeList() {
-        return placeRepository.findAll();
+    public @ResponseBody ResponseEntity<List<Place>> placeList() {
+        List<Place> ListPlace = placeService.getListOfPlaces();
+        return new ResponseEntity<>(ListPlace, HttpStatus.OK);
     }
 
     @GetMapping("/search/{id}")
-    public @ResponseBody Place searchPlace(@PathVariable Integer id) {
-        Optional<Place> place = placeRepository.findById(id);
-        return place.orElse(null);
+    public @ResponseBody ResponseEntity<Optional<Place>> searchPlace(@PathVariable Integer id) {
+        Optional<Place> place = placeService.getPlaceById(id);
+        return new ResponseEntity<>(place, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public @ResponseBody Place updatePlace(@PathVariable Integer id, @RequestBody @NotNull Place place) {
-        place.setId(id);
-        return placeRepository.save(place);
+    public @ResponseBody ResponseEntity<Place> updatePlace(@PathVariable Integer id, @RequestBody @NotNull Place place) {
+        Place updatePlace = placeService.updatePlace(id, place);
+        return new ResponseEntity<>(updatePlace, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deletePlace(@PathVariable Integer id) {
-        placeRepository.deleteById(id);
+    public @ResponseBody ResponseEntity<Place> deletePlace(@PathVariable Integer id) {
+        placeService.deletePlaceById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/all")
-    public void deleteAllPlace() {
-        placeRepository.deleteAll();
+    public @ResponseBody ResponseEntity<Place> deleteAllPlace() {
+        placeService.deleteAllPlace();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

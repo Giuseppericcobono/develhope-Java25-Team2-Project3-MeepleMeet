@@ -4,6 +4,9 @@ import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordSta
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "Users")
 public class User {
@@ -32,6 +35,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private RecordStatus recordStatus;
+
+    @ManyToMany(mappedBy = "users")
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     public User() {}
 
