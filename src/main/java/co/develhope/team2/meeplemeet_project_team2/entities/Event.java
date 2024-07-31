@@ -13,6 +13,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
+    @JoinColumn(name = "utente_id")
+    private User user;
+
     @Column(nullable = false)
     private String name;
 
@@ -27,7 +31,6 @@ public class Event {
     private LocalDateTime dateTimeEvent;
 
     @Column(nullable = false)
-
     private Integer maxCapacity;
 
     @Column(nullable = false)
@@ -39,7 +42,7 @@ public class Event {
 
     public Event(){}
 
-    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, String location, EventStatusEnum eventStatusEnum) {
+    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, String location, EventStatusEnum eventStatusEnum, User user) {
         this.id = id;
         this.name = name;
         this.nameGame = nameGame;
@@ -48,6 +51,15 @@ public class Event {
         this.maxCapacity = maxCapacity;
         this.location = location;
         this.eventStatusEnum = eventStatusEnum;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Integer getId() {
