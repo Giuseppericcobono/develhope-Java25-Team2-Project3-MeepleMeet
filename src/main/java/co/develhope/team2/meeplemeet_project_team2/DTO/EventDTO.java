@@ -2,23 +2,23 @@ package co.develhope.team2.meeplemeet_project_team2.DTO;
 
 public class EventDTO {
 
-    private Long id;
+    private Integer id;
     private String descrizione;
-    private Long idUtente;
+    private Integer idUtente;
 
     public EventDTO() {}
 
-    public EventDTO(Long id, String descrizione, Long idUtente) {
+    public EventDTO(Integer id, String descrizione, Integer idUtente) {
         this.id = id;
         this.descrizione = descrizione;
         this.idUtente = idUtente;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -30,11 +30,11 @@ public class EventDTO {
         this.descrizione = descrizione;
     }
 
-    public Long getIdUtente() {
+    public Integer getIdUtente() {
         return idUtente;
     }
 
-    public void setIdUtente(Long idUtente) {
+    public void setIdUtente(Integer idUtente) {
         this.idUtente = idUtente;
     }
 
