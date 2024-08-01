@@ -27,17 +27,17 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User updateUser(Integer id, User updatedUser) {
+    public User updateUser(Integer id, User updatedUsers) {
 
         Optional<User> userOptional = userRepository.findById(id);
 
         if(userOptional.isPresent()){
-            userRepository.save(updatedUser);
+            userRepository.save(updatedUsers);
         } else {
             // Handle the case where the user with the given id is not found
             throw new EntityNotFoundException("User with id " + id + " not found");
         }
-        return updatedUser;
+        return updatedUsers;
     }
 
 }
