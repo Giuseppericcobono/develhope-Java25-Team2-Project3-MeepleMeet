@@ -51,14 +51,10 @@ public class UserController {
 
     @PutMapping("/dstatus/{id}")
     public ResponseEntity<User> deleteStatus(@PathVariable Integer id, @NotNull User user) {
-        Optional<User> userOptional = userService.getUserById(id);
-
-        if (userOptional.isPresent()) {
-            User deletedUser = userOptional.get();
-            deletedUser.setRecordStatus(RecordStatus.DELETED);
-            User updatedUser = userService.updateUser(id, deletedUser);
+        try {
+            User updatedUser = userService.setDeleteStatus(id);
             return ResponseEntity.ok(updatedUser);
-        } else {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
