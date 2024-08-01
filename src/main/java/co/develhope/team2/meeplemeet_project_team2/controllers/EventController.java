@@ -1,6 +1,8 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.EventDTO;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStatusEnum;
 import co.develhope.team2.meeplemeet_project_team2.services.EventService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,22 @@ public class EventController {
     private EventService eventService;
 
     @PostMapping("/create")
-    public ResponseEntity<Event> create(@RequestBody Event event) {
-        Event newEvent = eventService.createEvent(event);
-        return new ResponseEntity<>(newEvent, HttpStatus.OK);
+    public ResponseEntity<EventDTO> create(@RequestParam Integer userID, @RequestBody EventDTO eventDTO) {
+        try {
+            eventDTO.setEventStatusEnum(EventStatusEnum.NOT_STARTED);
+
+            // Chiama il servizio per creare l'evento
+            EventDTO newEvent = eventService.createEvent(userID, eventDTO);
+
+            // Restituisce una risposta HTTP con lo stato CREATED
+            return new ResponseEntity<>(newEvent, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            // Gestisci il caso in cui l'utente non è trovato
+            // Puoi restituire un errore specifico o un messaggio
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
+
     @GetMapping("/list")
     public @ResponseBody ResponseEntity<List<Event>> getList() {
         List<Event> eventList = eventService.getAllEvent();

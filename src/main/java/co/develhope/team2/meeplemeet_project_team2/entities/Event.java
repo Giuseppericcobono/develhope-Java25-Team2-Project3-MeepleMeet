@@ -14,7 +14,7 @@ public class Event {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "utente_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(nullable = false)
@@ -27,7 +27,7 @@ public class Event {
     private String descriptionGame;
 
     @Column(nullable = false)
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateTimeEvent;
 
     @Column(nullable = false)
