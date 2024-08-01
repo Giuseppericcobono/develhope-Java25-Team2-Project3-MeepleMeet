@@ -5,6 +5,7 @@ import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordSta
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,14 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<User> create(@RequestBody @Validated User user){
-        User newUser = userService.createUser(user);
-        return ResponseEntity.ok(newUser);
+        try {
+            user.setRecordStatus(RecordStatus.ACTIVE);
+            User newUser = userService.createUser(user);
+            return ResponseEntity.ok(newUser);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+
     }
 
     @GetMapping("/search/list")
