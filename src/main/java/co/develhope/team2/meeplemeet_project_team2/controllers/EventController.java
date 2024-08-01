@@ -4,6 +4,7 @@ package co.develhope.team2.meeplemeet_project_team2.controllers;
 import co.develhope.team2.meeplemeet_project_team2.DTO.EventDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStatusEnum;
 import co.develhope.team2.meeplemeet_project_team2.services.EventService;
+import co.develhope.team2.meeplemeet_project_team2.services.UserService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,23 +18,20 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/events")
 public class EventController {
+
     @Autowired
     private EventService eventService;
 
     @PostMapping("/create")
-    public ResponseEntity<EventDTO> create(@RequestParam Integer userID, @RequestBody EventDTO eventDTO) {
+    public ResponseEntity<Event> create(@RequestParam Integer userId, @RequestBody Event event ) {
+        event.setEventStatusEnum(EventStatusEnum.NOT_STARTED);
         try {
-            eventDTO.setEventStatusEnum(EventStatusEnum.NOT_STARTED);
+           Event createEvent = eventService.createEvent(userId,event);
+            return ResponseEntity.ok(createEvent);
 
-            // Chiama il servizio per creare l'evento
-            EventDTO newEvent = eventService.createEvent(userID, eventDTO);
+        } catch (IllegalArgumentException e) {
 
-            // Restituisce una risposta HTTP con lo stato CREATED
-            return new ResponseEntity<>(newEvent, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            // Gestisci il caso in cui l'utente non è trovato
-            // Puoi restituire un errore specifico o un messaggio
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return ResponseEntity.badRequest().body(null);
         }
     }
 

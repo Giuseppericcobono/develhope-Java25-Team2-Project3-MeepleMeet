@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,14 +14,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
-@Validated
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<User> create(@RequestBody @Validated User user){
+    public ResponseEntity<User> create(@RequestBody User user){
         try {
             user.setRecordStatus(RecordStatus.ACTIVE);
             User newUser = userService.createUser(user);

@@ -23,38 +23,14 @@ public class EventService {
     private EventRepository eventRepository;
 
     @Transactional
-    public EventDTO createEvent(Integer userID, EventDTO eventDTO) {
-        Optional<User> optionalUser = userRepository.findById(userID);
+    public Event createEvent(Integer userId, Event event) {
+        Optional<User> optionalUser = userRepository.findById(userId);
         if(optionalUser.isPresent()){
+            event.setUser(optionalUser.get());
+            return eventRepository.save(event);
 
-            User user = optionalUser.get();
-
-            Event event = new Event();
-
-            event.setName(eventDTO.getName());
-            event.setNameGame(eventDTO.getNameGame());
-            event.setDescriptionGame(eventDTO.getDescriptionGame());
-            event.setDateTimeEvent(eventDTO.getDateTimeEvent());
-            event.setMaxCapacity(eventDTO.getMaxCapacity());
-            event.setLocation(eventDTO.getLocation());
-            event.setEventStatusEnum(eventDTO.getEventStatusEnum());
-            event.setUser(optionalUser.orElse(null));
-
-            Event eventSave = eventRepository.save(event);
-
-            return new EventDTO(
-                    eventSave.getId(),
-                    eventSave.getUser().getId(),
-                    eventSave.getName(),
-                    eventSave.getNameGame(),
-                    eventSave.getDescriptionGame(),
-                    eventSave.getDateTimeEvent(),
-                    eventSave.getMaxCapacity(),
-                    eventSave.getLocation(),
-                    eventSave.getEventStatusEnum()
-            );
         }else {
-            throw new RuntimeException("User not found");
+            throw new IllegalArgumentException("User with ID " + userId + " does not exist.");
         }
 
     }
