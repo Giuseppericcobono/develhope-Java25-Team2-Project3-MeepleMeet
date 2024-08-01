@@ -1,60 +1,22 @@
-package co.develhope.team2.meeplemeet_project_team2.entities;
+package co.develhope.team2.meeplemeet_project_team2.DTO;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceStatus;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 
 import java.time.LocalTime;
 
-@Entity
-@Table(name = "Place")
-public class Place {
+public class PlaceDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
     private String address;
-
-    @Column(nullable = false)
     private PlaceType placeType;
-
-    @Column(nullable = true)
     private Integer maxCapacity;
-
-    @Column(nullable = true)
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime opening;
-
-    @Column(nullable = true)
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime closing;
-
-    @Column(nullable = true)
     private String description;
-
-    @Enumerated(EnumType.STRING)
     private RecordStatus recordStatusPlace;
-
-    public Place() {}
-
-    public Place(Integer id, String name, String address, PlaceType placeType, Integer maxCapacity, LocalTime opening, LocalTime closing, String description, RecordStatus recordStatusPlace) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.placeType = placeType;
-        this.maxCapacity = maxCapacity;
-        this.opening = opening;
-        this.closing = closing;
-        this.description = description;
-        this.recordStatusPlace = recordStatusPlace;
-    }
 
     public Integer getId() {
         return id;
