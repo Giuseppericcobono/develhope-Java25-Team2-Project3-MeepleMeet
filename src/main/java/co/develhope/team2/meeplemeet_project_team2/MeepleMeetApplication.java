@@ -9,5 +9,4 @@ public class MeepleMeetApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MeepleMeetApplication.class, args);
 	}
-
 }
