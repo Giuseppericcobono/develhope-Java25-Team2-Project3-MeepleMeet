@@ -19,7 +19,7 @@ public interface PlaceRepository extends JpaRepository<Place, Integer> {
     List<Place> statusEntity(@Param("status")RecordStatus recordStatus);
 
     @Query("SELECT place FROM Place place WHERE place.name = :name")
-    Optional<Place> findByName(@Param("name")String name);
+    List<Place> findByName(@Param("name")String name);
 
     @Query("SELECT place FROM Place place WHERE place.address = :address")
     Optional<Place> findByAdress(@Param("address")String address);

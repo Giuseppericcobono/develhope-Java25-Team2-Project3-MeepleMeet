@@ -63,10 +63,10 @@ public class PlaceController {
         }
     }
 
-    @GetMapping("/search")
-    public @ResponseBody ResponseEntity<Optional<Place>> searchPlaceByName(@RequestParam (name = "name") String name) {
-        Optional<Place> searchBy = placeService.getPlaceByName(name);
-        if(searchBy.isPresent()) {
+    @GetMapping("/search/n")
+    public @ResponseBody ResponseEntity<List<Place>> searchPlaceByName(@RequestParam (name = "name") String name) {
+        List<Place> searchBy = placeService.getPlaceByName(name);
+        if(!searchBy.isEmpty()) {
             return ResponseEntity.ok(searchBy);
         } else {
             return ResponseEntity.badRequest().build();

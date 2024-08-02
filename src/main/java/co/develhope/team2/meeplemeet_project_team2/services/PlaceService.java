@@ -46,17 +46,10 @@ public class PlaceService {
         }
     }
 
-    public Optional<Place> getPlaceByName(String name) {
-        Optional<Place> place = placeRepository.findByName(name);
-        if(place.isPresent()) {
-            if(place.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
-                return placeRepository.findByName(name);
-            } else {
-                throw new EntityNotFoundException("The place with name: " + name + " is deleted");
-            }
-        } else {
-            throw new EntityNotFoundException("The place with name: " + name + " doesn't exist");
-        }
+    public List<Place> getPlaceByName(String name) {
+        List<Place> places = placeRepository.findByName(name);
+        List<Place> placesOpen = places.stream().filter(place -> place.getRecordStatusPlace() == RecordStatus.ACTIVE).toList();
+        return placesOpen;
     }
 
     public Optional<Place> getPlaceByAddress(String address) {
