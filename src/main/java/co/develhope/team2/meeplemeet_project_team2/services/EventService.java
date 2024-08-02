@@ -57,7 +57,7 @@ public class EventService {
                 event.setEventStatusEnum(EventStatusEnum.IN_PROGRESS);
                 saveEvent = eventRepository.save(event);
                 logger.info("Stato aggiornato per l'evento con ID: {}", event.getId());
-                
+
             }
         
         }
