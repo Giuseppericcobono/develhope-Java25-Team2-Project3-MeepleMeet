@@ -93,7 +93,7 @@ public class EventService {
         Optional<Event> eventOptional = eventRepository.findById(id);
         if(eventOptional.isPresent()){
             Event event = eventOptional.get();
-            event.setEventStatusEnum(EventStatusEnum.FINISCHED);
+            event.setEventStatusEnum(EventStatusEnum.FINISHED);
             return eventRepository.save(event);
         }else {
             // Handle the case where the book with the given id is not found

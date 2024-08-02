@@ -4,6 +4,7 @@ import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStat
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "events")
@@ -40,10 +41,14 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventStatusEnum  eventStatusEnum;
 
+    @ManyToMany(mappedBy = "events")
+    private List<User> users;
+
     public Event(){}
 
-    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, String location, EventStatusEnum eventStatusEnum, User user) {
+    public Event(Integer id, User user, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, String location, EventStatusEnum eventStatusEnum, List<User> users) {
         this.id = id;
+        this.user = user;
         this.name = name;
         this.nameGame = nameGame;
         this.descriptionGame = descriptionGame;
@@ -51,15 +56,7 @@ public class Event {
         this.maxCapacity = maxCapacity;
         this.location = location;
         this.eventStatusEnum = eventStatusEnum;
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+        this.users = users;
     }
 
     public Integer getId() {
@@ -68,6 +65,14 @@ public class Event {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {
@@ -124,5 +129,13 @@ public class Event {
 
     public void setEventStatusEnum(EventStatusEnum eventStatusEnum) {
         this.eventStatusEnum = eventStatusEnum;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

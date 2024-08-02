@@ -4,99 +4,112 @@ import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordSta
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-            @Entity
-            @Table(name = "Users")
-            public class User {
+@Entity
+@Table(name = "Users")
+public class User {
 
-                @Id
-                @GeneratedValue(strategy = GenerationType.IDENTITY)
-                @Column(name = "user_id", nullable = false)
-                private Integer userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
 
-                @Column(nullable = false, unique = true)
-                private String username;
+    @Column(nullable = false, unique = true)
+    private String username;
 
-                @Column(nullable = false)
-                private String firstName;
+    @Column(nullable = false)
+    private String firstName;
 
-                @Column(nullable = false)
-                private String lastName;
+    @Column(nullable = false)
+    private String lastName;
 
-                @Column(nullable = false)
-                private Byte age;
+    @Column(nullable = false)
+    private Byte age;
 
-                @Column(nullable = false, unique = true)
-                private String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-            @Enumerated(EnumType.STRING)
-            private UserType userType;
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 
+    @Enumerated(EnumType.STRING)
+    private RecordStatus recordStatus;
 
-            @Enumerated(EnumType.STRING)
-            private RecordStatus recordStatus;
+    @ManyToMany
+    @JoinTable(name = "enrollments",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
+    private List<Event> events;
 
-            @ManyToMany(mappedBy = "users")
-            private List<Enrollment> enrollments = new ArrayList<>();
+    public User() {
+    }
 
-            public User() {}
+    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType, RecordStatus recordStatus, List<Event> events) {
+        this.userId = userId;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.userType = userType;
+        this.recordStatus = RecordStatus.ACTIVE;
+        this.events = events;
+    }
 
-            public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
-                this.userId = userId;
-                this.username = username;
-                this.firstName = firstName;
-                this.lastName = lastName;
-                this.age = age;
-                this.email = email;
-                this.userType = userType;
-                this.recordStatus = RecordStatus.ACTIVE;
-            }
+    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
+        this.userId = userId;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.userType = userType;
+        this.recordStatus = RecordStatus.ACTIVE;
+    }
 
-            public Integer getUserId() {
-                return userId;
-            }
+    public Integer getUserId() {
+        return userId;
+    }
 
-            public void setUserId           (Integer userId) {
-                this.userId = userId;
-            }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-        public String getUsername() {
-            return username;
-        }
+    public String getUsername() {
+        return username;
+    }
 
-        public void setUsername(String username) {
-            this.username = username;
-        }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        public String getFirstName() {
-            return firstName;
-        }
+    public String getFirstName() {
+        return firstName;
+    }
 
-        public void setFirstName(String firstName) {
-            this.firstName = firstName;
-        }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-        public String getLastName() {
-            return lastName;
-        }
+    public String getLastName() {
+        return lastName;
+    }
 
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-        public Byte getAge() {
-            return age;
-        }
+    public Byte getAge() {
+        return age;
+    }
 
-        public void setAge(Byte age) {
-            this.age = age;
-        }
+    public void setAge(Byte age) {
+        this.age = age;
+    }
 
-        public String getEmail() {
-            return email;
-        }
+    public String getEmail() {
+        return email;
+    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -116,5 +129,13 @@ import java.util.List;
 
     public void setRecordStatus(RecordStatus recordStatus) {
         this.recordStatus = recordStatus;
+    }
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 }
