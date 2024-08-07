@@ -16,42 +16,29 @@ public class Place {
     private Integer id;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private String address;
 
     @Column(nullable = false)
     private PlaceType placeType;
 
     @Column(nullable = true)
-    private Integer maxCapacity;
+    private String info;
 
-    @Column(nullable = true)
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime opening;
-
-    @Column(nullable = true)
-    @JsonFormat(pattern = "HH:mm")
-    private LocalTime closing;
-
-    @Column(nullable = true)
-    private String description;
+    @OneToOne
+    @JoinColumn(name = "public_place_id")
+    private PublicPlace publicPlace;
 
     @Enumerated(EnumType.STRING)
     private RecordStatus recordStatusPlace;
 
     public Place() {}
 
-    public Place(Integer id, String name, String address, PlaceType placeType, Integer maxCapacity, LocalTime opening, LocalTime closing, String description, RecordStatus recordStatusPlace) {
+    public Place(Integer id, String address, PlaceType placeType, String info, PublicPlace publicPlace, RecordStatus recordStatusPlace) {
         this.id = id;
-        this.name = name;
         this.address = address;
         this.placeType = placeType;
-        this.maxCapacity = maxCapacity;
-        this.opening = opening;
-        this.closing = closing;
-        this.description = description;
+        this.info = info;
+        this.publicPlace = publicPlace;
         this.recordStatusPlace = recordStatusPlace;
     }
 
@@ -61,14 +48,6 @@ public class Place {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getAddress() {
@@ -87,36 +66,20 @@ public class Place {
         this.placeType = placeType;
     }
 
-    public Integer getMaxCapacity() {
-        return maxCapacity;
+    public String getInfo() {
+        return info;
     }
 
-    public void setMaxCapacity(Integer maxCapacity) {
-        this.maxCapacity = maxCapacity;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
-    public LocalTime getOpening() {
-        return opening;
+    public PublicPlace getPublicPlace() {
+        return publicPlace;
     }
 
-    public void setOpening(LocalTime opening) {
-        this.opening = opening;
-    }
-
-    public LocalTime getClosing() {
-        return closing;
-    }
-
-    public void setClosing(LocalTime closing) {
-        this.closing = closing;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPublicPlace(PublicPlace publicPlace) {
+        this.publicPlace = publicPlace;
     }
 
     public RecordStatus getRecordStatusPlace() {

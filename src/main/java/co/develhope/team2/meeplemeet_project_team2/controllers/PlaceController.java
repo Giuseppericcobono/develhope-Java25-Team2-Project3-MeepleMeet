@@ -1,7 +1,9 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.PublicPlace;
 import co.develhope.team2.meeplemeet_project_team2.services.PlaceService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +44,14 @@ public class PlaceController {
     }
 
     @GetMapping("/search/time/now")
-    public @ResponseBody ResponseEntity<List<Place>> placeTimeList() {
-        List<Place> listTimePlace = placeService.findOpenPlaceNow();
+    public @ResponseBody ResponseEntity<List<PublicPlace>> placeTimeList() {
+        List<PublicPlace> listTimePlace = placeService.findOpenPlaceNow();
         return ResponseEntity.ok(listTimePlace);
     }
 
     @GetMapping("/search/time")
-    public @ResponseBody ResponseEntity<List<Place>> placeTimeList2(@RequestParam(name = "at") LocalTime time) {
-        List<Place> listTimePlace2 = placeService.findOpenPlace(time);
+    public @ResponseBody ResponseEntity<List<PublicPlace>> placeTimeList2(@RequestParam(name = "at") LocalTime time) {
+        List<PublicPlace> listTimePlace2 = placeService.findOpenPlace(time);
         return ResponseEntity.ok(listTimePlace2);
     }
 
@@ -64,8 +66,8 @@ public class PlaceController {
     }
 
     @GetMapping("/search/n")
-    public @ResponseBody ResponseEntity<List<Place>> searchPlaceByName(@RequestParam (name = "name") String name) {
-        List<Place> searchBy = placeService.getPlaceByName(name);
+    public @ResponseBody ResponseEntity<List<PlaceDTO>> searchPlaceByName(@RequestParam (name = "name") String name) {
+        List<PlaceDTO> searchBy = placeService.getPlaceByName(name);
         if(!searchBy.isEmpty()) {
             return ResponseEntity.ok(searchBy);
         } else {

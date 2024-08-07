@@ -1,13 +1,17 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
+import co.develhope.team2.meeplemeet_project_team2.entities.PublicPlace;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
+import co.develhope.team2.meeplemeet_project_team2.repositories.PublicPlaceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,12 +21,15 @@ public class PlaceService {
     @Autowired
     private PlaceRepository placeRepository;
 
+    @Autowired
+    private PublicPlaceRepository publicPlaceRepository;
+
     public Place createAPlace(Place place) {
         return placeRepository.save(place);
     }
 
     public List<Place> getListOfPlaces() {
-        return placeRepository.findAll();
+       return placeRepository.findAll();
     }
 
     public List<Place> getListOfActivePlaces() {
@@ -46,9 +53,9 @@ public class PlaceService {
         }
     }
 
-    public List<Place> getPlaceByName(String name) {
-        List<Place> places = placeRepository.findByName(name);
-        List<Place> placesOpen = places.stream().filter(place -> place.getRecordStatusPlace() == RecordStatus.ACTIVE).toList();
+    public List<PlaceDTO> getPlaceByName(String name) {
+        List<PlaceDTO> places = publicPlaceRepository.findByName(name);
+        List<PlaceDTO> placesOpen = places.stream().filter(place -> place.getRecordStatus() == RecordStatus.ACTIVE).toList();
         return placesOpen;
     }
 
@@ -99,20 +106,20 @@ public class PlaceService {
         placeRepository.deleteAll();
     }
 
-    public List<Place> findOpenPlace (LocalTime time) {
-        for (Place place : placeRepository.findAll()) {
+    public List<PublicPlace> findOpenPlace (LocalTime time) {
+        for (PublicPlace place : publicPlaceRepository.findAll()) {
             if(place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
-                return placeRepository.isOpen(time);
+                return publicPlaceRepository.isOpen(time);
             }
         }
         return null;
     }
 
-    public List<Place> findOpenPlaceNow() {
+    public List<PublicPlace> findOpenPlaceNow() {
         LocalTime now = LocalTime.now();
-        for (Place place : placeRepository.findAll()) {
+        for (PublicPlace place : publicPlaceRepository.findAll()) {
             if (place.getOpening().isBefore(now) && place.getClosing().isAfter(now)) {
-                return placeRepository.isOpen(now);
+                return publicPlaceRepository.isOpen(now);
             }
         }
         return null;
