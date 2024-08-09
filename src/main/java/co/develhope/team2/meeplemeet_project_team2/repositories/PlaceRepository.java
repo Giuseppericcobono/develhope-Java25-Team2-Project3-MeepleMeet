@@ -1,7 +1,8 @@
 package co.develhope.team2.meeplemeet_project_team2.repositories;
 
-import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
+
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,8 @@ public interface PlaceRepository extends JpaRepository<Place, Integer> {
 
     @Query("SELECT place FROM Place place WHERE place.address = :address")
     Optional<Place> findByAdress(@Param("address")String address);
+
+    @Query("SELECT place FROM Place place WHERE place.placeType = :placeType")
+    List<Place> findPlaceType(@Param("placeType")PlaceType placeType);
+
 }

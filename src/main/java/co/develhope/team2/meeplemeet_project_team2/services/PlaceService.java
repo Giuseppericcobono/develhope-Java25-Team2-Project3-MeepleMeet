@@ -3,15 +3,16 @@ package co.develhope.team2.meeplemeet_project_team2.services;
 import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.entities.PublicPlace;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.PublicPlaceRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,18 @@ public class PlaceService {
     @Autowired
     private PublicPlaceRepository publicPlaceRepository;
 
+    @Transactional
     public Place createAPlace(Place place) {
+        if(place.getPlaceType() == PlaceType.PUBLIC) {
+            PublicPlace publicPlace = new PublicPlace();
+            publicPlace.setId(place.getId());
+            publicPlace.setName(publicPlace.getName());
+            publicPlace.setMaxCapacity(publicPlace.getMaxCapacity());
+            publicPlace.setOpening(publicPlace.getOpening());
+            publicPlace.setClosing(publicPlace.getClosing());
+        } else {
+            place.setPublicPlace(null);
+        }
         return placeRepository.save(place);
     }
 
@@ -38,6 +50,14 @@ public class PlaceService {
 
     public List<Place> getListOfDeletedPlaces() {
         return placeRepository.statusEntity(RecordStatus.DELETED);
+    }
+
+    public List<Place> getListOfPublicPlace() {
+        return placeRepository.findPlaceType(PlaceType.PUBLIC);
+    }
+
+    public List<Place> getListOfPrivatePlace() {
+        return placeRepository.findPlaceType(PlaceType.PRIVATE);
     }
 
     public Optional<Place> getPlaceById(Integer id) {

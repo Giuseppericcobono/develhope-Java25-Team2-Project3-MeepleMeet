@@ -24,7 +24,7 @@ public class Place {
     @Column(nullable = true)
     private String info;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "public_place_id")
     private PublicPlace publicPlace;
 

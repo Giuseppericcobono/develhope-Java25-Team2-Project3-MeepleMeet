@@ -4,6 +4,7 @@ import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.PublicPlace;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.services.PlaceService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
