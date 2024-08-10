@@ -69,7 +69,7 @@ public class PlaceController {
 
     @GetMapping("/search/{id}")
     public @ResponseBody ResponseEntity<Optional<Place>> searchPlace(@PathVariable Integer id) {
-        Optional<Place> idplace = placeService.getPlaceById(id);
+        Optional<Place> idplace = placeService.getActivePlaceById(id);
         if(idplace.isPresent()) {
         return ResponseEntity.ok(idplace);
         } else {
@@ -99,7 +99,7 @@ public class PlaceController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Place> updatePlace(@PathVariable Integer id, @RequestBody @NotNull Place place) {
-        Optional<Place> idPlace = placeService.getPlaceById(id);
+        Optional<Place> idPlace = placeService.getActivePlaceById(id);
         if(idPlace.isPresent()) {
             Place updatePlace = placeService.updatePlace(id, place);
         return ResponseEntity.ok(updatePlace);
@@ -108,9 +108,20 @@ public class PlaceController {
         }
     }
 
+    @PatchMapping("/reactive/{id}")
+    public ResponseEntity<Void> reactivationPlace(@PathVariable Integer id) {
+        Optional<Place> idPlace = placeService.getPlaceById(id);
+        if(idPlace.isPresent()) {
+            placeService.reactivationOfAPlace(id, idPlace.get());
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("delete/l/{id}")
     public ResponseEntity<Place> deleteLogicalPlace(@PathVariable Integer id) {
-        Optional<Place> idPlace = placeService.getPlaceById(id);
+        Optional<Place> idPlace = placeService.getActivePlaceById(id);
         if(idPlace.isPresent()) {
             placeService.deleteLogicalPlace(id, idPlace.get());
             return ResponseEntity.ok().build();
@@ -121,7 +132,7 @@ public class PlaceController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Place> deletePlace(@PathVariable Integer id) {
-        Optional<Place> idPlace = placeService.getPlaceById(id);
+        Optional<Place> idPlace = placeService.getActivePlaceById(id);
         if(idPlace.isPresent()){
         placeService.deletePlaceById(id);
         return ResponseEntity.ok().build();

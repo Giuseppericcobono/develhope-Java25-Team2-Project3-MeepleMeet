@@ -57,6 +57,15 @@ public class PlaceService {
 
     public Optional<Place> getPlaceById(Integer id) {
         Optional<Place> place = placeRepository.findById(id);
+        if(place.isPresent()){
+            return placeRepository.findById(id);
+        } else {
+            throw new EntityNotFoundException("The place with id:" + id + " doesn't exist");
+        }
+    }
+
+    public Optional<Place> getActivePlaceById(Integer id) {
+        Optional<Place> place = placeRepository.findById(id);
         if (place.isPresent()) {
             if (place.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
                 return placeRepository.findById(id);
@@ -89,12 +98,10 @@ public class PlaceService {
     }
 
     public Place updatePlace(Integer id, Place updatePlace) {
-
         Optional<Place> placeOptional = placeRepository.findById(id);
-
         if (placeOptional.isPresent()) {
             if (placeOptional.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
-                return placeRepository.save(updatePlace);
+                return placeRepository.saveAndFlush(updatePlace);
             } else {
                 throw new EntityNotFoundException("Place with id: " + id + " is deleted");
             }
@@ -103,7 +110,17 @@ public class PlaceService {
         }
     }
 
-    public Place deleteLogicalPlace(Integer id, Place deletePlace) {
+    public void reactivationOfAPlace(Integer id, Place reactivePlace) {
+        Optional<Place> placeOptional = placeRepository.findById(id);
+        if(placeOptional.isPresent()) {
+            reactivePlace.setRecordStatusPlace(RecordStatus.ACTIVE);
+            placeRepository.saveAndFlush(reactivePlace);
+        } else {
+            throw new EntityNotFoundException("Place with id: " + id + " doesn't exist");
+        }
+    }
+
+    public void deleteLogicalPlace(Integer id, Place deletePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
         if (placeOptional.isPresent()) {
             deletePlace.setRecordStatusPlace(RecordStatus.DELETED);
@@ -111,7 +128,6 @@ public class PlaceService {
         } else {
             throw new EntityNotFoundException("Place with id: " + id + " doesn't exist");
         }
-        return deletePlace;
     }
 
     public void deletePlaceById(Integer id) {
