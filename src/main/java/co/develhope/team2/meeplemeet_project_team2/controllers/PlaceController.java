@@ -1,10 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
-import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
-
-import co.develhope.team2.meeplemeet_project_team2.entities.PublicPlace;
-import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.services.PlaceService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,31 +24,46 @@ public class PlaceController {
         return ResponseEntity.ok(newPlace);
     }
 
-    @GetMapping("/search/list/{type}")
-    public @ResponseBody ResponseEntity<List<Place>> placeList(@PathVariable String type) {
+    @GetMapping("/search/list/{status}")
+    public ResponseEntity<List<Place>> placeList(@PathVariable String status) {
         List<Place> listPlaces;
-        if (type.equals("active")) {
+        if (status.equals("active")) {
             listPlaces = placeService.getListOfActivePlaces();
             return ResponseEntity.ok(listPlaces);
-        } else if (type.equals("deleted")) {
+        } else if (status.equals("deleted")) {
             listPlaces = placeService.getListOfDeletedPlaces();
             return ResponseEntity.ok(listPlaces);
-        } else if (type.equals("all")) {
+        } else if (status.equals("all")) {
             listPlaces = placeService.getListOfPlaces();
             return ResponseEntity.ok(listPlaces);
+        } else {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/search/list/type/{placeType}")
+    public ResponseEntity<List<Place>> placeTypeList(@PathVariable String placeType) {
+        List<Place> listPlaces;
+        if (placeType.equals("public")) {
+            listPlaces = placeService.getListOfPublicPlace();
+            return ResponseEntity.ok(listPlaces);
+        } else if (placeType.equals("private")) {
+            listPlaces = placeService.getListOfPrivatePlace();
+            return ResponseEntity.ok(listPlaces);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/search/time/now")
-    public @ResponseBody ResponseEntity<List<PublicPlace>> placeTimeList() {
-        List<PublicPlace> listTimePlace = placeService.findOpenPlaceNow();
+    public ResponseEntity<List<Place>> placeTimeList() {
+        List<Place> listTimePlace = placeService.findOpenPlaceNow();
         return ResponseEntity.ok(listTimePlace);
     }
 
     @GetMapping("/search/time")
-    public @ResponseBody ResponseEntity<List<PublicPlace>> placeTimeList2(@RequestParam(name = "at") LocalTime time) {
-        List<PublicPlace> listTimePlace2 = placeService.findOpenPlace(time);
+    public ResponseEntity<List<Place>> placeTimeList2(@RequestParam(name = "at") LocalTime time) {
+        List<Place> listTimePlace2 = placeService.findOpenPlace(time);
         return ResponseEntity.ok(listTimePlace2);
     }
 
@@ -67,8 +78,8 @@ public class PlaceController {
     }
 
     @GetMapping("/search/n")
-    public @ResponseBody ResponseEntity<List<PlaceDTO>> searchPlaceByName(@RequestParam (name = "name") String name) {
-        List<PlaceDTO> searchBy = placeService.getPlaceByName(name);
+    public ResponseEntity<List<Place>> searchPlaceByName(@RequestParam (name = "name") String name) {
+        List<Place> searchBy = placeService.getPlaceByName(name);
         if(!searchBy.isEmpty()) {
             return ResponseEntity.ok(searchBy);
         } else {
@@ -76,10 +87,10 @@ public class PlaceController {
         }
     }
 
-    @GetMapping("/search")
-    public @ResponseBody ResponseEntity<Optional<Place>> searchPlaceByAdress(@RequestParam (name = "address") String address) {
-        Optional<Place> searchBy = placeService.getPlaceByAddress(address);
-        if(searchBy.isPresent()) {
+    @GetMapping("/search/a")
+    public ResponseEntity<List<Place>> searchPlaceByAdress(@RequestParam (name = "address") String address) {
+        List<Place> searchBy = placeService.getPlaceByAddress(address);
+        if(!searchBy.isEmpty()) {
             return ResponseEntity.ok(searchBy);
         } else {
             return ResponseEntity.badRequest().build();
@@ -87,7 +98,7 @@ public class PlaceController {
     }
 
     @PutMapping("/update/{id}")
-    public @ResponseBody ResponseEntity<Place> updatePlace(@PathVariable Integer id, @RequestBody @NotNull Place place) {
+    public ResponseEntity<Place> updatePlace(@PathVariable Integer id, @RequestBody @NotNull Place place) {
         Optional<Place> idPlace = placeService.getPlaceById(id);
         if(idPlace.isPresent()) {
             Place updatePlace = placeService.updatePlace(id, place);
@@ -98,7 +109,7 @@ public class PlaceController {
     }
 
     @DeleteMapping("delete/l/{id}")
-    public @ResponseBody ResponseEntity<Place> deleteLogicalPlace(@PathVariable Integer id) {
+    public ResponseEntity<Place> deleteLogicalPlace(@PathVariable Integer id) {
         Optional<Place> idPlace = placeService.getPlaceById(id);
         if(idPlace.isPresent()) {
             placeService.deleteLogicalPlace(id, idPlace.get());
@@ -109,7 +120,7 @@ public class PlaceController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public @ResponseBody ResponseEntity<Place> deletePlace(@PathVariable Integer id) {
+    public ResponseEntity<Place> deletePlace(@PathVariable Integer id) {
         Optional<Place> idPlace = placeService.getPlaceById(id);
         if(idPlace.isPresent()){
         placeService.deletePlaceById(id);
@@ -120,7 +131,7 @@ public class PlaceController {
     }
 
     @DeleteMapping("/delete/all")
-    public @ResponseBody ResponseEntity<Place> deleteAllPlace() {
+    public ResponseEntity<Place> deleteAllPlace() {
         placeService.deleteAllPlace();
         return ResponseEntity.ok().build();
     }

@@ -2,10 +2,7 @@ package co.develhope.team2.meeplemeet_project_team2.entities;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "Place")
@@ -24,7 +21,7 @@ public class Place {
     @Column(nullable = true)
     private String info;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "public_place_id")
     private PublicPlace publicPlace;
 

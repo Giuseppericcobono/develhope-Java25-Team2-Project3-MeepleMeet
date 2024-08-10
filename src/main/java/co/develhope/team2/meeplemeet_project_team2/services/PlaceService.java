@@ -1,12 +1,10 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
-import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.entities.PublicPlace;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
-import co.develhope.team2.meeplemeet_project_team2.repositories.PublicPlaceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +20,9 @@ public class PlaceService {
     @Autowired
     private PlaceRepository placeRepository;
 
-    @Autowired
-    private PublicPlaceRepository publicPlaceRepository;
-
     @Transactional
     public Place createAPlace(Place place) {
-        if(place.getPlaceType() == PlaceType.PUBLIC) {
+        if (place.getPlaceType() == PlaceType.PUBLIC) {
             PublicPlace publicPlace = new PublicPlace();
             publicPlace.setId(place.getId());
             publicPlace.setName(publicPlace.getName());
@@ -41,7 +36,7 @@ public class PlaceService {
     }
 
     public List<Place> getListOfPlaces() {
-       return placeRepository.findAll();
+        return placeRepository.findAll();
     }
 
     public List<Place> getListOfActivePlaces() {
@@ -73,23 +68,24 @@ public class PlaceService {
         }
     }
 
-    public List<PlaceDTO> getPlaceByName(String name) {
-        List<PlaceDTO> places = publicPlaceRepository.findByName(name);
-        List<PlaceDTO> placesOpen = places.stream().filter(place -> place.getRecordStatus() == RecordStatus.ACTIVE).toList();
-        return placesOpen;
+    public List<Place> getPlaceByName(String name) {
+        List<Place> places = placeRepository.findActivePlacesByPublicPlaceName(name);
+        if(places.isEmpty()) {
+            throw new EntityNotFoundException("The place with name: " + name + " doesn't exist");
+        }
+        return places;
     }
 
-    public Optional<Place> getPlaceByAddress(String address) {
-        Optional<Place> place = placeRepository.findByAdress(address);
-        if(place.isPresent()){
-            if(place.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
-                return placeRepository.findByAdress(address);
-            } else {
-                throw new EntityNotFoundException("The place with address: " + address + " is deleted");
-            }
-        } else {
+    public List<Place> getPlaceByAddress(String address) {
+        List<Place> places = placeRepository.findByAdress(address);
+        if (places.isEmpty()) {
             throw new EntityNotFoundException("The place with address: " + address + " doesn't exist");
         }
+        List<Place> activePlaces = places.stream().filter(place -> place.getRecordStatusPlace() == RecordStatus.ACTIVE).toList();
+        if (activePlaces.isEmpty()) {
+            throw new EntityNotFoundException("The place with address: " + address + " is deleted");
+        }
+        return activePlaces;
     }
 
     public Place updatePlace(Integer id, Place updatePlace) {
@@ -109,7 +105,7 @@ public class PlaceService {
 
     public Place deleteLogicalPlace(Integer id, Place deletePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
-        if(placeOptional.isPresent()) {
+        if (placeOptional.isPresent()) {
             deletePlace.setRecordStatusPlace(RecordStatus.DELETED);
             placeRepository.save(deletePlace);
         } else {
@@ -126,20 +122,20 @@ public class PlaceService {
         placeRepository.deleteAll();
     }
 
-    public List<PublicPlace> findOpenPlace (LocalTime time) {
-        for (PublicPlace place : publicPlaceRepository.findAll()) {
-            if(place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
-                return publicPlaceRepository.isOpen(time);
+    public List<Place> findOpenPlace(LocalTime time) {
+        for (Place place : placeRepository.findAll()) {
+            if (place.getPublicPlace().getOpening().isBefore(time) && place.getPublicPlace().getClosing().isAfter(time)) {
+                return placeRepository.isOpen(time);
             }
         }
         return null;
     }
 
-    public List<PublicPlace> findOpenPlaceNow() {
+    public List<Place> findOpenPlaceNow() {
         LocalTime now = LocalTime.now();
-        for (PublicPlace place : publicPlaceRepository.findAll()) {
-            if (place.getOpening().isBefore(now) && place.getClosing().isAfter(now)) {
-                return publicPlaceRepository.isOpen(now);
+        for (Place place : placeRepository.findAll()) {
+            if (place.getPublicPlace().getOpening().isBefore(now) && place.getPublicPlace().getClosing().isAfter(now)) {
+                return placeRepository.isOpen(now);
             }
         }
         return null;

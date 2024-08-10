@@ -4,27 +4,28 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "PublicPlace")
 public class PublicPlace {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "public_place_id", nullable = false)
     private Integer id;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Integer maxCapacity;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm")
     private LocalTime opening;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm")
     private LocalTime closing;
 
