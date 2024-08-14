@@ -21,14 +21,8 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<User> create(@RequestBody User user){
-        try {
-            user.setRecordStatus(RecordStatus.ACTIVE);
-            User newUser = userService.createUser(user);
-            return ResponseEntity.ok(newUser);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-
+        User newUser = userService.createUser(user);
+        return ResponseEntity.ok(newUser);
     }
 
     @GetMapping("/search/list")
@@ -44,12 +38,12 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody @NotNull User user) {
-        User updateUser = userService.updateUser(id, user);
-        return ResponseEntity.ok(updateUser);
+    public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody User user) {
+        User updatedUser = userService.updateUser(id, user);
+        return ResponseEntity.ok(updatedUser);
     }
 
-    @PutMapping("/dstatus/{id}")
+    @PutMapping("/delete/{id}")
     public ResponseEntity<User> deleteStatus(@PathVariable Integer id, @NotNull User user) {
         try {
             User updatedUser = userService.setDeleteStatus(id);
