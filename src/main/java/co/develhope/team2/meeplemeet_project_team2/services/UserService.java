@@ -68,16 +68,11 @@ public class UserService {
         }
     }
 
-    public User setDeleteStatus(Integer id) {
-        Optional<User> userOptional = getUserById(id);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setRecordStatus(RecordStatus.DELETED);
-            return userRepository.save(user);
-        } else {
-            throw new IllegalArgumentException("User with ID " + id + " not found.");
-        }
+    public void deleteById(Integer id){
+        userRepository.deleteById(id);
     }
 
+    public void deleteAll(){
+        userRepository.deleteAll();
+    }
 }
