@@ -28,6 +28,27 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public List<User> listOfUsersByStatus(String status) {
+        List<User> users;
+        switch (status) {
+            case "active" -> {
+                users = userRepository.recordStatusEntity(RecordStatus.ACTIVE);
+                return users;
+            }
+            case "inactive" -> {
+                users = userRepository.recordStatusEntity(RecordStatus.INACTIVE);
+                return users;
+            }
+            case "deleted" -> {
+                users = userRepository.recordStatusEntity(RecordStatus.DELETED);
+                return users;
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
     // updates a user without re-writing the whole body.
     public User updateUser(Integer id, User updateUser) {
         // finds the existing user with the id.

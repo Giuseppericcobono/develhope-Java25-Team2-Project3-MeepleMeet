@@ -8,7 +8,6 @@ import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -101,7 +100,7 @@ public class PlaceService {
     }
 
     public List<Place> getPlaceByAddress(String address) {
-        List<Place> places = placeRepository.findByAdress(address);
+        List<Place> places = placeRepository.findByAddress(address);
         if (places.isEmpty()) {
             throw new EntityNotFoundException("The place with address: " + address + " doesn't exist");
         }
