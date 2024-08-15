@@ -2,11 +2,11 @@ package co.develhope.team2.meeplemeet_project_team2.entities.enumerated;
 
 public enum Rating {
 
-    STELLA1("★☆☆☆☆"),
-    STELLA2("★★☆☆☆"),
-    STELLA3("★★★☆☆"),
-    STELLA4("★★★★☆"),
-    STELLA5("★★★★★");
+    STAR1("★☆☆☆☆"),
+    STAR2("★★☆☆☆"),
+    STAR3("★★★☆☆"),
+    STAR4("★★★★☆"),
+    STAR5("★★★★★");
 
     private final String stars;
 
