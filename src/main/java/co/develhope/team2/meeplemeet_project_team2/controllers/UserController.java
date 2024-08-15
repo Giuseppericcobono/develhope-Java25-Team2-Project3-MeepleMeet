@@ -38,7 +38,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // search users by record status
+    // search users by record status (active, inactive or deleted)
     @GetMapping("/search/list/{status}")
     public ResponseEntity<List<User>> usersListByStatus(@PathVariable String status) {
         List<User> users = userService.listOfUsersByStatus(status);
