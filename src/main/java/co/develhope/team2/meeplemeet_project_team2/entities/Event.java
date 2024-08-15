@@ -39,9 +39,12 @@ public class Event {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private EventStatusEnum  eventStatusEnum;
+    private EventStatusEnum eventStatusEnum;
 
-    @ManyToMany(mappedBy = "events")
+    @ManyToMany
+    @JoinTable(name = "enrollments",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
 
     public Event(){}

@@ -1,11 +1,10 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 
-import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStatusEnum;
+import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.EventService;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
@@ -63,6 +62,19 @@ public class EventController {
         }catch (IllegalArgumentException e){
            return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/enrollments/users/{id}")
+    public ResponseEntity<List<User>> usersEnrolled(@PathVariable Integer id){
+        Optional<Event> event = eventService.getEventById(id);
+        List<User> users = event.get().getUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @PutMapping("/enrollments/event/{eventId}/{userId}")
+    public ResponseEntity<Event> eventsUsers(@PathVariable Integer eventId, @PathVariable Integer userId){
+        Event event = eventService.usersEnrolled(userId, eventId);
+        return ResponseEntity.ok(event);
     }
 }
 

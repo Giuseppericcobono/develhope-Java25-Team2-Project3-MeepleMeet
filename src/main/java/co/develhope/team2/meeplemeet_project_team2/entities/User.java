@@ -1,10 +1,9 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "Users")
@@ -36,26 +35,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RecordStatus recordStatus;
 
-    @ManyToMany
-    @JoinTable(name = "enrollments",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id"))
-    private List<Event> events;
+    @Enumerated(EnumType.STRING)
+    private Rating rating;
 
-    public User() {
-    }
-
-    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType, RecordStatus recordStatus, List<Event> events) {
-        this.userId = userId;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.email = email;
-        this.userType = userType;
-        this.recordStatus = RecordStatus.ACTIVE;
-        this.events = events;
-    }
+    public User() {}
 
     public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
         this.userId = userId;
@@ -130,13 +113,5 @@ public class User {
 
     public void setRecordStatus(RecordStatus recordStatus) {
         this.recordStatus = recordStatus;
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
     }
 }
