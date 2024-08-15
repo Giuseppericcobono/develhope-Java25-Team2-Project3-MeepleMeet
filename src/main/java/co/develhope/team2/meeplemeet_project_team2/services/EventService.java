@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -99,6 +100,20 @@ public class EventService {
             // Handle the case where the book with the given id is not found
             throw new EntityNotFoundException("Event with id " + id + " not found");
         }
+    }
 
+    public Event usersEnrolled(Integer userId, Integer eventId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if(eventOptional.isPresent() && userOptional.isPresent()){
+            User user = userOptional.get();
+            Event event = eventOptional.get();
+            List<User> users = event.getUsers();
+            users.add(user);
+            return eventRepository.save(event);
+        } else {
+            return null;
+        }
     }
 }
