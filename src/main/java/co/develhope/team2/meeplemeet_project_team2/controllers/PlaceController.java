@@ -26,33 +26,14 @@ public class PlaceController {
 
     @GetMapping("/search/list/{status}")
     public ResponseEntity<List<Place>> placeList(@PathVariable String status) {
-        List<Place> listPlaces;
-        if (status.equals("active")) {
-            listPlaces = placeService.getListOfActivePlaces();
-            return ResponseEntity.ok(listPlaces);
-        } else if (status.equals("deleted")) {
-            listPlaces = placeService.getListOfDeletedPlaces();
-            return ResponseEntity.ok(listPlaces);
-        } else if (status.equals("all")) {
-            listPlaces = placeService.getListOfPlaces();
-            return ResponseEntity.ok(listPlaces);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        List<Place> placeList = placeService.getListOfPlaces(status);
+        return ResponseEntity.ok(placeList);
     }
 
     @GetMapping("/search/list/type/{placeType}")
     public ResponseEntity<List<Place>> placeTypeList(@PathVariable String placeType) {
-        List<Place> listPlaces;
-        if (placeType.equals("public")) {
-            listPlaces = placeService.getListOfPublicPlace();
-            return ResponseEntity.ok(listPlaces);
-        } else if (placeType.equals("private")) {
-            listPlaces = placeService.getListOfPrivatePlace();
-            return ResponseEntity.ok(listPlaces);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        List<Place> listPlaces = placeService.getListPlacetype(placeType);
+        return ResponseEntity.ok(listPlaces);
     }
 
     @GetMapping("/search/time/now")
@@ -70,75 +51,45 @@ public class PlaceController {
     @GetMapping("/search/{id}")
     public @ResponseBody ResponseEntity<Optional<Place>> searchPlace(@PathVariable Integer id) {
         Optional<Place> idplace = placeService.getActivePlaceById(id);
-        if(idplace.isPresent()) {
         return ResponseEntity.ok(idplace);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @GetMapping("/search/n")
-    public ResponseEntity<List<Place>> searchPlaceByName(@RequestParam (name = "name") String name) {
+    public ResponseEntity<List<Place>> searchPlaceByName(@RequestParam(name = "name") String name) {
         List<Place> searchBy = placeService.getPlaceByName(name);
-        if(!searchBy.isEmpty()) {
-            return ResponseEntity.ok(searchBy);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(searchBy);
     }
 
     @GetMapping("/search/a")
-    public ResponseEntity<List<Place>> searchPlaceByAdress(@RequestParam (name = "address") String address) {
+    public ResponseEntity<List<Place>> searchPlaceByAdress(@RequestParam(name = "address") String address) {
         List<Place> searchBy = placeService.getPlaceByAddress(address);
-        if(!searchBy.isEmpty()) {
-            return ResponseEntity.ok(searchBy);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(searchBy);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Place> updatePlace(@PathVariable Integer id, @RequestBody @NotNull Place place) {
-        Optional<Place> idPlace = placeService.getActivePlaceById(id);
-        if(idPlace.isPresent()) {
-            Place updatePlace = placeService.updatePlace(id, place);
+        Place updatePlace = placeService.updatePlace(id, place);
         return ResponseEntity.ok(updatePlace);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @PatchMapping("/reactive/{id}")
     public ResponseEntity<Void> reactivationPlace(@PathVariable Integer id) {
         Optional<Place> idPlace = placeService.getPlaceById(id);
-        if(idPlace.isPresent()) {
-            placeService.reactivationOfAPlace(id, idPlace.get());
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        placeService.reactivationOfAPlace(id, idPlace.get());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("delete/l/{id}")
     public ResponseEntity<Place> deleteLogicalPlace(@PathVariable Integer id) {
         Optional<Place> idPlace = placeService.getActivePlaceById(id);
-        if(idPlace.isPresent()) {
-            placeService.deleteLogicalPlace(id, idPlace.get());
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        placeService.deleteLogicalPlace(id, idPlace.get());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Place> deletePlace(@PathVariable Integer id) {
-        Optional<Place> idPlace = placeService.getActivePlaceById(id);
-        if(idPlace.isPresent()){
         placeService.deletePlaceById(id);
         return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @DeleteMapping("/delete/all")

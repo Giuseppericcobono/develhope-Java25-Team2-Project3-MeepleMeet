@@ -8,6 +8,7 @@ import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -35,29 +36,43 @@ public class PlaceService {
         return placeRepository.save(place);
     }
 
-    public List<Place> getListOfPlaces() {
-        return placeRepository.findAll();
+    public List<Place> getListOfPlaces(String status) {
+        List<Place> places;
+        switch (status) {
+            case "active" -> {
+                places = placeRepository.statusEntity(RecordStatus.ACTIVE);
+                return places;
+            }
+            case "deleted" -> {
+                places = placeRepository.statusEntity(RecordStatus.DELETED);
+                return places;
+            }
+            case "all" -> {
+                places = placeRepository.findAll();
+                return places;
+            }
+            default -> {
+                return null;
+            }
+        }
     }
 
-    public List<Place> getListOfActivePlaces() {
-        return placeRepository.statusEntity(RecordStatus.ACTIVE);
-    }
-
-    public List<Place> getListOfDeletedPlaces() {
-        return placeRepository.statusEntity(RecordStatus.DELETED);
-    }
-
-    public List<Place> getListOfPublicPlace() {
-        return placeRepository.findPlaceType(PlaceType.PUBLIC);
-    }
-
-    public List<Place> getListOfPrivatePlace() {
-        return placeRepository.findPlaceType(PlaceType.PRIVATE);
+    public List<Place> getListPlacetype(String placeType) {
+        List<Place> listPlaces;
+        if (placeType.equals("public")) {
+            listPlaces = placeRepository.findPlaceType(PlaceType.PUBLIC);
+            return listPlaces;
+        } else if (placeType.equals("private")) {
+            listPlaces = placeRepository.findPlaceType(PlaceType.PRIVATE);
+            return listPlaces;
+        } else {
+            return null;
+        }
     }
 
     public Optional<Place> getPlaceById(Integer id) {
         Optional<Place> place = placeRepository.findById(id);
-        if(place.isPresent()){
+        if (place.isPresent()) {
             return placeRepository.findById(id);
         } else {
             throw new EntityNotFoundException("The place with id:" + id + " doesn't exist");
@@ -79,7 +94,7 @@ public class PlaceService {
 
     public List<Place> getPlaceByName(String name) {
         List<Place> places = placeRepository.findActivePlacesByPublicPlaceName(name);
-        if(places.isEmpty()) {
+        if (places.isEmpty()) {
             throw new EntityNotFoundException("The place with name: " + name + " doesn't exist");
         }
         return places;
@@ -112,7 +127,7 @@ public class PlaceService {
 
     public void reactivationOfAPlace(Integer id, Place reactivePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
-        if(placeOptional.isPresent()) {
+        if (placeOptional.isPresent()) {
             reactivePlace.setRecordStatusPlace(RecordStatus.ACTIVE);
             placeRepository.saveAndFlush(reactivePlace);
         } else {
