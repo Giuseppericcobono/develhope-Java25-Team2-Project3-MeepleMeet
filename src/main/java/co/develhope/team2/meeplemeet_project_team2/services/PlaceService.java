@@ -1,7 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
-import co.develhope.team2.meeplemeet_project_team2.entities.PublicPlace;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
@@ -22,16 +21,6 @@ public class PlaceService {
 
     @Transactional
     public Place createAPlace(Place place) {
-        if (place.getPlaceType() == PlaceType.PUBLIC) {
-            PublicPlace publicPlace = new PublicPlace();
-            publicPlace.setId(place.getId());
-            publicPlace.setName(publicPlace.getName());
-            publicPlace.setMaxCapacity(publicPlace.getMaxCapacity());
-            publicPlace.setOpening(publicPlace.getOpening());
-            publicPlace.setClosing(publicPlace.getClosing());
-        } else {
-            place.setPublicPlace(null);
-        }
         return placeRepository.save(place);
     }
 
@@ -154,7 +143,7 @@ public class PlaceService {
 
     public List<Place> findOpenPlace(LocalTime time) {
         for (Place place : placeRepository.findAll()) {
-            if (place.getPublicPlace().getOpening().isBefore(time) && place.getPublicPlace().getClosing().isAfter(time)) {
+            if (place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
                 return placeRepository.isOpen(time);
             }
         }
@@ -164,7 +153,7 @@ public class PlaceService {
     public List<Place> findOpenPlaceNow() {
         LocalTime now = LocalTime.now();
         for (Place place : placeRepository.findAll()) {
-            if (place.getPublicPlace().getOpening().isBefore(now) && place.getPublicPlace().getClosing().isAfter(now)) {
+            if (place.getOpening().isBefore(now) && place.getClosing().isAfter(now)) {
                 return placeRepository.isOpen(now);
             }
         }

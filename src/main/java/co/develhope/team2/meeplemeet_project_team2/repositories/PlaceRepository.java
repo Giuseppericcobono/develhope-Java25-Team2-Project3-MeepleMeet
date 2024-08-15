@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface PlaceRepository extends JpaRepository<Place, Integer> {
 
-    @Query("SELECT place FROM Place place WHERE place.publicPlace.name = :name AND place.recordStatusPlace = 'ACTIVE'")
+    @Query("SELECT place FROM Place place WHERE place.name = :name AND place.recordStatusPlace = 'ACTIVE'")
     List<Place> findActivePlacesByPublicPlaceName(@Param("name") String name);
 
     @Query("SELECT place FROM Place place WHERE place.recordStatusPlace = :status")
@@ -25,6 +25,6 @@ public interface PlaceRepository extends JpaRepository<Place, Integer> {
     @Query("SELECT place FROM Place place WHERE place.placeType = :placeType")
     List<Place> findPlaceType(@Param("placeType")PlaceType placeType);
 
-    @Query("SELECT place FROM Place place JOIN place.publicPlace pp WHERE :time BETWEEN pp.opening AND pp.closing")
+    @Query("SELECT place FROM Place place WHERE :time BETWEEN place.opening AND place.closing")
     List<Place> isOpen(@Param("time") LocalTime time);
 }
