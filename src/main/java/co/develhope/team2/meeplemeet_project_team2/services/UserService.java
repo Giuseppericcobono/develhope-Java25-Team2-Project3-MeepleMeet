@@ -1,7 +1,10 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
+import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReviewService reviewService;
 
     public User createUser(User user){
         return userRepository.save(user);
@@ -86,6 +95,40 @@ public class UserService {
         } else {
             // case where the user with the specified id is not found.
             throw new EntityNotFoundException("User with id " + id + " not found");
+        }
+    }
+
+    public User avarageRating(Integer userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isPresent()){
+            User user = userOptional.get();
+            user.setStarRating(avarageStarRating(userId));
+            userRepository.save(user);
+            return user;
+        } else {
+            throw new EntityNotFoundException("User with id " + userId + " not found");
+        }
+    }
+
+    public String avarageStarRating(Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+        User user1 = user.get();
+        if(user.isPresent()) {
+            Double sumRating = 0.0;
+            for (Review review : reviewRepository.reviewsOfOneUser(user1)) {
+                sumRating += review.getRating().getValue();
+            }
+            sumRating /= reviewRepository.reviewsOfOneUser(user1).size();
+
+            String starRating = "";
+            for (Rating rating : Rating.values()) {
+                if (rating.getValue().equals(sumRating)) {
+                    starRating = rating.getStars();
+                }
+            }
+            return starRating;
+        } else {
+            return null;
         }
     }
 

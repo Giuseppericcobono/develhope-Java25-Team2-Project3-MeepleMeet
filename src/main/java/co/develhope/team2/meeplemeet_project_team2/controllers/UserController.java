@@ -1,6 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
+import co.develhope.team2.meeplemeet_project_team2.services.ReviewService;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,7 @@ public class UserController {
     @GetMapping("/search/{id}")
     public ResponseEntity<Optional<User>> getById(@PathVariable Integer id) {
         Optional<User> user = userService.getUserById(id);
+        userService.avarageRating(id);
         return ResponseEntity.ok(user);
     }
 
@@ -44,6 +46,7 @@ public class UserController {
         List<User> users = userService.listOfUsersByStatus(status);
         return ResponseEntity.ok(users);
     }
+
 
     // update whatever variable of a user found by id (also for logical deletion)
     @PutMapping("/update/{id}")

@@ -19,7 +19,7 @@ public class Review {
     @JoinColumn(name = "User_id")
     private User user;
 
-    @Column(nullable = true)
+    @Column
     private String description;
 
     @Enumerated(EnumType.STRING)

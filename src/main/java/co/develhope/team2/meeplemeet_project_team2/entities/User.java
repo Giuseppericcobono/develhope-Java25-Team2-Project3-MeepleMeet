@@ -35,12 +35,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RecordStatus recordStatus;
 
-    @Enumerated(EnumType.STRING)
-    private Rating rating;
+    @Column
+    private String starRating;
 
     public User() {}
 
-    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
+    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType, String starRating) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -49,6 +49,7 @@ public class User {
         this.email = email;
         this.userType = userType;
         this.recordStatus = RecordStatus.ACTIVE;
+        this.starRating = "/";
     }
 
     public Integer getUserId() {
@@ -113,5 +114,13 @@ public class User {
 
     public void setRecordStatus(RecordStatus recordStatus) {
         this.recordStatus = recordStatus;
+    }
+
+    public String getStarRating() {
+        return starRating;
+    }
+
+    public void setStarRating(String starRating) {
+        this.starRating = starRating;
     }
 }
