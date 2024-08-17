@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("reviews")
 public class ReviewController {
@@ -21,5 +23,11 @@ public class ReviewController {
     public ResponseEntity<Review> newReview(@RequestBody Review review){
         Review newReview = reviewService.createReview(review);
         return ResponseEntity.ok(newReview);
+    }
+
+    @GetMapping("all")
+    public ResponseEntity<List<Review>> allReviews(){
+        List<Review> allReviews = reviewService.getAllReviews();
+        return ResponseEntity.ok(allReviews);
     }
 }

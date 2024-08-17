@@ -98,11 +98,12 @@ public class UserService {
         }
     }
 
-    public User avarageRating(Integer userId){
+    // sets the star rating of an existing user when you call the get mapping with id
+    public User averageRating(Integer userId){
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
             User user = userOptional.get();
-            user.setStarRating(avarageStarRating(userId));
+            user.setStarRating(averageStarRating(userId));
             userRepository.save(user);
             return user;
         } else {
@@ -110,23 +111,35 @@ public class UserService {
         }
     }
 
-    public String avarageStarRating(Integer userId) {
+    // calculates the average rating for the specified user
+    public String averageStarRating(Integer userId) {
         Optional<User> user = userRepository.findById(userId);
-        User user1 = user.get();
         if(user.isPresent()) {
+            User user1 = user.get();
             Double sumRating = 0.0;
             for (Review review : reviewRepository.reviewsOfOneUser(user1)) {
                 sumRating += review.getRating().getValue();
             }
             sumRating /= reviewRepository.reviewsOfOneUser(user1).size();
 
-            String starRating = "";
+            String starRating = "No ratings found";
             for (Rating rating : Rating.values()) {
                 if (rating.getValue().equals(sumRating)) {
                     starRating = rating.getStars();
+                } else if(sumRating <= 0.5) {
+                    starRating = Rating.STAR0.getStars();
+                } else if(sumRating > 0.5 && sumRating <= 1.5) {
+                    starRating = Rating.STAR1.getStars();
+                } else if(sumRating > 1.5 && sumRating <= 2.5) {
+                    starRating = Rating.STAR2.getStars();
+                } else if(sumRating > 2.5 && sumRating <= 3.5) {
+                    starRating = Rating.STAR3.getStars();
+                } else if(sumRating > 3.5 && sumRating <= 4.5) {
+                    starRating = Rating.STAR4.getStars();
+                } else if(sumRating > 4.5) {
+                    starRating = Rating.STAR5.getStars();
                 }
-            }
-            return starRating;
+            } return starRating;
         } else {
             return null;
         }
