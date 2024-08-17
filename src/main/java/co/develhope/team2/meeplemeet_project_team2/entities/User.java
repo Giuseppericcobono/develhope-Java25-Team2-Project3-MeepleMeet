@@ -1,6 +1,5 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
-import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import jakarta.persistence.*;
@@ -40,7 +39,7 @@ public class User {
 
     public User() {}
 
-    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType, String starRating) {
+    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
