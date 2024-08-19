@@ -72,16 +72,13 @@ public class EventService {
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         List<Event> allEvent = eventRepository.findAll();
         List<Event> startedEvent = allEvent.stream().filter(event -> event.getEventStatusEnum() == EventStatusEnum.IN_PROGRESS).toList();
-
         for (Event event : startedEvent){
             LocalDateTime eventEndeTime = event.getDateTimeEvent().plusHours(12);
 
             if(localDateTimeNow.isAfter(eventEndeTime)){
-                logger.info("Aggiornamento stato per l'evento con ID: {}", event.getId());
+
                 event.setEventStatusEnum(EventStatusEnum.FINISHED);
                 saveEvent = eventRepository.save(event);
-                logger.info("Stato aggiornato per l'evento con ID: {}", event.getId());
-
             }
 
         }
