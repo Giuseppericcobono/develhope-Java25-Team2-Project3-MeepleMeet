@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 @Table(name = "Users")
 public class User {
 
+    //todo: aggiungere decription
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", insertable = false)
