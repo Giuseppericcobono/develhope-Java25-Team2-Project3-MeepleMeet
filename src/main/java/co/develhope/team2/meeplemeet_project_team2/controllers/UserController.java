@@ -17,6 +17,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    //todo: aggiungere altre chiamate get
+
     // create new user
     @PostMapping("/create")
     public ResponseEntity<User> create(@RequestBody User user){
@@ -46,6 +48,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    //todo: @deletemapping per eliminazione logica
 
     // update whatever variable of a user found by id (also for logical deletion)
     @PutMapping("/update/{id}")

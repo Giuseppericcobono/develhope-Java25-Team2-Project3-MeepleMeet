@@ -53,6 +53,8 @@ public class EventController {
         Event deletedEvent = eventService.deleteEventById(id);
         return ResponseEntity.ok(deletedEvent);
     }
+
+    //todo: sistemare event non usato
     @PutMapping("/setStatus/{id}")
     public ResponseEntity<Event> setStatusEvent(@PathVariable Integer id, @NotNull Event event){
 

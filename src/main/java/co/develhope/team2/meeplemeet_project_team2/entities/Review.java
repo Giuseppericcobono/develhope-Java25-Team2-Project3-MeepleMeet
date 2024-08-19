@@ -11,6 +11,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    //todo: rimuovere
     @ManyToOne
     @JoinColumn(name = "events_id")
     private Event event;

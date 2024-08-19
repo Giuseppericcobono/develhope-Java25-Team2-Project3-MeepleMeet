@@ -1,6 +1,5 @@
 package co.develhope.team2.meeplemeet_project_team2.repositories;
 
-import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;

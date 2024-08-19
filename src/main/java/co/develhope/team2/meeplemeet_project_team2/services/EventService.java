@@ -78,7 +78,7 @@ public class EventService {
         if(eventOptional.isPresent()){
             eventRepository.save(updatedEvent);
         }else {
-            // Handle the case where the book with the given id is not found
+            // Handle the case where the event with the given id is not found
             throw new EntityNotFoundException("Event with id " + id + " not found");
         }
 
@@ -97,11 +97,12 @@ public class EventService {
             event.setEventStatusEnum(EventStatusEnum.FINISHED);
             return eventRepository.save(event);
         }else {
-            // Handle the case where the book with the given id is not found
+            // Handle the case where the event with the given id is not found
             throw new EntityNotFoundException("Event with id " + id + " not found");
         }
     }
 
+    //todo: rivedere per iscrizione di user ad eventi
     public Event usersEnrolled(Integer userId, Integer eventId){
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Event> eventOptional = eventRepository.findById(eventId);
