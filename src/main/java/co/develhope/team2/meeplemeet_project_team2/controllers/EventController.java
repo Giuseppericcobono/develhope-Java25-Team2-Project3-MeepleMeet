@@ -19,9 +19,9 @@ public class EventController {
     private EventService eventService;
 
     @PostMapping("/create")
-    public ResponseEntity<Event> create(@RequestParam Integer userId, @RequestBody Event event ) {
+    public ResponseEntity<Event> create(@RequestParam(name = "user") Integer userId, @RequestParam(name = "place") Integer placeId, @RequestBody Event event ) {
         try {
-           Event createEvent = eventService.createEvent(userId,event);
+           Event createEvent = eventService.createEvent(userId, placeId, event);
             return ResponseEntity.ok(createEvent);
 
         } catch (IllegalArgumentException e) {

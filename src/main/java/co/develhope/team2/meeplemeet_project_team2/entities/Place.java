@@ -13,6 +13,7 @@ public class Place {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "place_id", insertable = false)
     private Integer id;
 
     @Column(nullable = false)
