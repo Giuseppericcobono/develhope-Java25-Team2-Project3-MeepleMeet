@@ -104,8 +104,22 @@ public class PlaceService {
     public Place updatePlace(Integer id, Place updatePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
         if (placeOptional.isPresent()) {
+            Place existingPlace = placeOptional.get();
             if (placeOptional.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
-                return placeRepository.saveAndFlush(updatePlace);
+                if(updatePlace.getAddress() != null) {
+                    existingPlace.setAddress(updatePlace.getAddress());
+                }
+                if(updatePlace.getPlaceType() != null) {
+                    existingPlace.setPlaceType(updatePlace.getPlaceType());
+                }
+                existingPlace.setInfo(updatePlace.getInfo());
+                existingPlace.setName(updatePlace.getName());
+                existingPlace.setMaxCapacity(updatePlace.getMaxCapacity());
+                existingPlace.setOpening(updatePlace.getOpening());
+                existingPlace.setClosing(updatePlace.getClosing());
+
+                placeRepository.save(existingPlace);
+                return existingPlace;
             } else {
                 throw new EntityNotFoundException("Place with id: " + id + " is deleted");
             }
