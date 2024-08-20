@@ -45,7 +45,7 @@ public class PlaceService {
         }
     }
 
-    public List<Place> getListPlacetype(String placeType) {
+    public List<Place> getListPlaceType(String placeType) {
         List<Place> listPlaces;
         if (placeType.equals("public")) {
             listPlaces = placeRepository.findPlaceType(PlaceType.PUBLIC);
@@ -67,6 +67,7 @@ public class PlaceService {
         }
     }
 
+    //todo: considerare anche caso INACTIVE
     public Optional<Place> getActivePlaceById(Integer id) {
         Optional<Place> place = placeRepository.findById(id);
         if (place.isPresent()) {
@@ -103,8 +104,22 @@ public class PlaceService {
     public Place updatePlace(Integer id, Place updatePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
         if (placeOptional.isPresent()) {
+            Place existingPlace = placeOptional.get();
             if (placeOptional.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
-                return placeRepository.saveAndFlush(updatePlace);
+                if(updatePlace.getAddress() != null) {
+                    existingPlace.setAddress(updatePlace.getAddress());
+                }
+                if(updatePlace.getPlaceType() != null) {
+                    existingPlace.setPlaceType(updatePlace.getPlaceType());
+                }
+                existingPlace.setInfo(updatePlace.getInfo());
+                existingPlace.setName(updatePlace.getName());
+                existingPlace.setMaxCapacity(updatePlace.getMaxCapacity());
+                existingPlace.setOpening(updatePlace.getOpening());
+                existingPlace.setClosing(updatePlace.getClosing());
+
+                placeRepository.save(existingPlace);
+                return existingPlace;
             } else {
                 throw new EntityNotFoundException("Place with id: " + id + " is deleted");
             }
@@ -141,6 +156,7 @@ public class PlaceService {
         placeRepository.deleteAll();
     }
 
+    //todo: riguardare questi due ultimi metodi
     public List<Place> findOpenPlace(LocalTime time) {
         for (Place place : placeRepository.findAll()) {
             if (place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {

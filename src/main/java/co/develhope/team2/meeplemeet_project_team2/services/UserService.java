@@ -22,9 +22,6 @@ public class UserService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @Autowired
-    private ReviewService reviewService;
-
     public User createUser(User user){
         return userRepository.save(user);
     }
@@ -33,6 +30,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    //todo: sistemare logica per il rating (da aggiungere anche al get all?)
     public Optional<User> getUserById(Integer id){
         return userRepository.findById(id);
     }
@@ -87,6 +85,9 @@ public class UserService {
             }
             if (updateUser.getRecordStatus() != null) {
                 existingUser.setRecordStatus(updateUser.getRecordStatus());
+            }
+            if (updateUser.getBiography() != null) {
+                existingUser.setBiography(updateUser.getBiography());
             }
 
             // saves the updated user in the db.

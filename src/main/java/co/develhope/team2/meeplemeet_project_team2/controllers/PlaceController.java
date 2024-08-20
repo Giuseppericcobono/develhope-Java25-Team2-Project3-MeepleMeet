@@ -32,7 +32,7 @@ public class PlaceController {
 
     @GetMapping("/search/list/type/{placeType}")
     public ResponseEntity<List<Place>> placeTypeList(@PathVariable String placeType) {
-        List<Place> listPlaces = placeService.getListPlacetype(placeType);
+        List<Place> listPlaces = placeService.getListPlaceType(placeType);
         return ResponseEntity.ok(listPlaces);
     }
 
@@ -61,7 +61,7 @@ public class PlaceController {
     }
 
     @GetMapping("/search/a")
-    public ResponseEntity<List<Place>> searchPlaceByAdress(@RequestParam(name = "address") String address) {
+    public ResponseEntity<List<Place>> searchPlaceByAddress(@RequestParam(name = "address") String address) {
         List<Place> searchBy = placeService.getPlaceByAddress(address);
         return ResponseEntity.ok(searchBy);
     }

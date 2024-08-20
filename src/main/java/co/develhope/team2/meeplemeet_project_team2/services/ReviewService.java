@@ -25,7 +25,6 @@ public class ReviewService {
 
         Review review1 = new Review();
         review1.setUser(user);
-        review1.setEvent(review.getEvent());
         review1.setDescription(review.getDescription());
         review1.setRating(review.getRating());
 
