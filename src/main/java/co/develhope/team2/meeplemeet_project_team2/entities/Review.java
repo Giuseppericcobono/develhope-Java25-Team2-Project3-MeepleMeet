@@ -11,11 +11,6 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //todo: rimuovere
-    @ManyToOne
-    @JoinColumn(name = "events_id")
-    private Event event;
-
     @ManyToOne
     @JoinColumn(name = "User_id")
     private User user;
@@ -29,9 +24,8 @@ public class Review {
     public Review() {
     }
 
-    public Review(Integer id, Event event, User user, String description, Rating rating) {
+    public Review(Integer id, User user, String description, Rating rating) {
         this.id = id;
-        this.event = event;
         this.user = user;
         this.description = description;
         this.rating = rating;
@@ -43,14 +37,6 @@ public class Review {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
     }
 
     public User getUser() {
