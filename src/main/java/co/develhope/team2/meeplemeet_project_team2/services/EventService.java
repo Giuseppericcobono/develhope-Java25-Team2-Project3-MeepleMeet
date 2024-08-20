@@ -44,46 +44,35 @@ public class EventService {
     }
     @Transactional
     @Scheduled(fixedDelay = 10000)
-    public Event updateAutoEventStatus(){
-        Event saveEvent = null;
+    public void updateAutoEventStatus(){
         LocalDateTime localDateTimeNow = LocalDateTime.now();
-        List<Event> allEvent = eventRepository.findAll();
-        List<Event> notStartedEvent = allEvent.stream().filter(event -> event.getEventStatusEnum() == EventStatusEnum.NOT_STARTED).toList();
+        List<Event> notStartedEvent = eventRepository.findEventsByStatus(EventStatusEnum.NOT_STARTED);
         logger.info("Numero di eventi da aggiornare: {}", notStartedEvent.size());
-
         for (Event event : notStartedEvent){
-
-            if(event.getEventStatusEnum() == EventStatusEnum.NOT_STARTED && event.getDateTimeEvent().isBefore(localDateTimeNow) || event.getDateTimeEvent().isEqual(localDateTimeNow)){
+            if(localDateTimeNow.isEqual(event.getDateTimeEvent()) || localDateTimeNow.isAfter(event.getDateTimeEvent())){
                 logger.info("Aggiornamento stato per l'evento con ID: {}", event.getId());
                 event.setEventStatusEnum(EventStatusEnum.IN_PROGRESS);
-                saveEvent = eventRepository.save(event);
+                eventRepository.save(event);
                 logger.info("Stato aggiornato per l'evento con ID: {}", event.getId());
-
             }
-        
         }
-        return saveEvent;
     }
 
     @Transactional
-    @Scheduled(fixedDelay = 3600000)//agg. ogni ora
-    public Event updateFinishEventAuto(){
-        Event saveEvent = null;
+    @Scheduled(fixedDelay = 10000)//agg. ogni ora 3600000
+    public void updateFinishEventAuto(){
         LocalDateTime localDateTimeNow = LocalDateTime.now();
-        List<Event> allEvent = eventRepository.findAll();
-        List<Event> startedEvent = allEvent.stream().filter(event -> event.getEventStatusEnum() == EventStatusEnum.IN_PROGRESS).toList();
+        List<Event> startedEvent = eventRepository.findEventsByStatus(EventStatusEnum.IN_PROGRESS);
+
         for (Event event : startedEvent){
-            LocalDateTime eventEndeTime = event.getDateTimeEvent().plusHours(12);
-
-            if(localDateTimeNow.isAfter(eventEndeTime)){
-
+            LocalDateTime eventEndeTime = event.getDateTimeEvent().plusMinutes(5);
+            if(localDateTimeNow.isAfter(eventEndeTime) || localDateTimeNow.isEqual(eventEndeTime)){
                 event.setEventStatusEnum(EventStatusEnum.FINISHED);
-                saveEvent = eventRepository.save(event);
+                eventRepository.save(event);
             }
-
         }
-        return saveEvent;
     }
+
     public List<Event> getAllEvent() {
         return eventRepository.findAll();
     }
