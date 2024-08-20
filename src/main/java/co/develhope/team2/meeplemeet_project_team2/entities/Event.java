@@ -34,8 +34,9 @@ public class Event {
     @Column(nullable = false)
     private Integer maxCapacity;
 
-    @Column(nullable = false)
-    private String location;
+    @OneToOne
+    @JoinColumn(name = "place_id")
+    private Place place;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -49,7 +50,7 @@ public class Event {
 
     public Event(){}
 
-    public Event(Integer id, User user, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, String location, EventStatusEnum eventStatusEnum, List<User> users) {
+    public Event(Integer id, User user, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, Place place, EventStatusEnum eventStatusEnum, List<User> users) {
         this.id = id;
         this.user = user;
         this.name = name;
@@ -57,7 +58,7 @@ public class Event {
         this.descriptionGame = descriptionGame;
         this.dateTimeEvent = dateTimeEvent;
         this.maxCapacity = maxCapacity;
-        this.location = location;
+        this.place = place;
         this.eventStatusEnum = eventStatusEnum;
         this.users = users;
     }
@@ -118,12 +119,12 @@ public class Event {
         this.maxCapacity = maxCapacity;
     }
 
-    public String getLocation() {
-        return location;
+    public Place getPlace() {
+        return place;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     public EventStatusEnum getEventStatusEnum() {

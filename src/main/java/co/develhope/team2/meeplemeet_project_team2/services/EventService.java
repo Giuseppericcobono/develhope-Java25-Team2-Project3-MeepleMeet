@@ -1,9 +1,11 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
+import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStatusEnum;
 import co.develhope.team2.meeplemeet_project_team2.repositories.EventRepository;
+import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -27,13 +29,20 @@ public class EventService {
     private UserRepository userRepository;
 
     @Autowired
+    private PlaceRepository placeRepository;
+
+    @Autowired
     private EventRepository eventRepository;
 
+
+
     @Transactional
-    public Event createEvent(Integer userId, Event event) {
+    public Event createEvent(Integer userId, Integer placeId, Event event) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isPresent()){
+        Optional<Place> optionalPlace = placeRepository.findById(placeId);
+        if(optionalUser.isPresent() && optionalPlace.isPresent()){
             event.setUser(optionalUser.get());
+            event.setPlace(optionalPlace.get());
             event.setEventStatusEnum(EventStatusEnum.NOT_STARTED);
             return eventRepository.save(event);
 
