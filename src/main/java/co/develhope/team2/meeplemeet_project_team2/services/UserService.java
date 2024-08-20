@@ -86,6 +86,9 @@ public class UserService {
             if (updateUser.getRecordStatus() != null) {
                 existingUser.setRecordStatus(updateUser.getRecordStatus());
             }
+            if (updateUser.getBiography() != null) {
+                existingUser.setBiography(updateUser.getBiography());
+            }
 
             // saves the updated user in the db.
             userRepository.save(existingUser);

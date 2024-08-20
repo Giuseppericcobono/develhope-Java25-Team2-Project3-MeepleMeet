@@ -8,8 +8,6 @@ import jakarta.persistence.*;
 @Table(name = "Users")
 public class User {
 
-    //todo: aggiungere decription
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", insertable = false)
@@ -30,6 +28,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "bio")
+    private String biography;
+
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
@@ -41,13 +42,14 @@ public class User {
 
     public User() {}
 
-    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, UserType userType) {
+    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, String biography, UserType userType) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
+        this.biography = biography;
         this.userType = userType;
         this.recordStatus = RecordStatus.ACTIVE;
         this.starRating = "/";
@@ -99,6 +101,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
     }
 
     public UserType getUserType() {
