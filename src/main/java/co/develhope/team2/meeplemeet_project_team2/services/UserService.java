@@ -39,6 +39,23 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public List<User> getUsersByFirstName(String firstName){
+        List<User> users = userRepository.findUsersByFirstName(firstName);
+        if(users.isEmpty()){
+            throw new EntityNotFoundException("The user with first name: " + firstName + " doesn't exist, or is deleted or inactive");
+        }
+        return users;
+    }
+
+    public List<User> getUsersByLastName(String lastName){
+        List<User> users = userRepository.findUsersByLastName(lastName);
+        if(users.isEmpty()){
+            throw new EntityNotFoundException("The user with last name: " + lastName + " doesn't exist, or is deleted or inactive");
+        }
+        return users;
+    }
+
+    // returns users based on their status
     public List<User> listOfUsersByStatus(String status) {
         List<User> users;
         switch (status) {
@@ -68,18 +85,18 @@ public class UserService {
         if(userOptional.isPresent()){
             User existingUser = userOptional.get();
 
-            // If the birthdate is provided, calculate and update the age
+            // if the birthdate is provided, calculates and updates the age
             if (updateUser.getBirth() != null) {
                 Byte calculatedAge = (byte) ChronoUnit.YEARS.between(updateUser.getBirth(), LocalDate.now());
                 existingUser.setBirth(updateUser.getBirth());
                 existingUser.setAge(calculatedAge);
             }
 
-            // If the age is provided without a birthdate, validate it against the existing birthdate
+            // if the age is provided without a birthdate, validates it against the existing birthdate
             if (updateUser.getAge() != null && updateUser.getBirth() == null) {
                 Byte calculatedAge = (byte) ChronoUnit.YEARS.between(existingUser.getBirth(), LocalDate.now());
                 if (!calculatedAge.equals(updateUser.getAge())) {
-                    throw new IllegalArgumentException("L'età fornita non corrisponde alla data di nascita.");
+                    throw new IllegalArgumentException("The age provided does not correspond to birthdate");
                 }
                 existingUser.setAge(updateUser.getAge());
             }
@@ -112,6 +129,7 @@ public class UserService {
             if (updateUser.getBiography() != null) {
                 existingUser.setBiography(updateUser.getBiography());
             }
+            //sets the last activity to now
             existingUser.setLastActivityDate(LocalDateTime.now());
 
             // saves the updated user in the db.
@@ -124,7 +142,7 @@ public class UserService {
     }
 
     //updates the age of all users based on birthdate
-    @Scheduled(cron = "0 0 0 * * ?") // Daily execution at midnight
+    @Scheduled(cron = "0 0 0 * * ?") // daily execution at midnight
     @Transactional
     public void updateAllUserAge() {
         List<User> users = userRepository.findAll();
@@ -191,7 +209,7 @@ public class UserService {
     }
 
     // controls if a user has been inactive for more than 6 months and if so sets the status to inactive
-    @Scheduled(cron = "0 0 0 * * ?") // Daily execution at midnight
+    @Scheduled(cron = "0 0 0 * * ?") // daily execution at midnight
     @Transactional
     public void updateInactiveUsers() {
         List<User> users = userRepository.findAll();

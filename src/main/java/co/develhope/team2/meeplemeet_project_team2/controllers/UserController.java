@@ -18,8 +18,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //todo: aggiungere altre chiamate get
-
     // create new user
     @PostMapping("/create")
     public ResponseEntity<User> create(@RequestBody User user){
@@ -50,6 +48,20 @@ public class UserController {
     @GetMapping("/search/list/{status}")
     public ResponseEntity<List<User>> usersListByStatus(@PathVariable String status) {
         List<User> users = userService.listOfUsersByStatus(status);
+        return ResponseEntity.ok(users);
+    }
+
+    // search users by first name
+    @GetMapping("/search/firstName")
+    public ResponseEntity<List<User>> usersByFirstName(@RequestParam String firstName){
+        List<User> users = userService.getUsersByFirstName(firstName);
+        return ResponseEntity.ok(users);
+    }
+
+    // search users by last name
+    @GetMapping("/search/lastName")
+    public ResponseEntity<List<User>> usersByLastName(@RequestParam String lastName){
+        List<User> users = userService.getUsersByLastName(lastName);
         return ResponseEntity.ok(users);
     }
 
