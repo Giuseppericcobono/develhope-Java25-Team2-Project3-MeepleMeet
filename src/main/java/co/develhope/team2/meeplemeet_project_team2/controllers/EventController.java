@@ -66,17 +66,16 @@ public class EventController {
         }
     }
 
-    @GetMapping("/enrollments/users/{id}")
-    public ResponseEntity<List<User>> usersEnrolled(@PathVariable Integer id){
-        Optional<Event> event = eventService.getEventById(id);
-        List<User> users = event.get().getUsers();
-        return ResponseEntity.ok(users);
+    @PutMapping("/enrollments/event")
+    public ResponseEntity<Event> eventsUsers(@RequestParam(name = "userID") Integer userId, @RequestParam(name = "eventID") Integer eventId){
+        eventService.usersEnrolled(userId, eventId);
+        return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/enrollments/event/{eventId}/{userId}")
-    public ResponseEntity<Event> eventsUsers(@PathVariable Integer eventId, @PathVariable Integer userId){
-        Event event = eventService.usersEnrolled(userId, eventId);
-        return ResponseEntity.ok(event);
+    @GetMapping("/enrollments/user")
+    public ResponseEntity<List<User>> listOfPartecipants(@RequestParam(name = "eventID") Integer eventId) {
+        List<User> user = eventService.listOfUserPartecipateEvent(eventId);
+        return ResponseEntity.ok(user);
     }
 }
 
