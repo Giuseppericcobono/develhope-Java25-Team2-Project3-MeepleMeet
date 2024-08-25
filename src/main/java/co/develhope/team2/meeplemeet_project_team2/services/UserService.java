@@ -1,6 +1,5 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
-import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -45,6 +43,14 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public List<User> getUsersByUsername(String username){
+        List<User> users = userRepository.findUsersByUsername(username);
+        if(users.isEmpty()){
+            throw new EntityNotFoundException("The user with username: " + username + " doesn't exist, or is deleted or inactive");
+        }
+        return users;
+    }
+
     public List<User> getUsersByFirstName(String firstName){
         List<User> users = userRepository.findUsersByFirstName(firstName);
         if(users.isEmpty()){
@@ -57,6 +63,14 @@ public class UserService {
         List<User> users = userRepository.findUsersByLastName(lastName);
         if(users.isEmpty()){
             throw new EntityNotFoundException("The user with last name: " + lastName + " doesn't exist, or is deleted or inactive");
+        }
+        return users;
+    }
+
+    public List<User> getUsersByFullName(String firstName, String lastName){
+        List<User> users = userRepository.findUsersByFirstAndLastName(firstName, lastName);
+        if(users.isEmpty()){
+            throw new EntityNotFoundException("The user: " + firstName + " " + lastName + " doesn't exist, or is deleted or inactive");
         }
         return users;
     }

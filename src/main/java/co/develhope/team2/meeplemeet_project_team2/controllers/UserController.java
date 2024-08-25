@@ -20,21 +20,21 @@ public class UserController {
 
     // create new user
     @PostMapping("/create")
-    public ResponseEntity<User> create(@RequestBody User user){
+    public ResponseEntity<User> newUser(@RequestBody User user){
         User newUser = userService.createUser(user);
         return ResponseEntity.ok(newUser);
     }
 
     // search all users
     @GetMapping("/search/list")
-    public ResponseEntity<List<User>> getList() {
+    public ResponseEntity<List<User>> usersList() {
         List<User> usersList = userService.getAllUsers();
         return ResponseEntity.ok(usersList);
     }
 
     // search specific user with id
     @GetMapping("/search/{id}")
-    public ResponseEntity<User> getById(@PathVariable Integer id) {
+    public ResponseEntity<User> userById(@PathVariable Integer id) {
         Optional<User> userOptional = userService.getUserById(id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
@@ -48,6 +48,13 @@ public class UserController {
     @GetMapping("/search/list/{status}")
     public ResponseEntity<List<User>> usersListByStatus(@PathVariable String status) {
         List<User> users = userService.listOfUsersByStatus(status);
+        return ResponseEntity.ok(users);
+    }
+
+    // search users by username
+    @GetMapping("/search/username")
+    public ResponseEntity<List<User>> usersByUsername(@RequestParam String username){
+        List<User> users = userService.getUsersByUsername(username);
         return ResponseEntity.ok(users);
     }
 
@@ -65,9 +72,16 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    // search users by full name
+    @GetMapping("/search/fullName")
+    public ResponseEntity<List<User>> usersByFullName(@RequestParam String firstName, String lastName){
+        List<User> users = userService.getUsersByFullName(firstName, lastName);
+        return ResponseEntity.ok(users);
+    }
+
     // update whatever variable of a user found by id
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
         try {
             User updatedUser = userService.updateUser(id, user);
             return ResponseEntity.ok(updatedUser);
@@ -80,7 +94,7 @@ public class UserController {
 
     // reactivate user
     @PatchMapping("/reactivate/{id}")
-    public ResponseEntity<Void> reactivateUser(@PathVariable Integer id) {
+    public ResponseEntity<Void> reactivationOfUser(@PathVariable Integer id) {
         Optional<User> user = userService.getUserById(id);
         if(user.isPresent()) {
             userService.reactivationOfUser(id);
@@ -92,7 +106,7 @@ public class UserController {
 
     // logical deletion
     @DeleteMapping("delete/logical/{id}")
-    public ResponseEntity<User> deleteLogical(@PathVariable Integer id) {
+    public ResponseEntity<User> deletionLogical(@PathVariable Integer id) {
         Optional<User> user = userService.getUserById(id);
         if(user.isPresent()) {
             userService.deleteLogical(id);
@@ -104,7 +118,7 @@ public class UserController {
 
     // delete user with id
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<User> deleteById(@PathVariable Integer id) {
+    public ResponseEntity<User> deletionById(@PathVariable Integer id) {
         Optional<User> user = userService.getUserById(id);
         if(user.isPresent()){
             userService.deleteById(id);
