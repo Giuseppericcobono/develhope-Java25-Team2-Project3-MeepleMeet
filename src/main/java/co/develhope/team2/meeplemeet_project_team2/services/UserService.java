@@ -146,6 +146,32 @@ public class UserService {
         }
     }
 
+    // reactivate user
+    public void reactivationOfUser(Integer id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent() && userOptional.get().getRecordStatus() != RecordStatus.ACTIVE) {
+            User user = userOptional.get();
+            user.setRecordStatus(RecordStatus.ACTIVE);
+            userRepository.saveAndFlush(user);
+        } else if (userOptional.isPresent() && userOptional.get().getRecordStatus().equals(RecordStatus.ACTIVE)){
+            throw new IllegalArgumentException("User with id: " + id + " is already active");
+        } else {
+            throw new EntityNotFoundException("User with id: " + id + " doesn't exist");
+        }
+    }
+
+    // logical deletion
+    public void deleteLogical(Integer id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setRecordStatus(RecordStatus.DELETED);
+            userRepository.save(user);
+        } else {
+            throw new EntityNotFoundException("User with id: " + id + " doesn't exist");
+        }
+    }
+
     public void deleteById(Integer id){
         userRepository.deleteById(id);
     }

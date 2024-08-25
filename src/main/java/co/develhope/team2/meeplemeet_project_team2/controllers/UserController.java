@@ -48,13 +48,35 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    //todo: @deletemapping per eliminazione logica
-
-    // update whatever variable of a user found by id (also for logical deletion)
+    // update whatever variable of a user found by id
     @PutMapping("/update/{id}")
     public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody User user) {
         User updatedUser = userService.updateUser(id, user);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    // reactivate user
+    @PatchMapping("/reactivate/{id}")
+    public ResponseEntity<Void> reactivateUser(@PathVariable Integer id) {
+        Optional<User> user = userService.getUserById(id);
+        if(user.isPresent()) {
+            userService.reactivationOfUser(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    // logical deletion
+    @DeleteMapping("delete/logical/{id}")
+    public ResponseEntity<User> deleteLogical(@PathVariable Integer id) {
+        Optional<User> user = userService.getUserById(id);
+        if(user.isPresent()) {
+            userService.deleteLogical(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // delete user with id
