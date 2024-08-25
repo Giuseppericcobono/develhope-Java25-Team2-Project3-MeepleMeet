@@ -2,7 +2,10 @@ package co.develhope.team2.meeplemeet_project_team2.entities;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,6 +51,10 @@ public class User {
 
     @Column
     private String starRating;
+
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    private List<Event> event;
 
     public User() {}
 
@@ -160,5 +167,13 @@ public class User {
 
     public void setStarRating(String starRating) {
         this.starRating = starRating;
+    }
+
+    public List<Event> getEvent() {
+        return event;
+    }
+
+    public void setEvent(List<Event> event) {
+        this.event = event;
     }
 }

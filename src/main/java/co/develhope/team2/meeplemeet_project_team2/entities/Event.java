@@ -50,9 +50,8 @@ public class Event {
 
     public Event(){}
 
-    public Event(Integer id, User user, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, Place place, EventStatusEnum eventStatusEnum, List<User> users) {
+    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, Place place, EventStatusEnum eventStatusEnum, List<User> users) {
         this.id = id;
-        this.user = user;
         this.name = name;
         this.nameGame = nameGame;
         this.descriptionGame = descriptionGame;

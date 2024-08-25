@@ -12,10 +12,10 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,35 +51,48 @@ public class EventService {
         }
 
     }
+
     @Transactional
     @Scheduled(fixedDelay = 10000)
-    public void updateAutoEventStatus(){
+    public Event updateAutoEventStatus(){
+        Event saveEvent = null;
         LocalDateTime localDateTimeNow = LocalDateTime.now();
-        List<Event> notStartedEvent = eventRepository.findEventsByStatus(EventStatusEnum.NOT_STARTED);
+        List<Event> allEvent = eventRepository.findAll();
+        List<Event> notStartedEvent = allEvent.stream().filter(event -> event.getEventStatusEnum() == EventStatusEnum.NOT_STARTED).toList();
         logger.info("Numero di eventi da aggiornare: {}", notStartedEvent.size());
+
         for (Event event : notStartedEvent){
-            if(localDateTimeNow.isEqual(event.getDateTimeEvent()) || localDateTimeNow.isAfter(event.getDateTimeEvent())){
+
+            if(event.getEventStatusEnum() == EventStatusEnum.NOT_STARTED && event.getDateTimeEvent().isBefore(localDateTimeNow) || event.getDateTimeEvent().isEqual(localDateTimeNow)){
                 logger.info("Aggiornamento stato per l'evento con ID: {}", event.getId());
                 event.setEventStatusEnum(EventStatusEnum.IN_PROGRESS);
-                eventRepository.save(event);
+                saveEvent = eventRepository.save(event);
                 logger.info("Stato aggiornato per l'evento con ID: {}", event.getId());
+
             }
+        
         }
+        return saveEvent;
     }
 
     @Transactional
-    @Scheduled(fixedDelay = 10000)//agg. ogni ora 3600000
-    public void updateFinishEventAuto(){
+    @Scheduled(fixedDelay = 3600000)//agg. ogni ora
+    public Event updateFinishEventAuto(){
+        Event saveEvent = null;
         LocalDateTime localDateTimeNow = LocalDateTime.now();
-        List<Event> startedEvent = eventRepository.findEventsByStatus(EventStatusEnum.IN_PROGRESS);
-
+        List<Event> allEvent = eventRepository.findAll();
+        List<Event> startedEvent = allEvent.stream().filter(event -> event.getEventStatusEnum() == EventStatusEnum.IN_PROGRESS).toList();
         for (Event event : startedEvent){
-            LocalDateTime eventEndeTime = event.getDateTimeEvent().plusMinutes(5);
-            if(localDateTimeNow.isAfter(eventEndeTime) || localDateTimeNow.isEqual(eventEndeTime)){
+            LocalDateTime eventEndeTime = event.getDateTimeEvent().plusHours(12);
+
+            if(localDateTimeNow.isAfter(eventEndeTime)){
+
                 event.setEventStatusEnum(EventStatusEnum.FINISHED);
-                eventRepository.save(event);
+                saveEvent = eventRepository.save(event);
             }
+
         }
+        return saveEvent;
     }
 
     public List<Event> getAllEvent() {
@@ -119,19 +132,30 @@ public class EventService {
         }
     }
 
-    //todo: rivedere per iscrizione di user ad eventi
-    public Event usersEnrolled(Integer userId, Integer eventId){
+    public void usersEnrolled(Integer userId, Integer eventId) {
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-        if(eventOptional.isPresent() && userOptional.isPresent()){
+        if (eventOptional.isPresent() && userOptional.isPresent()) {
             User user = userOptional.get();
             Event event = eventOptional.get();
-            List<User> users = event.getUsers();
-            users.add(user);
-            return eventRepository.save(event);
+            event.getUsers().add(user);
+            user.getEvent().add(event);
+
+            eventRepository.save(event);
+            userRepository.save(user);
         } else {
-            return null;
+            throw new EntityNotFoundException("User or Event not found");
+        }
+    }
+
+    public List<User> listOfUserPartecipateEvent(Integer eventId) {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        if (eventOptional.isPresent()) {
+            Event event = eventOptional.get();
+            return new ArrayList<>(event.getUsers());
+        } else {
+            throw new EntityNotFoundException("Event with id " + eventId + " not found");
         }
     }
 }
