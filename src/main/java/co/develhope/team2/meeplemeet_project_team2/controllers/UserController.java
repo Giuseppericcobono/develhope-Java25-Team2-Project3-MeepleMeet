@@ -2,6 +2,7 @@ package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,17 +31,19 @@ public class UserController {
     @GetMapping("/search/list")
     public ResponseEntity<List<User>> getList() {
         List<User> usersList = userService.getAllUsers();
-        userService.updateInactiveUsers();
         return ResponseEntity.ok(usersList);
     }
 
     // search specific user with id
     @GetMapping("/search/{id}")
-    public ResponseEntity<Optional<User>> getById(@PathVariable Integer id) {
-        Optional<User> user = userService.getUserById(id);
-        userService.averageRating(id);
-        userService.updateAgeBasedOnBirth(id);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<User> getById(@PathVariable Integer id) {
+        Optional<User> userOptional = userService.getUserById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     // search users by record status (active, inactive or deleted)
@@ -53,8 +56,14 @@ public class UserController {
     // update whatever variable of a user found by id
     @PutMapping("/update/{id}")
     public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody User user) {
-        User updatedUser = userService.updateUser(id, user);
-        return ResponseEntity.ok(updatedUser);
+        try {
+            User updatedUser = userService.updateUser(id, user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     // reactivate user
