@@ -8,8 +8,13 @@ import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +36,18 @@ public class UserService {
     }
 
     //todo: sistemare logica per il rating (da aggiungere anche al get all?)
-    public Optional<User> getUserById(Integer id){
-        return userRepository.findById(id);
+    public Optional<User> getUserById(Integer id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setLastActivityDate(LocalDateTime.now());
+            userRepository.save(user);
+
+            return Optional.of(user);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public List<User> listOfUsersByStatus(String status) {
@@ -74,6 +89,9 @@ public class UserService {
             if (updateUser.getLastName() != null) {
                 existingUser.setLastName(updateUser.getLastName());
             }
+            if (updateUser.getBirth() != null) {
+                existingUser.setBirth(updateUser.getBirth());
+            }
             if (updateUser.getAge() != null) {
                 existingUser.setAge(updateUser.getAge());
             }
@@ -89,6 +107,9 @@ public class UserService {
             if (updateUser.getBiography() != null) {
                 existingUser.setBiography(updateUser.getBiography());
             }
+            if (updateUser.getLastActivityDate() != null) {
+                existingUser.setLastActivityDate(updateUser.getLastActivityDate());
+            }
 
             // saves the updated user in the db.
             userRepository.save(existingUser);
@@ -99,14 +120,34 @@ public class UserService {
         }
     }
 
+    // updates the age of a user based on birth
+    public void updateAgeBasedOnBirth(Integer userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setAge(calculateAge(user.getBirth()));
+            userRepository.save(user);
+        } else {
+            throw new EntityNotFoundException("User with id " + userId + " not found");
+        }
+    }
+
+    // calculates age of a user
+    private Byte calculateAge(LocalDate birth) {
+        if (birth == null) {
+            return null;
+        }
+        return (byte) Period.between(birth, LocalDate.now()).getYears();
+    }
+
     // sets the star rating of an existing user when you call the get mapping with id
-    public User averageRating(Integer userId){
+    public void averageRating(Integer userId){
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()){
             User user = userOptional.get();
             user.setStarRating(averageStarRating(userId));
             userRepository.save(user);
-            return user;
         } else {
             throw new EntityNotFoundException("User with id " + userId + " not found");
         }
@@ -143,6 +184,23 @@ public class UserService {
             } return starRating;
         } else {
             return null;
+        }
+    }
+
+    // controls if a user has been inactive for more than 6 months and if so sets the status to inactive
+    @Scheduled(cron = "0 0 0 * * ?") // Daily execution at midnight
+    public void updateInactiveUsers() {
+        List<User> users = userRepository.findAll();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (User user : users) {
+            if (user.getLastActivityDate() != null &&
+                    ChronoUnit.MONTHS.between(user.getLastActivityDate(), now) >= 6 &&
+                    user.getRecordStatus() == RecordStatus.ACTIVE) {
+
+                user.setRecordStatus(RecordStatus.INACTIVE);
+                userRepository.save(user);
+            }
         }
     }
 

@@ -30,6 +30,7 @@ public class UserController {
     @GetMapping("/search/list")
     public ResponseEntity<List<User>> getList() {
         List<User> usersList = userService.getAllUsers();
+        userService.updateInactiveUsers();
         return ResponseEntity.ok(usersList);
     }
 
@@ -38,6 +39,7 @@ public class UserController {
     public ResponseEntity<Optional<User>> getById(@PathVariable Integer id) {
         Optional<User> user = userService.getUserById(id);
         userService.averageRating(id);
+        userService.updateAgeBasedOnBirth(id);
         return ResponseEntity.ok(user);
     }
 

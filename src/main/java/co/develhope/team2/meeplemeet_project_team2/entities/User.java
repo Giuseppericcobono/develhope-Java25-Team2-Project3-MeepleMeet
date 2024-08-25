@@ -4,6 +4,9 @@ import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordSta
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Users")
 public class User {
@@ -23,6 +26,9 @@ public class User {
     private String lastName;
 
     @Column(nullable = false)
+    LocalDate birth;
+
+    @Column(nullable = false)
     private Byte age;
 
     @Column(nullable = false, unique = true)
@@ -38,19 +44,24 @@ public class User {
     private RecordStatus recordStatus;
 
     @Column
+    private LocalDateTime lastActivityDate;
+
+    @Column
     private String starRating;
 
     public User() {}
 
-    public User(Integer userId, String username, String firstName, String lastName, Byte age, String email, String biography, UserType userType) {
+    public User(Integer userId, String username, String firstName, String lastName, LocalDate birth, Byte age, String email, String biography, UserType userType, LocalDateTime lastActivityDate) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.birth = birth;
         this.age = age;
         this.email = email;
         this.biography = biography;
         this.userType = userType;
+        this.lastActivityDate = lastActivityDate;
         this.recordStatus = RecordStatus.ACTIVE;
         this.starRating = "/";
     }
@@ -85,6 +96,14 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public LocalDate getBirth() {
+        return birth;
+    }
+
+    public void setBirth(LocalDate birth) {
+        this.birth = birth;
     }
 
     public Byte getAge() {
@@ -125,6 +144,14 @@ public class User {
 
     public void setRecordStatus(RecordStatus recordStatus) {
         this.recordStatus = recordStatus;
+    }
+
+    public LocalDateTime getLastActivityDate() {
+        return lastActivityDate;
+    }
+
+    public void setLastActivityDate(LocalDateTime lastActivityDate) {
+        this.lastActivityDate = lastActivityDate;
     }
 
     public String getStarRating() {
