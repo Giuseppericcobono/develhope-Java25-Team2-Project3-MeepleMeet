@@ -19,12 +19,12 @@ public interface PlaceRepository extends JpaRepository<Place, Integer> {
     @Query("SELECT place FROM Place place WHERE place.recordStatusPlace = :status")
     List<Place> statusEntity(@Param("status")RecordStatus recordStatus);
 
-    @Query("SELECT place FROM Place place WHERE place.address = :address")
+    @Query("SELECT place FROM Place place WHERE place.address = :address AND place.recordStatusPlace = 'ACTIVE'")
     List<Place> findByAddress(@Param("address")String address);
 
-    @Query("SELECT place FROM Place place WHERE place.placeType = :placeType")
+    @Query("SELECT place FROM Place place WHERE place.placeType = :placeType AND place.recordStatusPlace = 'ACTIVE'")
     List<Place> findPlaceType(@Param("placeType")PlaceType placeType);
 
-    @Query("SELECT place FROM Place place WHERE :time BETWEEN place.opening AND place.closing")
+    @Query("SELECT place FROM Place place WHERE :time BETWEEN place.opening AND place.closing AND place.recordStatusPlace = 'ACTIVE'")
     List<Place> isOpen(@Param("time") LocalTime time);
 }
