@@ -19,11 +19,13 @@ public class PlaceService {
     @Autowired
     private PlaceRepository placeRepository;
 
+    // method of creating a place
     @Transactional
     public Place createAPlace(Place place) {
         return placeRepository.save(place);
     }
 
+    // method to return a list of places based on a status
     public List<Place> getListOfPlaces(String status) {
         List<Place> places;
         switch (status) {
@@ -45,6 +47,7 @@ public class PlaceService {
         }
     }
 
+    // method to return a list of places based on a placetype
     public List<Place> getListPlaceType(String placeType) {
         List<Place> listPlaces;
         if (placeType.equals("public")) {
@@ -58,6 +61,7 @@ public class PlaceService {
         }
     }
 
+    // method to find a place by id
     public Optional<Place> getPlaceById(Integer id) {
         Optional<Place> place = placeRepository.findById(id);
         if (place.isPresent()) {
@@ -67,11 +71,11 @@ public class PlaceService {
         }
     }
 
-    //todo: considerare anche caso INACTIVE
+    // method to find an active or inactive place by id
     public Optional<Place> getActivePlaceById(Integer id) {
         Optional<Place> place = placeRepository.findById(id);
         if (place.isPresent()) {
-            if (place.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
+            if (place.get().getRecordStatusPlace() == RecordStatus.ACTIVE || place.get().getRecordStatusPlace() == RecordStatus.INACTIVE) {
                 return placeRepository.findById(id);
             } else {
                 throw new EntityNotFoundException("The place with id: " + id + " is deleted");
@@ -81,6 +85,7 @@ public class PlaceService {
         }
     }
 
+    // method to find a place by name
     public List<Place> getPlaceByName(String name) {
         List<Place> places = placeRepository.findActivePlacesByPublicPlaceName(name);
         if (places.isEmpty()) {
@@ -89,6 +94,7 @@ public class PlaceService {
         return places;
     }
 
+    // method to find a place by address
     public List<Place> getPlaceByAddress(String address) {
         List<Place> places = placeRepository.findByAddress(address);
         if (places.isEmpty()) {
@@ -101,6 +107,7 @@ public class PlaceService {
         return activePlaces;
     }
 
+    // method to update the information of a place based on id
     public Place updatePlace(Integer id, Place updatePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
         if (placeOptional.isPresent()) {
@@ -128,6 +135,7 @@ public class PlaceService {
         }
     }
 
+    // method to reactivation a deleted or inactive place
     public void reactivationOfAPlace(Integer id, Place reactivePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
         if (placeOptional.isPresent()) {
@@ -138,6 +146,7 @@ public class PlaceService {
         }
     }
 
+    // method to set the status of a place to deleted (logical delete)
     public void deleteLogicalPlace(Integer id, Place deletePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
         if (placeOptional.isPresent()) {
@@ -148,24 +157,27 @@ public class PlaceService {
         }
     }
 
+    // method to delete a place by id
     public void deletePlaceById(Integer id) {
         placeRepository.deleteById(id);
     }
 
+    // method to delete all places
     public void deleteAllPlace() {
         placeRepository.deleteAll();
     }
 
-    //todo: riguardare questi due ultimi metodi
+    // method to find a list of places based on a specific time
     public List<Place> findOpenPlace(LocalTime time) {
         for (Place place : placeRepository.findAll()) {
             if (place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
                 return placeRepository.isOpen(time);
             }
         }
-        return null;
+        throw new EntityNotFoundException("There are no open place at: " + time);
     }
 
+    // method to find a list of places based on a current time
     public List<Place> findOpenPlaceNow() {
         LocalTime now = LocalTime.now();
         for (Place place : placeRepository.findAll()) {
@@ -173,6 +185,6 @@ public class PlaceService {
                 return placeRepository.isOpen(now);
             }
         }
-        return null;
+        throw new EntityNotFoundException("There are no open place now");
     }
 }
