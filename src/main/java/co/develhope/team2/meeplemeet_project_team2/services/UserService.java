@@ -34,6 +34,7 @@ public class UserService {
     private ReviewRepository reviewRepository;
 
     public User createUser(User user){
+        user.setRecordStatus(RecordStatus.ACTIVE);
         return userRepository.save(user);
     }
 
