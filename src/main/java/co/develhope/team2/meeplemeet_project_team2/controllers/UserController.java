@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -77,6 +78,12 @@ public class UserController {
     public ResponseEntity<List<User>> usersByFullName(@RequestParam String firstName, String lastName){
         List<User> users = userService.getUsersByFullName(firstName, lastName);
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("search/list/events")
+    public ResponseEntity<List<Event>> listOfEvents (@RequestParam(name = "userID") Integer id) {
+        List<Event> events = userService.listOfEventsPartecipate(id);
+        return ResponseEntity.ok(events);
     }
 
     // update whatever variable of a user found by id

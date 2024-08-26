@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -270,6 +272,17 @@ public class UserService {
             userRepository.save(user);
         } else {
             throw new EntityNotFoundException("User with id: " + id + " doesn't exist");
+        }
+    }
+
+    // list of events in which a user participates
+    public List<Event> listOfEventsPartecipate (Integer userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return new ArrayList<>(user.getEvent());
+        } else {
+            throw new EntityNotFoundException("User with id: " + userId + " doesn't exist");
         }
     }
 
