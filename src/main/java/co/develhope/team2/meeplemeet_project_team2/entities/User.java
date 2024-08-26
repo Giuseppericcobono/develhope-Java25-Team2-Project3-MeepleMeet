@@ -31,7 +31,7 @@ public class User {
     @Column(nullable = false)
     LocalDate birth;
 
-    @Column(nullable = false)
+    @Column
     private Byte age;
 
     @Column(nullable = false, unique = true)

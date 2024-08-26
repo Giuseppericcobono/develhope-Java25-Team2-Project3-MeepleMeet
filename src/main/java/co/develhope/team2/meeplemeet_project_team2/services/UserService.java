@@ -34,6 +34,9 @@ public class UserService {
     private ReviewRepository reviewRepository;
 
     public User createUser(User user){
+        //calculates age based on birthdat
+        Byte calculatedAge = (byte) ChronoUnit.YEARS.between(user.getBirth(), LocalDate.now());
+        user.setAge(calculatedAge);
         user.setRecordStatus(RecordStatus.ACTIVE);
         return userRepository.save(user);
     }
