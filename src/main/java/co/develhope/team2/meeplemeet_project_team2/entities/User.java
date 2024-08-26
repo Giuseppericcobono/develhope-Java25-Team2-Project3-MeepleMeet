@@ -72,8 +72,6 @@ public class User {
         this.biography = biography;
         this.userType = userType;
         this.lastActivityDate = lastActivityDate;
-        this.recordStatus = RecordStatus.ACTIVE;
-        this.starRating = "/";
     }
 
     public String getPassword() {
