@@ -143,6 +143,9 @@ public class UserService {
             if (updateUser.getEmail() != null) {
                 existingUser.setEmail(updateUser.getEmail());
             }
+            if (updateUser.getPassword() != null) {
+                existingUser.setPassword(updateUser.getPassword());
+            }
             if (updateUser.getUserType() != null) {
                 existingUser.setUserType(updateUser.getUserType());
             }

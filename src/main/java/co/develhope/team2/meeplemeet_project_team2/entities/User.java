@@ -37,6 +37,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    private String password;
+
     @Column(name = "bio")
     private String biography;
 
@@ -58,7 +60,7 @@ public class User {
 
     public User() {}
 
-    public User(Integer userId, String username, String firstName, String lastName, LocalDate birth, Byte age, String email, String biography, UserType userType, LocalDateTime lastActivityDate) {
+    public User(Integer userId, String username, String firstName, String lastName, LocalDate birth, Byte age, String email, String password, String biography, UserType userType, LocalDateTime lastActivityDate) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -66,11 +68,20 @@ public class User {
         this.birth = birth;
         this.age = age;
         this.email = email;
+        this.password = password;
         this.biography = biography;
         this.userType = userType;
         this.lastActivityDate = lastActivityDate;
         this.recordStatus = RecordStatus.ACTIVE;
         this.starRating = "/";
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Integer getUserId() {
