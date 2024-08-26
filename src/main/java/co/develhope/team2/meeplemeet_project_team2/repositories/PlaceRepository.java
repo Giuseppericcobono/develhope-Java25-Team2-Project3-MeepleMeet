@@ -14,7 +14,7 @@ import java.util.List;
 public interface PlaceRepository extends JpaRepository<Place, Integer> {
 
     @Query("SELECT place FROM Place place WHERE place.name = :name AND place.recordStatusPlace = 'ACTIVE'")
-    List<Place> findActivePlacesByPublicPlaceName(@Param("name") String name);
+    List<Place> findByName(@Param("name") String name);
 
     @Query("SELECT place FROM Place place WHERE place.recordStatusPlace = :status")
     List<Place> statusEntity(@Param("status")RecordStatus recordStatus);

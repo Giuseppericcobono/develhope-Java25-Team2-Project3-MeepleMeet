@@ -56,6 +56,10 @@ public class User {
     @JsonIgnore
     private List<Event> event;
 
+    @OneToMany
+    @JoinColumn(name = "review_id")
+    private List<Review> reviews;
+
     public User() {}
 
     public User(Integer userId, String username, String firstName, String lastName, LocalDate birth, Byte age, String email, String biography, UserType userType, LocalDateTime lastActivityDate) {
@@ -175,5 +179,13 @@ public class User {
 
     public void setEvent(List<Event> event) {
         this.event = event;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

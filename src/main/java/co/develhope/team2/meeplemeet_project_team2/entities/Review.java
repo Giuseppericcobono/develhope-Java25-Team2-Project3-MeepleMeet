@@ -9,6 +9,7 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id", insertable = false)
     private Integer id;
 
     @ManyToOne

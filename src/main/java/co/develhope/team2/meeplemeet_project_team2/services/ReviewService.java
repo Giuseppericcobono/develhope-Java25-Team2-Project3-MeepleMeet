@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReviewService {
@@ -32,7 +33,46 @@ public class ReviewService {
         return review1;
     }
 
+    public List<Review> getAllReviewOfAUserById(Integer id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return user.getReviews();
+        } else {
+            throw new EntityNotFoundException("User with id: " + id + " not found");
+        }
+    }
+
+    public List<Review> getAllReviewOfAUserByUsername(String username) {
+        List<Review> reviews = reviewRepository.findReviewsByUsername(username);
+        if (reviews.isEmpty()) {
+            throw new EntityNotFoundException("Username " + username + "doesn't exist");
+        }
+        return reviews;
+    }
+
     public List<Review> getAllReviews(){
         return reviewRepository.findAll();
+    }
+
+    public Review updateReview (Integer id, Review updateReview){
+        Optional<Review> optionalReview = reviewRepository.findById(id);
+        if(optionalReview.isPresent()) {
+            Review existingReview = optionalReview.get();
+            existingReview.setDescription(updateReview.getDescription());
+            existingReview.setRating(updateReview.getRating());
+
+            reviewRepository.save(existingReview);
+            return existingReview;
+        }
+        throw new EntityNotFoundException("Review with id: " + id + " not found");
+    }
+
+    public void deleteReviewById (Integer id) {
+        reviewRepository.deleteById(id);
+    }
+
+    public void deleteAllReview () {
+        reviewRepository.deleteAll();
     }
 }
