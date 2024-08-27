@@ -35,7 +35,7 @@ public class UserService {
 
     public User createUser(User user){
         //calculates age based on birthdate
-        calculateAge(user);
+        user.setAge(calculateAge(user));
         user.setRecordStatus(RecordStatus.ACTIVE);
         return userRepository.save(user);
     }
@@ -170,9 +170,19 @@ public class UserService {
     }
 
     //calculates age based on birthdate
-    public void calculateAge(User user){
-        Byte calculatedAge = (byte) ChronoUnit.YEARS.between(user.getBirth(), LocalDate.now());
-        user.setAge(calculatedAge);
+    public Byte calculateAge(User user) {
+        LocalDate birthDate = user.getBirth();
+        LocalDate today = LocalDate.now();
+
+        // calculates the user age
+        Byte age = (byte) ChronoUnit.YEARS.between(birthDate, today);
+
+        // if the birthday is today, it changes the age
+        if (today.getMonthValue() == birthDate.getMonthValue() && today.getDayOfMonth() == birthDate.getDayOfMonth()) {
+            age = (byte) (age + 1);
+        }
+
+        return age;
     }
 
     //updates the age of all users based on birthdate
@@ -180,11 +190,12 @@ public class UserService {
     @Transactional
     public void updateAllUserAge() {
         List<User> users = userRepository.findAll();
-        LocalDate today = LocalDate.now();
-
         for (User user : users) {
-            calculateAge(user);
-            userRepository.save(user);
+            Byte newAge = calculateAge(user);
+            if (!newAge.equals(user.getAge())) {
+                user.setAge(newAge);
+                userRepository.save(user);
+            }
         }
     }
 
