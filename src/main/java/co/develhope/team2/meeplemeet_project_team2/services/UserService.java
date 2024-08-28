@@ -186,7 +186,7 @@ public class UserService {
     }
 
     //updates the age of all users based on birthdate
-    @Scheduled(cron = "0 0 0 * * ?") // daily execution at midnight
+    @Scheduled(fixedRate = 60000) // execution every minute
     @Transactional
     public void updateAllUserAge() {
         List<User> users = userRepository.findAll();
@@ -253,7 +253,7 @@ public class UserService {
     }
 
     // controls if a user has been inactive for more than 6 months and if so sets the status to inactive
-    @Scheduled(cron = "0 0 0 * * ?") // daily execution at midnight
+    @Scheduled(fixedRate = 60000) // execution every minute
     @Transactional
     public void updateInactiveUsers() {
         List<User> users = userRepository.findAll();
