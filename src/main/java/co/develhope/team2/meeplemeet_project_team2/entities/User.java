@@ -29,10 +29,10 @@ public class User {
     private String lastName;
 
     @Column(nullable = false)
-    LocalDate birth;
+    private LocalDate birth;
 
     @Column
-    private Byte age;
+    private Integer age;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -60,7 +60,7 @@ public class User {
 
     public User() {}
 
-    public User(Integer userId, String username, String firstName, String lastName, LocalDate birth, Byte age, String email, String password, String biography, UserType userType, LocalDateTime lastActivityDate) {
+    public User(Integer userId, String username, String firstName, String lastName, LocalDate birth, Integer age, String email, String password, String biography, UserType userType, LocalDateTime lastActivityDate) {
         this.userId = userId;
         this.username = username;
         this.firstName = firstName;
@@ -122,11 +122,11 @@ public class User {
         this.birth = birth;
     }
 
-    public Byte getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(Byte age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 

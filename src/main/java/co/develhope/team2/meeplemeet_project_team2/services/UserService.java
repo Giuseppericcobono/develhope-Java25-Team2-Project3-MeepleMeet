@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
@@ -10,6 +11,7 @@ import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,17 @@ public class UserService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public User createUser(User user){
+    public User createUser(UserDTO userDTO){
+
+        User user = new User();
+        BeanUtils.copyProperties(userDTO, user);
+
         //calculates age based on birthdate
         user.setAge(calculateAge(user));
         user.setRecordStatus(RecordStatus.ACTIVE);
-        return userRepository.save(user);
+        user = userRepository.save(user);
+
+        return user;
     }
 
     public List<User> getAllUsers(){
@@ -112,14 +120,14 @@ public class UserService {
 
             // if the birthdate is provided, calculates and updates the age
             if (updateUser.getBirth() != null) {
-                Byte calculatedAge = (byte) ChronoUnit.YEARS.between(updateUser.getBirth(), LocalDate.now());
+                Integer calculatedAge = (int) ChronoUnit.YEARS.between(updateUser.getBirth(), LocalDate.now());
                 existingUser.setBirth(updateUser.getBirth());
                 existingUser.setAge(calculatedAge);
             }
 
             // if the age is provided without a birthdate, validates it against the existing birthdate
             if (updateUser.getAge() != null && updateUser.getBirth() == null) {
-                Byte calculatedAge = (byte) ChronoUnit.YEARS.between(existingUser.getBirth(), LocalDate.now());
+                Integer calculatedAge = (int) ChronoUnit.YEARS.between(existingUser.getBirth(), LocalDate.now());
                 if (!calculatedAge.equals(updateUser.getAge())) {
                     throw new IllegalArgumentException("The age provided does not correspond to birthdate");
                 }
@@ -170,16 +178,16 @@ public class UserService {
     }
 
     //calculates age based on birthdate
-    public Byte calculateAge(User user) {
+    public Integer calculateAge(User user) {
         LocalDate birthDate = user.getBirth();
         LocalDate today = LocalDate.now();
 
-        // calculates the user age
-        Byte age = (byte) ChronoUnit.YEARS.between(birthDate, today);
+        // calculates the years between the two dates
+        Integer age = (int) ChronoUnit.YEARS.between(birthDate, today);
 
         // if the birthday is today, it changes the age
         if (today.getMonthValue() == birthDate.getMonthValue() && today.getDayOfMonth() == birthDate.getDayOfMonth()) {
-            age = (byte) (age + 1);
+            age += 1;
         }
 
         return age;
@@ -191,7 +199,7 @@ public class UserService {
     public void updateAllUserAge() {
         List<User> users = userRepository.findAll();
         for (User user : users) {
-            Byte newAge = calculateAge(user);
+            Integer newAge = calculateAge(user);
             if (!newAge.equals(user.getAge())) {
                 user.setAge(newAge);
                 userRepository.save(user);

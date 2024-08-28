@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
@@ -21,8 +22,8 @@ public class UserController {
 
     // create new user
     @PostMapping("/create")
-    public ResponseEntity<User> newUser(@RequestBody User user){
-        User newUser = userService.createUser(user);
+    public ResponseEntity<User> newUser(@RequestBody UserDTO userDTO){
+        User newUser = userService.createUser(userDTO);
         return ResponseEntity.ok(newUser);
     }
 

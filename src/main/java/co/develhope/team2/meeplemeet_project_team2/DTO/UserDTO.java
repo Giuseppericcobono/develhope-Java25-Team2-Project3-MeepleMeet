@@ -1,7 +1,8 @@
 package co.develhope.team2.meeplemeet_project_team2.DTO;
 
-import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
+
+import java.time.LocalDate;
 
 public class UserDTO {
 
@@ -9,11 +10,9 @@ public class UserDTO {
     private String username;
     private String firstName;
     private String lastName;
-    private Byte age;
     private String email;
+    private LocalDate birth;
     private UserType userType;
-    private RecordStatus recordStatus;
-    private String starRating;
 
     public Integer getId() {
         return id;
@@ -47,14 +46,6 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
-    public Byte getAge() {
-        return age;
-    }
-
-    public void setAge(Byte age) {
-        this.age = age;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -63,27 +54,19 @@ public class UserDTO {
         this.email = email;
     }
 
+    public LocalDate getBirth() {
+        return birth;
+    }
+
+    public void setBirth(LocalDate birth) {
+        this.birth = birth;
+    }
+
     public UserType getUserType() {
         return userType;
     }
 
     public void setUserType(UserType userType) {
         this.userType = userType;
-    }
-
-    public RecordStatus getRecordStatus() {
-        return recordStatus;
-    }
-
-    public void setRecordStatus(RecordStatus recordStatus) {
-        this.recordStatus = recordStatus;
-    }
-
-    public String getStarRating() {
-        return starRating;
-    }
-
-    public void setStarRating(String starRating) {
-        this.starRating = starRating;
     }
 }
