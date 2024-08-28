@@ -103,7 +103,7 @@ public class UserService {
     }
 
     // updates a user without re-writing the whole body.
-    public User updateUser(Integer id, User updateUser) {
+    public Optional<User> updateUser(Integer id, User updateUser) {
         // finds the existing user with the id.
         Optional<User> userOptional = userRepository.findById(id);
 
@@ -162,10 +162,10 @@ public class UserService {
 
             // saves the updated user in the db.
             userRepository.save(existingUser);
-            return existingUser;
+            return Optional.of(existingUser);
         } else {
             // case where the user with the specified id is not found.
-            throw new EntityNotFoundException("User with id " + id + " not found");
+            return Optional.empty();
         }
     }
 

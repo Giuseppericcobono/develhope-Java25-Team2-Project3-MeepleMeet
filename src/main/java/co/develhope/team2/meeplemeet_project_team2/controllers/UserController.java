@@ -89,14 +89,12 @@ public class UserController {
     // update whatever variable of a user found by id
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
-        try {
-            User updatedUser = userService.updateUser(id, user);
-            return ResponseEntity.ok(updatedUser);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(null);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+            Optional<User> updatedUser = userService.updateUser(id, user);
+            if(updatedUser.isPresent()){
+                return ResponseEntity.ok(updatedUser.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
     }
 
     // reactivate user
