@@ -248,6 +248,16 @@ public class UserService {
         }
     }
 
+    public List<Review> getAllReviewOfAUserById(Integer id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return user.getReviews();
+        } else {
+            throw new EntityNotFoundException("User with id: " + id + " not found");
+        }
+    }
+
     // reactivate user
     public void reactivationOfUser(Integer id) {
         Optional<User> userOptional = userRepository.findById(id);

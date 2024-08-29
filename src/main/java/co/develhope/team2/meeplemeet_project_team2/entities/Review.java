@@ -1,6 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity

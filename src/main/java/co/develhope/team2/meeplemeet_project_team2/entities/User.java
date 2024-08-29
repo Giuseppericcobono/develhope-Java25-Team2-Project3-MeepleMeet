@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -56,8 +56,8 @@ public class User {
     @JsonIgnore
     private List<Event> event;
 
-    @OneToMany
-    @JoinColumn(name = "review_id")
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Review> reviews;
 
     public User() {}
