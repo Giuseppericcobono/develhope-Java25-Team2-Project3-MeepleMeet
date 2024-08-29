@@ -1,9 +1,13 @@
 package co.develhope.team2.meeplemeet_project_team2.entities.enumerated;
 
 public enum EventStatusEnum {
+    //created event status
     NOT_STARTED ("Event not yet started"),
     IN_PROGRESS ("Event in progress"),
-    FINISHED ("Event finished");
+    FINISHED ("Event finished"),
+
+    //eliminated event status
+    DELETED("Event deleted");
 
     private final String description;
 
