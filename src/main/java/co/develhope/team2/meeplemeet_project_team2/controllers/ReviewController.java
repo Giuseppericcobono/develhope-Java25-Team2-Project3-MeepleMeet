@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("reviews")
+@RequestMapping("/reviews")
 public class ReviewController {
 
     @Autowired
@@ -19,15 +19,45 @@ public class ReviewController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("new")
+    @PostMapping("/new")
     public ResponseEntity<Review> newReview(@RequestBody Review review){
         Review newReview = reviewService.createReview(review);
         return ResponseEntity.ok(newReview);
     }
 
-    @GetMapping("all")
+    @GetMapping("/search/all")
     public ResponseEntity<List<Review>> allReviews(){
         List<Review> allReviews = reviewService.getAllReviews();
         return ResponseEntity.ok(allReviews);
+    }
+
+    @GetMapping("/search/{userId}")
+    public ResponseEntity<List<Review>> reviewsUser(@PathVariable Integer userId){
+        List<Review> reviewsUser = reviewService.getAllReviewOfAUserById(userId);
+        return ResponseEntity.ok(reviewsUser);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Review>> reviewsUsername(@RequestParam(name = "username") String username){
+        List<Review> reviews = reviewService.getAllReviewOfAUserByUsername(username);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Review> updateAReview(@PathVariable Integer id, @RequestBody Review updateReview){
+        Review review = reviewService.updateReview(id, updateReview);
+        return ResponseEntity.ok(review);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Review> deleteReview(@PathVariable Integer id){
+        reviewService.deleteReviewById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete/all")
+    public ResponseEntity<Review> deleteAll(){
+        reviewService.deleteAllReview();
+        return ResponseEntity.ok().build();
     }
 }

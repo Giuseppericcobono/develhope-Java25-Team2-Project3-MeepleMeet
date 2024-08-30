@@ -1,6 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
 import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
@@ -275,6 +276,24 @@ public class UserService {
                 user.setRecordStatus(RecordStatus.INACTIVE);
                 userRepository.save(user);
             }
+        }
+    }
+
+    public List<ReviewDTO> getAllReviewOfAUserById(Integer id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isPresent()) {
+            List<Review> reviews = reviewRepository.findAll();
+            List<ReviewDTO> reviewsDTO = new ArrayList<>();
+            for(Review r : reviews) {
+                ReviewDTO reviewDTO = new ReviewDTO();
+                reviewDTO.setId(r.getId());
+                reviewDTO.setDescription(r.getDescription());
+                reviewDTO.setRating(r.getRating());
+                reviewsDTO.add(reviewDTO);
+            }
+            return reviewsDTO;
+        } else {
+            throw new EntityNotFoundException("User with id: " + id + " not found");
         }
     }
 

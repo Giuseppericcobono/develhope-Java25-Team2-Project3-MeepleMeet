@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -57,6 +57,10 @@ public class User {
     @ManyToMany(mappedBy = "users")
     @JsonIgnore
     private List<Event> event;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Review> reviews;
 
     public User() {}
 
@@ -184,5 +188,13 @@ public class User {
 
     public void setEvent(List<Event> event) {
         this.event = event;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

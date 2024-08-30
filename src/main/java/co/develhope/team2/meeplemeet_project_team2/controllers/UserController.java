@@ -1,7 +1,9 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
+import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -85,6 +87,12 @@ public class UserController {
     public ResponseEntity<List<Event>> listOfEvents (@RequestParam(name = "userID") Integer id) {
         List<Event> events = userService.listOfEventsPartecipate(id);
         return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("search/list/reviews")
+    public ResponseEntity<List<ReviewDTO>> listOfReviews (@RequestParam(name = "userID") Integer id) {
+        List<ReviewDTO> reviews = userService.getAllReviewOfAUserById(id);
+        return ResponseEntity.ok(reviews);
     }
 
     // update whatever variable of a user found by id

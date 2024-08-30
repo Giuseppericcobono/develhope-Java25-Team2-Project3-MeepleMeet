@@ -1,6 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.entities;
 
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,6 +10,7 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_id", insertable = false)
     private Integer id;
 
     @ManyToOne
