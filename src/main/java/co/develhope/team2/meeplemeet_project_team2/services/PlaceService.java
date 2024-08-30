@@ -87,7 +87,7 @@ public class PlaceService {
 
     // method to find a place by name
     public List<Place> getPlaceByName(String name) {
-        List<Place> places = placeRepository.findActivePlacesByPublicPlaceName(name);
+        List<Place> places = placeRepository.findByName(name);
         if (places.isEmpty()) {
             throw new EntityNotFoundException("The place with name: " + name + " doesn't exist");
         }

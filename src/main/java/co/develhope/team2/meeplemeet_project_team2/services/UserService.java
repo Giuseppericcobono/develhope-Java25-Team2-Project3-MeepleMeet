@@ -1,10 +1,10 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
 import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
-import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.EventRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository;
@@ -207,59 +207,6 @@ public class UserService {
         }
     }
 
-    // sets the star rating of an existing user
-    @Scheduled(fixedRate = 60000) // execution every minute
-    @Transactional
-    public void updateAllUserRatings() {
-        List<User> users = userRepository.findAll();
-
-        for (User user : users) {
-            user.setStarRating(averageStarRating(user.getUserId()));
-            userRepository.save(user);
-        }
-    }
-
-    // calculates average rating of a user
-    public String averageStarRating(Integer userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            User user1 = user.get();
-            Double sumRating = 0.0;
-            List<Review> reviews = reviewRepository.reviewsOfOneUser(user1);
-            for (Review review : reviews) {
-                sumRating += review.getRating().getValue();
-            }
-
-            if (!reviews.isEmpty()) {
-                sumRating /= reviews.size();
-            } else {
-                return "No ratings found";
-            }
-
-            String starRating = Rating.STAR0.getStars();
-            for (Rating rating : Rating.values()) {
-                if (rating.getValue().equals(sumRating)) {
-                    starRating = rating.getStars();
-                } else if (sumRating <= 0.5) {
-                    starRating = Rating.STAR0.getStars();
-                } else if (sumRating > 0.5 && sumRating <= 1.5) {
-                    starRating = Rating.STAR1.getStars();
-                } else if (sumRating > 1.5 && sumRating <= 2.5) {
-                    starRating = Rating.STAR2.getStars();
-                } else if (sumRating > 2.5 && sumRating <= 3.5) {
-                    starRating = Rating.STAR3.getStars();
-                } else if (sumRating > 3.5 && sumRating <= 4.5) {
-                    starRating = Rating.STAR4.getStars();
-                } else if (sumRating > 4.5) {
-                    starRating = Rating.STAR5.getStars();
-                }
-            }
-            return starRating;
-        } else {
-            return null;
-        }
-    }
-
     // controls if a user has been inactive for more than 6 months and if so sets the status to inactive
     @Scheduled(fixedRate = 60000) // execution every minute
     @Transactional
@@ -275,6 +222,24 @@ public class UserService {
                 user.setRecordStatus(RecordStatus.INACTIVE);
                 userRepository.save(user);
             }
+        }
+    }
+
+    public List<ReviewDTO> getAllReviewOfAUserById(Integer id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isPresent()) {
+            List<Review> reviews = reviewRepository.findAll();
+            List<ReviewDTO> reviewsDTO = new ArrayList<>();
+            for(Review r : reviews) {
+                ReviewDTO reviewDTO = new ReviewDTO();
+                reviewDTO.setId(r.getId());
+                reviewDTO.setDescription(r.getDescription());
+                reviewDTO.setRating(r.getRating());
+                reviewsDTO.add(reviewDTO);
+            }
+            return reviewsDTO;
+        } else {
+            throw new EntityNotFoundException("User with id: " + id + " not found");
         }
     }
 

@@ -1,10 +1,10 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,10 +81,18 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    // Find the list of events a user is subscribed to
     @GetMapping("search/list/events")
     public ResponseEntity<List<Event>> listOfEvents (@RequestParam(name = "userID") Integer id) {
         List<Event> events = userService.listOfEventsPartecipate(id);
         return ResponseEntity.ok(events);
+    }
+
+    // search for a user's list of reviews
+    @GetMapping("search/list/reviews")
+    public ResponseEntity<List<ReviewDTO>> listOfReviews (@RequestParam(name = "userID") Integer id) {
+        List<ReviewDTO> reviews = userService.getAllReviewOfAUserById(id);
+        return ResponseEntity.ok(reviews);
     }
 
     // update whatever variable of a user found by id
