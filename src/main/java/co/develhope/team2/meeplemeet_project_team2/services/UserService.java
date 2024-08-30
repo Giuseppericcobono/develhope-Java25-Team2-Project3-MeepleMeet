@@ -194,7 +194,7 @@ public class UserService {
     @Scheduled(cron = "0 0 0 * * ?")  //  execution every day at midnight
     @Transactional
     public void updateAllUserAges() {
-        logger.info("updating user's age...");
+        logger.info("updating users' age...");
         List<User> users = userRepository.findAll();
         for (User user : users) {
             int newAge = calculateAge(user);
