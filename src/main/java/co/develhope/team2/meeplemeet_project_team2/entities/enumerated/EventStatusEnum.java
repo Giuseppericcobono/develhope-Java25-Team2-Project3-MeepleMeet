@@ -4,10 +4,7 @@ public enum EventStatusEnum {
     //created event status
     NOT_STARTED ("Event not yet started"),
     IN_PROGRESS ("Event in progress"),
-    FINISHED ("Event finished"),
-
-    //eliminated event status
-    DELETED("Event deleted");
+    FINISHED ("Event finished");
 
     private final String description;
 

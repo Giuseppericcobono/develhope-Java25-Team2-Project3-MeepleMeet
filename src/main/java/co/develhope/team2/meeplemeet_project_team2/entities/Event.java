@@ -40,7 +40,10 @@ public class Event {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private EventStatusEnum eventStatusEnum;
+    private EventStatusEnum eventStatusEnum = EventStatusEnum.NOT_STARTED;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
 
     @ManyToMany
     @JoinTable(name = "enrollments",
@@ -50,7 +53,7 @@ public class Event {
 
     public Event(){}
 
-    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, Place place, EventStatusEnum eventStatusEnum, List<User> users) {
+    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, Place place, EventStatusEnum eventStatusEnum, List<User> users, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.nameGame = nameGame;
@@ -60,6 +63,7 @@ public class Event {
         this.place = place;
         this.eventStatusEnum = eventStatusEnum;
         this.users = users;
+        this.isDeleted = isDeleted;
     }
 
     public Integer getId() {
@@ -140,5 +144,13 @@ public class Event {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
