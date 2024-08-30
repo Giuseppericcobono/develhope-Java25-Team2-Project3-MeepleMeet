@@ -79,7 +79,7 @@ public class EventController {
 
     @GetMapping("/enrollments/user")
     public ResponseEntity<List<User>> listOfPartecipants(@RequestParam(name = "eventID") Integer eventId) {
-        List<User> user = eventService.listOfUserPartecipateEvent(eventId);
+        List<User> user = eventService.listOfUserParticipateEvent(eventId);
         return ResponseEntity.ok(user);
     }
 }

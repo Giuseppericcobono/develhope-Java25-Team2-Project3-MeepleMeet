@@ -11,6 +11,8 @@ import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -183,25 +187,18 @@ public class UserService {
         LocalDate birthDate = user.getBirth();
         LocalDate today = LocalDate.now();
 
-        // calculates the years between the two dates
-        Integer age = (int) ChronoUnit.YEARS.between(birthDate, today);
-
-        // if the birthday is today, it changes the age
-        if (today.getMonthValue() == birthDate.getMonthValue() && today.getDayOfMonth() == birthDate.getDayOfMonth()) {
-            age += 1;
-        }
-
-        return age;
+        return Period.between(birthDate, today).getYears();
     }
 
     //updates the age of all users based on birthdate
-    @Scheduled(fixedRate = 60000) // execution every minute
+    @Scheduled(cron = "0 0 0 * * ?")  //  execution every day at midnight
     @Transactional
-    public void updateAllUserAge() {
+    public void updateAllUserAges() {
+        logger.info("updating user's age...");
         List<User> users = userRepository.findAll();
         for (User user : users) {
-            Integer newAge = calculateAge(user);
-            if (!newAge.equals(user.getAge())) {
+            int newAge = calculateAge(user);
+            if (newAge != user.getAge()) {
                 user.setAge(newAge);
                 userRepository.save(user);
             }
@@ -209,9 +206,10 @@ public class UserService {
     }
 
     // controls if a user has been inactive for more than 6 months and if so sets the status to inactive
-    @Scheduled(fixedRate = 60000) // execution every minute
+    @Scheduled(cron = "0 0 0 * * ?")  //  execution every day at midnight
     @Transactional
     public void updateInactiveUsers() {
+        logger.info("checking for inactive users...");
         List<User> users = userRepository.findAll();
         LocalDateTime now = LocalDateTime.now();
 
@@ -272,7 +270,7 @@ public class UserService {
     }
 
     // list of events in which a user participates
-    public List<Event> listOfEventsPartecipate (Integer userId) {
+    public List<Event> listOfEventsParticipate(Integer userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();

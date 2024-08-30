@@ -74,7 +74,7 @@ public class EventService {
     }
 
     @Transactional
-    @Scheduled(fixedDelay = 3600000)//agg. ogni ora
+    @Scheduled(fixedDelay = 3600000)// execution every hour
     public Event updateFinishEventAuto() {
 
         LocalDateTime localDateTimeNow = LocalDateTime.now();
@@ -82,9 +82,9 @@ public class EventService {
 
         Event saveEvent = null;
         for (Event event : startedEvent) {
-            LocalDateTime eventEndeTime = event.getDateTimeEvent().plusHours(12);
+            LocalDateTime eventEndTime = event.getDateTimeEvent().plusHours(12);
 
-            if (localDateTimeNow.isAfter(eventEndeTime)) {
+            if (localDateTimeNow.isAfter(eventEndTime)) {
 
                 event.setEventStatusEnum(EventStatusEnum.FINISHED);
                 saveEvent = eventRepository.save(event);
@@ -158,7 +158,7 @@ public class EventService {
         }
     }
 
-    public List<User> listOfUserPartecipateEvent(Integer eventId) {
+    public List<User> listOfUserParticipateEvent(Integer eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();

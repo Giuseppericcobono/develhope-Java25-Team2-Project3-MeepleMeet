@@ -84,7 +84,7 @@ public class UserController {
     // Find the list of events a user is subscribed to
     @GetMapping("search/list/events")
     public ResponseEntity<List<Event>> listOfEvents (@RequestParam(name = "userID") Integer id) {
-        List<Event> events = userService.listOfEventsPartecipate(id);
+        List<Event> events = userService.listOfEventsParticipate(id);
         return ResponseEntity.ok(events);
     }
 
