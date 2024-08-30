@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
@@ -88,8 +89,8 @@ public class UserController {
     }
 
     @GetMapping("search/list/reviews")
-    public ResponseEntity<List<Review>> listOfReviews (@RequestParam(name = "userID") Integer id) {
-        List<Review> reviews = userService.getAllReviewOfAUserById(id);
+    public ResponseEntity<List<ReviewDTO>> listOfReviews (@RequestParam(name = "userID") Integer id) {
+        List<ReviewDTO> reviews = userService.getAllReviewOfAUserById(id);
         return ResponseEntity.ok(reviews);
     }
 
