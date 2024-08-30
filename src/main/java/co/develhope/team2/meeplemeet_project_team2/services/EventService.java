@@ -131,7 +131,7 @@ public class EventService {
         }
     }
 
-    public Optional<Event> logicDeletion(Integer id){
+    /*public Optional<Event> logicDeletion(Integer id){
         Optional<Event> eventOptional = eventRepository.findById(id);
         if(eventOptional.isPresent()){
             Event event = eventOptional.get();
@@ -139,7 +139,7 @@ public class EventService {
             return Optional.of(eventRepository.save(event));
         }
         return eventOptional;
-    }
+    }*/
 
     public void usersEnrolled(Integer userId, Integer eventId) {
         Optional<User> userOptional = userRepository.findById(userId);

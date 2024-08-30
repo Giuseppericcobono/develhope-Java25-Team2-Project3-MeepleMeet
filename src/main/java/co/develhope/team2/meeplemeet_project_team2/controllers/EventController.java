@@ -53,11 +53,11 @@ public class EventController {
         Event deletedEvent = eventService.deleteEventById(id);
         return ResponseEntity.ok(deletedEvent);
     }
-    @DeleteMapping("/logicDeletion/{id}")
+    /*@DeleteMapping("/logicDeletion/{id}")
     public ResponseEntity<Event> logicDeletion(@PathVariable Integer id) {
         Optional<Event> deletedEvent = eventService.logicDeletion(id);
         return ResponseEntity.ok(deletedEvent.get());
-    }
+    }*/
 
     //todo: sistemare event non usato
     @PutMapping("/setStatus/{id}")
