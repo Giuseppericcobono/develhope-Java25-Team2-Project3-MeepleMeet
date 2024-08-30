@@ -77,7 +77,6 @@ public class ReviewService {
         }
     }
 
-    //TODO eliminare
     public List<Review> getAllReviewOfAUserById(Integer id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isPresent()) {
@@ -108,6 +107,8 @@ public class ReviewService {
             existingReview.setRating(updateReview.getRating());
 
             reviewRepository.save(existingReview);
+            existingReview.getUser().setStarRating(averageStarRating(existingReview.getUser().getUserId())); // update the StarRating of the selected user
+            userRepository.save(existingReview.getUser());
             return existingReview;
         }
         throw new EntityNotFoundException("Review with id: " + id + " not found");

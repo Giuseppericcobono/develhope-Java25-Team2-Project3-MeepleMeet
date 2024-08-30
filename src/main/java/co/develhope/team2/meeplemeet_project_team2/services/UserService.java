@@ -5,7 +5,6 @@ import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
-import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.EventRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository;
@@ -205,59 +204,6 @@ public class UserService {
                 user.setAge(newAge);
                 userRepository.save(user);
             }
-        }
-    }
-
-    // sets the star rating of an existing user
-    @Scheduled(fixedRate = 60000) // execution every minute
-    @Transactional
-    public void updateAllUserRatings() {
-        List<User> users = userRepository.findAll();
-
-        for (User user : users) {
-            user.setStarRating(averageStarRating(user.getUserId()));
-            userRepository.save(user);
-        }
-    }
-
-    // calculates average rating of a user
-    public String averageStarRating(Integer userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            User user1 = user.get();
-            Double sumRating = 0.0;
-            List<Review> reviews = reviewRepository.reviewsOfOneUser(user1);
-            for (Review review : reviews) {
-                sumRating += review.getRating().getValue();
-            }
-
-            if (!reviews.isEmpty()) {
-                sumRating /= reviews.size();
-            } else {
-                return "No ratings found";
-            }
-
-            String starRating = Rating.STAR0.getStars();
-            for (Rating rating : Rating.values()) {
-                if (rating.getValue().equals(sumRating)) {
-                    starRating = rating.getStars();
-                } else if (sumRating <= 0.5) {
-                    starRating = Rating.STAR0.getStars();
-                } else if (sumRating > 0.5 && sumRating <= 1.5) {
-                    starRating = Rating.STAR1.getStars();
-                } else if (sumRating > 1.5 && sumRating <= 2.5) {
-                    starRating = Rating.STAR2.getStars();
-                } else if (sumRating > 2.5 && sumRating <= 3.5) {
-                    starRating = Rating.STAR3.getStars();
-                } else if (sumRating > 3.5 && sumRating <= 4.5) {
-                    starRating = Rating.STAR4.getStars();
-                } else if (sumRating > 4.5) {
-                    starRating = Rating.STAR5.getStars();
-                }
-            }
-            return starRating;
-        } else {
-            return null;
         }
     }
 
