@@ -43,6 +43,7 @@ public class UserService {
         //calculates age based on birthdate
         user.setAge(calculateAge(user));
         user.setRecordStatus(RecordStatus.ACTIVE);
+        user.setStarRating("No ratings found");
         user = userRepository.save(user);
 
         return user;
