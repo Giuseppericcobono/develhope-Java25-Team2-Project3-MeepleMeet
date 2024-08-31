@@ -44,19 +44,27 @@ public class EventService {
         if(optionalUser.isPresent() && optionalPlace.isPresent()){
 
             Place place = optionalPlace.get();
+
+            /*
+            controllo se la capacita dell'evento e inferiore o uguale a quella di plase,
+            se e vero crea l'evento e sottrale la capacita massima di place
+             */
+
             if(event.getMaxCapacityEvent() <= place.getMaxCapacity()){
                 event.setUser(optionalUser.get());
                 event.setPlace(optionalPlace.get());
-                event.setEventStatusEnum(EventStatusEnum.NOT_STARTED);
-                return eventRepository.save(event);
+
+                Event saveEvent = eventRepository.save(event);
+                place.setMaxCapacity(place.getMaxCapacity() - event.getMaxCapacityEvent());
+                placeRepository.save(place);
+                return saveEvent;
             }else {
                 throw new IllegalArgumentException("Event maxCapacity exceeds Place maxCapacity.");
             }
 
         }else {
-            throw new IllegalArgumentException("User with ID " + userId + " does not exist.");
+            throw new IllegalArgumentException("User with ID " + userId + " or Place with ID " + placeId + " does not exist.");
         }
-
     }
 
     @Transactional
@@ -80,26 +88,26 @@ public class EventService {
         return saveEvent;
     }
 
-    @Transactional
-    @Scheduled(fixedDelay = 3600000)// execution every hour
-    public Event updateFinishEventAuto() {
-
-        LocalDateTime localDateTimeNow = LocalDateTime.now();
-        List<Event> startedEvent = eventRepository.findEventsByStatus(EventStatusEnum.IN_PROGRESS);
-
-        Event saveEvent = null;
-        for (Event event : startedEvent) {
-            LocalDateTime eventEndTime = event.getDateTimeEvent().plusHours(12);
-
-            if (localDateTimeNow.isAfter(eventEndTime)) {
-
-                event.setEventStatusEnum(EventStatusEnum.FINISHED);
-                saveEvent = eventRepository.save(event);
-            }
-
-        }
-        return saveEvent;
-    }
+//    @Transactional
+//    @Scheduled(fixedDelay = 3600000)// execution every hour
+//    public Event updateFinishEventAuto() {
+//
+//        LocalDateTime localDateTimeNow = LocalDateTime.now();
+//        List<Event> startedEvent = eventRepository.findEventsByStatus(EventStatusEnum.IN_PROGRESS);
+//
+//        for (Event event : startedEvent) {
+//            LocalDateTime eventEndTime = event.getDateTimeEvent().plusHours(12);
+//
+//            if (localDateTimeNow.isAfter(eventEndTime)) {
+//
+//                event.setEventStatusEnum(EventStatusEnum.FINISHED);
+//                Event saveEvent = eventRepository.save(event);
+//                place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
+//                return saveEvent;
+//            }
+//
+//        }
+//    }
 
     public List<Event> getAllEvent() {
         return eventRepository.findAllNotDeleted();
