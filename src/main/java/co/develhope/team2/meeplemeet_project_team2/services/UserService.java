@@ -191,7 +191,7 @@ public class UserService {
     }
 
     //updates the age of all users based on birthdate
-    @Scheduled(cron = "0 0 0 * * ?")  //  execution every day at midnight
+    @Scheduled(fixedDelay = 60000)// execution every minute
     @Transactional
     public void updateAllUserAges() {
         logger.info("updating users' age...");
@@ -206,7 +206,7 @@ public class UserService {
     }
 
     // controls if a user has been inactive for more than 6 months and if so sets the status to inactive
-    @Scheduled(cron = "0 0 0 * * ?")  //  execution every day at midnight
+    @Scheduled(fixedDelay = 60000)// execution every minute
     @Transactional
     public void updateInactiveUsers() {
         logger.info("checking for inactive users...");
