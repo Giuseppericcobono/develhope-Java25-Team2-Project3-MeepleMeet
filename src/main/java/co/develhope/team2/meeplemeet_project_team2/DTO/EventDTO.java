@@ -12,7 +12,7 @@ public class EventDTO {
     private String nameGame;
     private String descriptionGame;
     private LocalDateTime dateTimeEvent;
-    private Integer maxCapacity;
+    private Integer maxCapacityEvent;
     private EventStatusEnum eventStatusEnum;
     private List<User> users;
 
@@ -48,12 +48,12 @@ public class EventDTO {
         this.dateTimeEvent = dateTimeEvent;
     }
 
-    public Integer getMaxCapacity() {
-        return maxCapacity;
+    public Integer getMaxCapacityEvent() {
+        return maxCapacityEvent;
     }
 
-    public void setMaxCapacity(Integer maxCapacity) {
-        this.maxCapacity = maxCapacity;
+    public void setMaxCapacityEvent(Integer maxCapacityEvent) {
+        this.maxCapacityEvent = maxCapacityEvent;
     }
 
     public EventStatusEnum getEventStatusEnum() {

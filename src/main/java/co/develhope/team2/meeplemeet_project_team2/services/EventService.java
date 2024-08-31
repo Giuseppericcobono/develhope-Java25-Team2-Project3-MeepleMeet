@@ -40,11 +40,18 @@ public class EventService {
     public Event createEvent(Integer userId, Integer placeId, Event event) {
         Optional<User> optionalUser = userRepository.findById(userId);
         Optional<Place> optionalPlace = placeRepository.findById(placeId);
+
         if(optionalUser.isPresent() && optionalPlace.isPresent()){
-            event.setUser(optionalUser.get());
-            event.setPlace(optionalPlace.get());
-            event.setEventStatusEnum(EventStatusEnum.NOT_STARTED);
-            return eventRepository.save(event);
+
+            Place place = optionalPlace.get();
+            if(event.getMaxCapacityEvent() <= place.getMaxCapacity()){
+                event.setUser(optionalUser.get());
+                event.setPlace(optionalPlace.get());
+                event.setEventStatusEnum(EventStatusEnum.NOT_STARTED);
+                return eventRepository.save(event);
+            }else {
+                throw new IllegalArgumentException("Event maxCapacity exceeds Place maxCapacity.");
+            }
 
         }else {
             throw new IllegalArgumentException("User with ID " + userId + " does not exist.");
@@ -95,7 +102,10 @@ public class EventService {
     }
 
     public List<Event> getAllEvent() {
-        return eventRepository.findAll();
+        return eventRepository.findAllNotDeleted();
+    }
+    public List<Event> getAllEventDeleted() {
+        return eventRepository.findAllDeleted();
     }
 
     public Optional<Event> getEventById(Integer id) {
@@ -131,15 +141,15 @@ public class EventService {
         }
     }
 
-    /*public Optional<Event> logicDeletion(Integer id){
+    public Optional<Event> logicDeletion(Integer id){
         Optional<Event> eventOptional = eventRepository.findById(id);
         if(eventOptional.isPresent()){
             Event event = eventOptional.get();
-            event.setEventStatusEnum(EventStatusEnum.DELETED);
+            event.setDeleted(true);
             return Optional.of(eventRepository.save(event));
         }
         return eventOptional;
-    }*/
+    }
 
     public void usersEnrolled(Integer userId, Integer eventId) {
         Optional<User> userOptional = userRepository.findById(userId);

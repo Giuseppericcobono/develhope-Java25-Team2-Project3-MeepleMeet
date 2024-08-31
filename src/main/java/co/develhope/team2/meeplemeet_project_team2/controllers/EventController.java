@@ -35,6 +35,11 @@ public class EventController {
         List<Event> eventList = eventService.getAllEvent();
         return ResponseEntity.ok(eventList);
     }
+    @GetMapping("/deleted/list")
+    public ResponseEntity<List<Event>> getListDeleted() {
+        List<Event> eventList = eventService.getAllEventDeleted();
+        return ResponseEntity.ok(eventList);
+    }
 
     @GetMapping("/search/{id}")
     public ResponseEntity<Optional<Event>> getWithId(@PathVariable Integer id) {
@@ -53,11 +58,11 @@ public class EventController {
         Event deletedEvent = eventService.deleteEventById(id);
         return ResponseEntity.ok(deletedEvent);
     }
-    /*@DeleteMapping("/logicDeletion/{id}")
+    @DeleteMapping("/delete/logic/{id}")
     public ResponseEntity<Event> logicDeletion(@PathVariable Integer id) {
         Optional<Event> deletedEvent = eventService.logicDeletion(id);
         return ResponseEntity.ok(deletedEvent.get());
-    }*/
+    }
 
     //todo: sistemare event non usato
     @PutMapping("/setStatus/{id}")

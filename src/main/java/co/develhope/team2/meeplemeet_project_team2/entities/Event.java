@@ -32,7 +32,7 @@ public class Event {
     private LocalDateTime dateTimeEvent;
 
     @Column(nullable = false)
-    private Integer maxCapacity;
+    private Integer maxCapacityEvent;
 
     @OneToOne
     @JoinColumn(name = "place_id")
@@ -53,13 +53,13 @@ public class Event {
 
     public Event(){}
 
-    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacity, Place place, EventStatusEnum eventStatusEnum, List<User> users, boolean isDeleted) {
+    public Event(Integer id, String name, String nameGame, String descriptionGame, LocalDateTime dateTimeEvent, Integer maxCapacityEvent, Place place, EventStatusEnum eventStatusEnum, List<User> users, boolean isDeleted) {
         this.id = id;
         this.name = name;
         this.nameGame = nameGame;
         this.descriptionGame = descriptionGame;
         this.dateTimeEvent = dateTimeEvent;
-        this.maxCapacity = maxCapacity;
+        this.maxCapacityEvent = maxCapacityEvent;
         this.place = place;
         this.eventStatusEnum = eventStatusEnum;
         this.users = users;
@@ -114,12 +114,12 @@ public class Event {
         this.dateTimeEvent = dateTimeEvent;
     }
 
-    public Integer getMaxCapacity() {
-        return maxCapacity;
+    public Integer getMaxCapacityEvent() {
+        return maxCapacityEvent;
     }
 
-    public void setMaxCapacity(Integer maxCapacity) {
-        this.maxCapacity = maxCapacity;
+    public void setMaxCapacityEvent(Integer maxCapacityEvent) {
+        this.maxCapacityEvent = maxCapacityEvent;
     }
 
     public Place getPlace() {
