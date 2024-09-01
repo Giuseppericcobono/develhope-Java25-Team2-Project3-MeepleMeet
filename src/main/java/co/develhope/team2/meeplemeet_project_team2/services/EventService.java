@@ -55,8 +55,8 @@ public class EventService {
                 event.setPlace(place);
 
                 Event saveEvent = eventRepository.save(event);
-                usersEnrolled(user.getUserId(), event.getId());
                 place.setMaxCapacity(place.getMaxCapacity() - event.getMaxCapacityEvent());
+                usersEnrolled(user.getUserId(), event.getId());
                 placeRepository.save(place);
                 return saveEvent;
             }else {
