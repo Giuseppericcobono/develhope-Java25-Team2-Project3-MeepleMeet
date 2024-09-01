@@ -2,9 +2,12 @@ package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
 import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.UserLoginDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.UserRegistrationDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,19 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    @PostMapping("/register")
+    public ResponseEntity<User> registerUser(@RequestBody @Valid UserRegistrationDTO userRegistrationDTO) {
+        User registeredUser = userService.registerNewUser(userRegistrationDTO);
+        return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> loginUser(@RequestBody @Valid UserLoginDTO userLoginDTO) {
+        User user = userService.login(userLoginDTO);
+        return ResponseEntity.ok(user);
+    }
 
     // create new user
     @PostMapping("/create")
