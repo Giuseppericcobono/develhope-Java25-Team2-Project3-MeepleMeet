@@ -176,6 +176,27 @@ public class EventService {
         }
     }
 
+    public void userUnsubscribe(Integer userId, Integer eventId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        if(userOptional.isPresent() && eventOptional.isPresent()) {
+            User user = userOptional.get();
+            Event event = eventOptional.get();
+            if(user.getEvent().contains(event) && event.getUsers().contains(user)) {
+                event.getUsers().remove(user);
+                user.getEvent().remove(event);
+
+                eventRepository.save(event);
+                userRepository.save(user);
+            } else {
+                throw new IllegalArgumentException("User with id: " + userId + " is not registered");
+            }
+        } else {
+            throw new EntityNotFoundException("User or Event not found");
+        }
+    }
+
     public List<User> listOfUserParticipateEvent(Integer eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isPresent()) {

@@ -82,6 +82,12 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/unsubscribe/event")
+    public ResponseEntity<Event> unsuscribeUser(@RequestParam(name = "userID") Integer userId, @RequestParam(name = "eventID") Integer eventId){
+        eventService.userUnsubscribe(userId, eventId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/enrollments/user")
     public ResponseEntity<List<User>> listOfPartecipants(@RequestParam(name = "eventID") Integer eventId) {
         List<User> user = eventService.listOfUserParticipateEvent(eventId);
