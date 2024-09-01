@@ -44,17 +44,18 @@ public class EventService {
         if(optionalUser.isPresent() && optionalPlace.isPresent()){
 
             Place place = optionalPlace.get();
-
+            User user = optionalUser.get();
             /*
             controllo se la capacita dell'evento e inferiore o uguale a quella di plase,
             se e vero crea l'evento e sottrale la capacita massima di place
              */
 
             if(event.getMaxCapacityEvent() <= place.getMaxCapacity()){
-                event.setUser(optionalUser.get());
-                event.setPlace(optionalPlace.get());
+                event.setUser(user);
+                event.setPlace(place);
 
                 Event saveEvent = eventRepository.save(event);
+                usersEnrolled(user.getUserId(), event.getId());
                 place.setMaxCapacity(place.getMaxCapacity() - event.getMaxCapacityEvent());
                 placeRepository.save(place);
                 return saveEvent;
@@ -163,14 +164,25 @@ public class EventService {
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
+        // check if the event and the user exist
         if (eventOptional.isPresent() && userOptional.isPresent()) {
             User user = userOptional.get();
             Event event = eventOptional.get();
-            event.getUsers().add(user);
-            user.getEvent().add(event);
+            // check if there is space to register
+            if(event.getMaxCapacityEvent() > 0) {
+                // check if the user is already registered
+                if(event.getUsers().contains(user)) {
+                    throw new IllegalArgumentException("The user is already registered");
+                }
+                event.getUsers().add(user);
+                user.getEvent().add(event);
 
-            eventRepository.save(event);
-            userRepository.save(user);
+                event.setMaxCapacityEvent(event.getMaxCapacityEvent() - 1);
+                eventRepository.save(event);
+                userRepository.save(user);
+            } else {
+                throw new IllegalArgumentException("Event max capacity is over");
+            }
         } else {
             throw new EntityNotFoundException("User or Event not found");
         }
@@ -180,13 +192,20 @@ public class EventService {
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
+        // check if the event and the user exist
         if(userOptional.isPresent() && eventOptional.isPresent()) {
             User user = userOptional.get();
             Event event = eventOptional.get();
+            // initialize a new list
+            if (event.getUsers() == null) {
+                event.setUsers(new ArrayList<>());
+            }
+            // check if the user is subscribed to the event
             if(user.getEvent().contains(event) && event.getUsers().contains(user)) {
                 event.getUsers().remove(user);
                 user.getEvent().remove(event);
 
+                event.setMaxCapacityEvent(event.getMaxCapacityEvent() + 1);
                 eventRepository.save(event);
                 userRepository.save(user);
             } else {

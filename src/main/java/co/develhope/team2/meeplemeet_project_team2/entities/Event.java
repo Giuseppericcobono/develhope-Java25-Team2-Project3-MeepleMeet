@@ -4,6 +4,7 @@ import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStat
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,7 +50,7 @@ public class Event {
     @JoinTable(name = "enrollments",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Event(){}
 

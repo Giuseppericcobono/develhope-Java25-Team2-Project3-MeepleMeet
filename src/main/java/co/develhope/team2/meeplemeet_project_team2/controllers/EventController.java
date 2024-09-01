@@ -76,13 +76,13 @@ public class EventController {
         }
     }
 
-    @PutMapping("/enrollments/event")
+    @PutMapping("/enrollments")
     public ResponseEntity<Event> eventsUsers(@RequestParam(name = "userID") Integer userId, @RequestParam(name = "eventID") Integer eventId){
         eventService.usersEnrolled(userId, eventId);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/unsubscribe/event")
+    @PutMapping("/unsubscribe")
     public ResponseEntity<Event> unsuscribeUser(@RequestParam(name = "userID") Integer userId, @RequestParam(name = "eventID") Integer eventId){
         eventService.userUnsubscribe(userId, eventId);
         return ResponseEntity.ok().build();
