@@ -89,26 +89,25 @@ public class EventService {
         return saveEvent;
     }
 
-//    @Transactional
-//    @Scheduled(fixedDelay = 3600000)// execution every hour
-//    public Event updateFinishEventAuto() {
-//
-//        LocalDateTime localDateTimeNow = LocalDateTime.now();
-//        List<Event> startedEvent = eventRepository.findEventsByStatus(EventStatusEnum.IN_PROGRESS);
-//
-//        for (Event event : startedEvent) {
-//            LocalDateTime eventEndTime = event.getDateTimeEvent().plusHours(12);
-//
-//            if (localDateTimeNow.isAfter(eventEndTime)) {
-//
-//                event.setEventStatusEnum(EventStatusEnum.FINISHED);
-//                Event saveEvent = eventRepository.save(event);
-//                place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
-//                return saveEvent;
-//            }
-//
-//        }
-//    }
+    @Transactional
+    @Scheduled(fixedDelay = 3600000)// execution every hour
+    public void updateFinishEventAuto() {
+
+        LocalDateTime localDateTimeNow = LocalDateTime.now();
+        List<Event> startedEvent = eventRepository.findEventsByStatus(EventStatusEnum.IN_PROGRESS);
+
+        for (Event event : startedEvent) {
+            LocalDateTime eventEndTime = event.getDateTimeEvent().plusHours(12);
+
+            if (localDateTimeNow.isAfter(eventEndTime)) {
+
+                event.setEventStatusEnum(EventStatusEnum.FINISHED);
+                eventRepository.save(event);
+
+                addMaxCapacity(event.getId());
+            }
+        }
+    }
 
     public List<Event> getAllEvent() {
         return eventRepository.findAllNotDeleted();
@@ -142,8 +141,11 @@ public class EventService {
         Optional<Event> eventOptional = eventRepository.findById(id);
         if(eventOptional.isPresent()){
             Event event = eventOptional.get();
+
             event.setEventStatusEnum(EventStatusEnum.FINISHED);
+            addMaxCapacity(id);
             return eventRepository.save(event);
+
         }else {
             // Handle the case where the event with the given id is not found
             throw new EntityNotFoundException("Event with id " + id + " not found");
@@ -155,6 +157,9 @@ public class EventService {
         if(eventOptional.isPresent()){
             Event event = eventOptional.get();
             event.setDeleted(true);
+            Place place = event.getPlace();
+            place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
+            placeRepository.save(place);
             return Optional.of(eventRepository.save(event));
         }
         return eventOptional;
@@ -225,4 +230,14 @@ public class EventService {
             throw new EntityNotFoundException("Event with id " + eventId + " not found");
         }
     }
+
+    public void addMaxCapacity(Integer eventId){
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+
+        Event event = eventOptional.get();
+        Place place = event.getPlace();
+        place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
+        placeRepository.save(place);
+    }
+
 }
