@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.DTO;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,12 +20,23 @@ public class UserRegistrationDTO {
     @NotNull(message = "Birth date is mandatory")
     private LocalDate birth;
 
+    @NotNull(message = "Age int is mandatory")
+    private Integer age;
+
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
     private String email;
 
     @NotBlank(message = "Password is mandatory")
     private String password;
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(@NotNull(message = "Age int is mandatory") Integer age) {
+        this.age = age;
+    }
 
     public @NotBlank(message = "Username is mandatory") String getUsername() {
         return username;
@@ -50,7 +62,7 @@ public class UserRegistrationDTO {
         this.lastName = lastName;
     }
 
-    public @NotNull(message = "Birth date is mandatory") LocalDate getBirth() {
+    public LocalDate getBirth() {
         return birth;
     }
 

@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+    Optional<User> findByUsername(String username);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
     @Query("SELECT user FROM User user WHERE user.username = :username AND user.recordStatus = 'ACTIVE'")
     List<User> findUsersByUsername(@Param("username") String username);
 

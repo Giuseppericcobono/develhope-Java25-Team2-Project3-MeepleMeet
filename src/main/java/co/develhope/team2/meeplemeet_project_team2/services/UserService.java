@@ -2,10 +2,13 @@ package co.develhope.team2.meeplemeet_project_team2.services;
 
 import co.develhope.team2.meeplemeet_project_team2.DTO.UserDTO;
 import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.UserLoginDTO;
+import co.develhope.team2.meeplemeet_project_team2.DTO.UserRegistrationDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
+import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.UserType;
 import co.develhope.team2.meeplemeet_project_team2.repositories.EventRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
@@ -16,6 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,19 +45,59 @@ public class UserService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public User createUser(UserDTO userDTO){
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User registerNewUser(UserRegistrationDTO userRegistrationDTO) {
+        // Check if the username or email already exists
+        if (userRepository.existsByUsername(userRegistrationDTO.getUsername())) {
+            throw new IllegalArgumentException("Username is already taken");
+        }
+        if (userRepository.existsByEmail(userRegistrationDTO.getEmail())) {
+            throw new IllegalArgumentException("Email is already taken");
+        }
 
         User user = new User();
-        BeanUtils.copyProperties(userDTO, user);
-
-        //calculates age based on birthdate
-        user.setAge(calculateAge(user));
+        user.setUsername(userRegistrationDTO.getUsername());
+        user.setFirstName(userRegistrationDTO.getFirstName());
+        user.setLastName(userRegistrationDTO.getLastName());
+        user.setBirth(userRegistrationDTO.getBirth());
+        user.setAge(calculateAge(userRegistrationDTO.getBirth()));
+        user.setEmail(userRegistrationDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
+        user.setUserType(UserType.USER); // set default user type
         user.setRecordStatus(RecordStatus.ACTIVE);
-        user.setStarRating("No ratings found");
-        user = userRepository.save(user);
+
+        return userRepository.save(user);
+    }
+
+    public User login(UserLoginDTO userLoginDTO) {
+        User user = userRepository.findByUsername(userLoginDTO.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
+
+        // Update last activity date
+        user.setLastActivityDate(LocalDateTime.now());
+        userRepository.save(user);
 
         return user;
     }
+//    public User createUser(UserDTO userDTO){
+//
+//        User user = new User();
+//        BeanUtils.copyProperties(userDTO, user);
+//
+//        //calculates age based on birthdate
+//        user.setAge(calculateAge(user));
+//        user.setRecordStatus(RecordStatus.ACTIVE);
+//        user.setStarRating("No ratings found");
+//        user = userRepository.save(user);
+//
+//        return user;
+//    }
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -183,11 +229,14 @@ public class UserService {
     }
 
     //calculates age based on birthdate
-    public Integer calculateAge(User user) {
-        LocalDate birthDate = user.getBirth();
+    public Integer calculateAge(LocalDate birthDate) {
+
         LocalDate today = LocalDate.now();
 
-        return Period.between(birthDate, today).getYears();
+        // Calculate the period between the birthdate and today
+        Period period = Period.between(birthDate, today);
+        // Return the number of years as age
+        return period.getYears();
     }
 
     //updates the age of all users based on birthdate
@@ -197,7 +246,7 @@ public class UserService {
         logger.info("updating users' age...");
         List<User> users = userRepository.findAll();
         for (User user : users) {
-            int newAge = calculateAge(user);
+            int newAge = calculateAge(user.getBirth());
             if (newAge != user.getAge()) {
                 user.setAge(newAge);
                 userRepository.save(user);

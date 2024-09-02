@@ -37,11 +37,11 @@ public class UserController {
     }
 
     // create new user
-    @PostMapping("/create")
-    public ResponseEntity<User> newUser(@RequestBody UserDTO userDTO){
-        User newUser = userService.createUser(userDTO);
-        return ResponseEntity.ok(newUser);
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<User> newUser(@RequestBody UserDTO userDTO){
+//        User newUser = userService.createUser(userDTO);
+//        return ResponseEntity.ok(newUser);
+//    }
 
     // search all users
     @GetMapping("/search/list")
