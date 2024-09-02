@@ -40,6 +40,7 @@ public class UserService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    //method to copy the information from user to userReturnDTO
     public UserReturnDTO fromUserToDTO(User user, UserReturnDTO userReturnDTO){
         userReturnDTO.setUsername(user.getUsername());
         userReturnDTO.setFirstName(user.getFirstName());
@@ -50,7 +51,7 @@ public class UserService {
         return userReturnDTO;
     }
 
-    public User createUser(UserDTO userDTO){
+    public Optional<User> createUser(UserDTO userDTO){
 
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
@@ -61,84 +62,88 @@ public class UserService {
         user.setStarRating("No ratings found");
         user = userRepository.save(user);
 
-        return user;
+        return Optional.of(user);
     }
 
-    public List<UserReturnDTO> getAllUsers(){
+    public Optional<List<UserReturnDTO>> getAllUsers(){
         List<User> userList = userRepository.findAll();
         List<UserReturnDTO> userReturnDTOList = new ArrayList<>();
         for (User user : userList) {
             UserReturnDTO userReturnDTO = new UserReturnDTO();
             fromUserToDTO(user, userReturnDTO);
             userReturnDTOList.add(userReturnDTO);
-        } return userReturnDTOList;
+        } return Optional.of(userReturnDTOList);
     }
 
-    public UserReturnDTO getUserById(Integer id) {
+    public Optional<UserReturnDTO> getUserById(Integer id) {
         User user = userRepository.findById(id).get();
         UserReturnDTO userReturnDTO = new UserReturnDTO();
         fromUserToDTO(user, userReturnDTO);
-        return userReturnDTO;
+        return Optional.of(userReturnDTO);
     }
 
-    public List<UserReturnDTO> getUsersByUsername(String username){
+    public Optional<List<UserReturnDTO>> getUsersByUsername(String username){
         List<User> users = userRepository.findUsersByUsername(username);
         List<UserReturnDTO> userReturnDTOList = new ArrayList<>();
         if(users.isEmpty()){
             logger.info("The user with username: {} doesn't exist, or is deleted or inactive", username);
+            return Optional.empty();
         } else {
             for (User user : users) {
                 UserReturnDTO userReturnDTO = new UserReturnDTO();
                 fromUserToDTO(user, userReturnDTO);
                 userReturnDTOList.add(userReturnDTO);
             }
-        } return userReturnDTOList;
+        } return Optional.of(userReturnDTOList);
     }
 
-    public List<UserReturnDTO> getUsersByFirstName(String firstName){
+    public Optional<List<UserReturnDTO>> getUsersByFirstName(String firstName){
         List<User> users = userRepository.findUsersByFirstName(firstName);
         List<UserReturnDTO> userReturnDTOList = new ArrayList<>();
         if(users.isEmpty()){
             logger.info("The user with first name: {} doesn't exist, or is deleted or inactive", firstName);
+            return Optional.empty();
         } else {
             for (User user : users) {
                 UserReturnDTO userReturnDTO = new UserReturnDTO();
                 fromUserToDTO(user, userReturnDTO);
                 userReturnDTOList.add(userReturnDTO);
             }
-        } return userReturnDTOList;
+        } return Optional.of(userReturnDTOList);
     }
 
-    public List<UserReturnDTO> getUsersByLastName(String lastName){
+    public Optional<List<UserReturnDTO>> getUsersByLastName(String lastName){
         List<User> users = userRepository.findUsersByLastName(lastName);
         List<UserReturnDTO> userReturnDTOList = new ArrayList<>();
         if(users.isEmpty()){
             logger.info("The user with last name: {} doesn't exist, or is deleted or inactive", lastName);
+            return Optional.empty();
         } else {
             for (User user : users) {
                 UserReturnDTO userReturnDTO = new UserReturnDTO();
                 fromUserToDTO(user, userReturnDTO);
                 userReturnDTOList.add(userReturnDTO);
             }
-        } return userReturnDTOList;
+        } return Optional.of(userReturnDTOList);
     }
 
-    public List<UserReturnDTO> getUsersByFullName(String firstName, String lastName){
+    public Optional<List<UserReturnDTO>> getUsersByFullName(String firstName, String lastName){
         List<User> users = userRepository.findUsersByLastName(lastName);
         List<UserReturnDTO> userReturnDTOList = new ArrayList<>();
         if(users.isEmpty()){
             logger.info("The user: {} {} doesn't exist, or is deleted or inactive", firstName, lastName);
+            return Optional.empty();
         } else {
             for (User user : users) {
                 UserReturnDTO userReturnDTO = new UserReturnDTO();
                 fromUserToDTO(user, userReturnDTO);
                 userReturnDTOList.add(userReturnDTO);
             }
-        } return userReturnDTOList;
+        } return Optional.of(userReturnDTOList);
     }
 
     // returns users based on their status
-    public List<UserReturnDTO> listOfUsersByStatus(String status) {
+    public Optional<List<UserReturnDTO>> listOfUsersByStatus(String status) {
         List<User> users;
         List<UserReturnDTO> userReturnDTOList = new ArrayList<>();
         switch (status) {
@@ -149,7 +154,7 @@ public class UserService {
                     fromUserToDTO(user, userReturnDTO);
                     userReturnDTOList.add(userReturnDTO);
                 }
-                return userReturnDTOList;
+                return Optional.of(userReturnDTOList);
             }
             case "inactive" -> {
                 users = userRepository.recordStatusEntity(RecordStatus.INACTIVE);
@@ -158,7 +163,7 @@ public class UserService {
                     fromUserToDTO(user, userReturnDTO);
                     userReturnDTOList.add(userReturnDTO);
                 }
-                return userReturnDTOList;
+                return Optional.of(userReturnDTOList);
             }
             case "deleted" -> {
                 users = userRepository.recordStatusEntity(RecordStatus.DELETED);
@@ -167,10 +172,10 @@ public class UserService {
                     fromUserToDTO(user, userReturnDTO);
                     userReturnDTOList.add(userReturnDTO);
                 }
-                return userReturnDTOList;
+                return Optional.of(userReturnDTOList);
             }
             default -> {
-                return null;
+                return Optional.empty();
             }
         }
     }
@@ -308,11 +313,11 @@ public class UserService {
     }
 
     // list of events in which a user participates
-    public List<Event> listOfEventsParticipate(Integer userId) {
+    public Optional<List<Event>> listOfEventsParticipate(Integer userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            return new ArrayList<>(user.getEvent());
+            return Optional.of(new ArrayList<>(user.getEvent()));
         } else {
             throw new EntityNotFoundException("User with id: " + userId + " doesn't exist");
         }

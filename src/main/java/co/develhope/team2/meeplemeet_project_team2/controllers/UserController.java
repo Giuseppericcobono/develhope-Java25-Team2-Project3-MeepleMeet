@@ -24,65 +24,72 @@ public class UserController {
 
     // create new user
     @PostMapping("/create")
-    public ResponseEntity<User> newUser(@RequestBody UserDTO userDTO) {
-        User newUser = userService.createUser(userDTO);
+    public ResponseEntity<Optional<User>> newUser(@RequestBody UserDTO userDTO) {
+        Optional<User> newUser = userService.createUser(userDTO);
         return ResponseEntity.ok(newUser);
     }
 
     // search all users
     @GetMapping("/search/list")
-    public ResponseEntity<List<UserReturnDTO>> usersList() {
-        List<UserReturnDTO> usersList = userService.getAllUsers();
+    public ResponseEntity<Optional<List<UserReturnDTO>>> usersList() {
+        Optional<List<UserReturnDTO>> usersList = userService.getAllUsers();
         return ResponseEntity.ok(usersList);
     }
 
     // search specific user with id
     @GetMapping("/search/{id}")
     public ResponseEntity<UserReturnDTO> userById(@PathVariable Integer id) {
-        UserReturnDTO user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
+        Optional<UserReturnDTO> user = userService.getUserById(id);
+        UserReturnDTO user1 = user.get();
+        return ResponseEntity.ok(user1);
     }
 
     // search users by record status (active, inactive or deleted)
     @GetMapping("/search/list/{status}")
     public ResponseEntity<List<UserReturnDTO>> usersListByStatus(@PathVariable String status) {
-        List<UserReturnDTO> users = userService.listOfUsersByStatus(status);
-        return ResponseEntity.ok(users);
+        Optional<List<UserReturnDTO>> users = userService.listOfUsersByStatus(status);
+        List<UserReturnDTO> users1 = users.get();
+        return ResponseEntity.ok(users1);
     }
 
     // search users by username
     @GetMapping("/search/username")
     public ResponseEntity<List<UserReturnDTO>> usersByUsername(@RequestParam String username) {
-        List<UserReturnDTO> users = userService.getUsersByUsername(username);
-        return ResponseEntity.ok(users);
+        Optional<List<UserReturnDTO>> users = userService.getUsersByUsername(username);
+        List<UserReturnDTO> users1 = users.get();
+        return ResponseEntity.ok(users1);
     }
 
     // search users by first name
     @GetMapping("/search/firstName")
     public ResponseEntity<List<UserReturnDTO>> usersByFirstName(@RequestParam String firstName) {
-        List<UserReturnDTO> users = userService.getUsersByFirstName(firstName);
-        return ResponseEntity.ok(users);
+        Optional<List<UserReturnDTO>> users = userService.getUsersByFirstName(firstName);
+        List<UserReturnDTO> users1 = users.get();
+        return ResponseEntity.ok(users1);
     }
 
     // search users by last name
     @GetMapping("/search/lastName")
     public ResponseEntity<List<UserReturnDTO>> usersByLastName(@RequestParam String lastName) {
-        List<UserReturnDTO> users = userService.getUsersByLastName(lastName);
-        return ResponseEntity.ok(users);
+        Optional<List<UserReturnDTO>> users = userService.getUsersByLastName(lastName);
+        List<UserReturnDTO> users1 = users.get();
+        return ResponseEntity.ok(users1);
     }
 
     // search users by full name
     @GetMapping("/search/fullName")
     public ResponseEntity<List<UserReturnDTO>> usersByFullName(@RequestParam String firstName, String lastName) {
-        List<UserReturnDTO> users = userService.getUsersByFullName(firstName, lastName);
-        return ResponseEntity.ok(users);
+        Optional<List<UserReturnDTO>> users = userService.getUsersByFullName(firstName, lastName);
+        List<UserReturnDTO> users1 = users.get();
+        return ResponseEntity.ok(users1);
     }
 
     // Find the list of events a user is subscribed to
     @GetMapping("search/list/events")
     public ResponseEntity<List<Event>> listOfEvents(@RequestParam(name = "userID") Integer id) {
-        List<Event> events = userService.listOfEventsParticipate(id);
-        return ResponseEntity.ok(events);
+        Optional<List<Event>> events = userService.listOfEventsParticipate(id);
+        List<Event> events1 = events.get();
+        return ResponseEntity.ok(events1);
     }
 
     // search for a user's list of reviews
@@ -106,7 +113,7 @@ public class UserController {
     // reactivate user
     @PatchMapping("/reactivate/{id}")
     public ResponseEntity<Void> reactivationOfUser(@PathVariable Integer id) {
-        UserReturnDTO userReturnDTO = userService.getUserById(id);
+        Optional<UserReturnDTO> userReturnDTO = userService.getUserById(id);
         User user = new User();
         BeanUtils.copyProperties(userReturnDTO, user);
         userService.reactivationOfUser(id);
@@ -116,7 +123,7 @@ public class UserController {
     // logical deletion
     @DeleteMapping("delete/logical/{id}")
     public ResponseEntity<User> deletionLogical(@PathVariable Integer id) {
-        UserReturnDTO userReturnDTO = userService.getUserById(id);
+        Optional<UserReturnDTO> userReturnDTO = userService.getUserById(id);
         userService.deleteLogical(id);
         return ResponseEntity.ok().build();
     }
@@ -124,7 +131,7 @@ public class UserController {
     // delete user with id
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<User> deletionById(@PathVariable Integer id) {
-        UserReturnDTO userReturnDTO = userService.getUserById(id);
+        Optional<UserReturnDTO> userReturnDTO = userService.getUserById(id);
         userService.deleteById(id);
         return ResponseEntity.ok().build();
     }
