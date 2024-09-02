@@ -28,16 +28,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/users/register", "/users/login").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/events/create").hasAnyRole("USER", "OWNER")
-                        .requestMatchers("/events/**").hasAnyRole("USER", "OWNER", "ADMIN")
-                        .requestMatchers("/owner/events/**").hasRole("OWNER")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(withDefaults()); // Opzionale: Abilita il form di login predefinito di Spring Security
-
+                .csrf().disable()
+                .authorizeRequests()
+                    .requestMatchers("/users/register", "/users/login").permitAll()
+                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/events/create").hasAnyRole("USER", "OWNER")
+                    .requestMatchers("/events/**").hasAnyRole("USER", "OWNER", "ADMIN")
+                    .requestMatchers("/owner/events/**").hasRole("OWNER")
+                    .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                    .loginProcessingUrl("/login")
+                    .successHandler((request, response, authentication) -> {
+                    // Create JSON response on successful authentication
+                        response.setContentType("application/json");
+                        response.setCharacterEncoding("UTF-8");
+                        response.getWriter().write("{\"status\": \"success\", \"message\": \"Login successful\"}");
+                    })
+                .failureHandler((request, response, exception) -> {
+                    // Create JSON response on failure
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write("{\"status\": \"error\", \"message\": \"Invalid credentials\"}");
+                });
         return http.build();
     }
 
