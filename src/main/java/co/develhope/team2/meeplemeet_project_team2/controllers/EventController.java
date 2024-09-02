@@ -20,14 +20,9 @@ public class EventController {
 
     @PostMapping("/create")
     public ResponseEntity<Optional<Event>> create(@RequestParam(name = "user") Integer userId, @RequestParam(name = "place") Integer placeId, @RequestBody Event event ) {
-        try {
+
            Optional<Event> createEvent = eventService.createEvent(userId, placeId, event);
             return ResponseEntity.ok(createEvent);
-
-        } catch (IllegalArgumentException e) {
-
-            return ResponseEntity.badRequest().body(null);
-        }
     }
 
     @GetMapping("/list")
