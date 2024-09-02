@@ -64,7 +64,7 @@ public class UserService {
     public List<User> getUsersByUsername(String username){
         List<User> users = userRepository.findUsersByUsername(username);
         if(users.isEmpty()){
-            throw new EntityNotFoundException("The user with username: " + username + " doesn't exist, or is deleted or inactive");
+            logger.error("The user with username: {} doesn't exist, or is deleted or inactive", username);
         }
         return users;
     }
@@ -72,7 +72,7 @@ public class UserService {
     public List<User> getUsersByFirstName(String firstName){
         List<User> users = userRepository.findUsersByFirstName(firstName);
         if(users.isEmpty()){
-            throw new EntityNotFoundException("The user with first name: " + firstName + " doesn't exist, or is deleted or inactive");
+            logger.error("The user with username: {} doesn't exist, or is deleted or inactive", firstName);
         }
         return users;
     }
@@ -80,7 +80,7 @@ public class UserService {
     public List<User> getUsersByLastName(String lastName){
         List<User> users = userRepository.findUsersByLastName(lastName);
         if(users.isEmpty()){
-            throw new EntityNotFoundException("The user with last name: " + lastName + " doesn't exist, or is deleted or inactive");
+            logger.error("The user with username: {} doesn't exist, or is deleted or inactive", lastName);
         }
         return users;
     }
@@ -88,7 +88,7 @@ public class UserService {
     public List<User> getUsersByFullName(String firstName, String lastName){
         List<User> users = userRepository.findUsersByFirstAndLastName(firstName, lastName);
         if(users.isEmpty()){
-            throw new EntityNotFoundException("The user: " + firstName + " " + lastName + " doesn't exist, or is deleted or inactive");
+            logger.error("The user: {} {} doesn't exist, or is deleted or inactive", firstName, lastName);
         }
         return users;
     }
@@ -134,41 +134,10 @@ public class UserService {
             if (updateUser.getAge() != null && updateUser.getBirth() == null) {
                 Integer calculatedAge = (int) ChronoUnit.YEARS.between(existingUser.getBirth(), LocalDate.now());
                 if (!calculatedAge.equals(updateUser.getAge())) {
-                    throw new IllegalArgumentException("The age provided does not correspond to birthdate");
+                    logger.error("The age provided does not correspond to birthdate");
+                    return userOptional;
                 }
                 existingUser.setAge(updateUser.getAge());
-            }
-
-            // updates only the variables given in the body on postman.
-            if (updateUser.getUsername() != null) {
-                existingUser.setUsername(updateUser.getUsername());
-            }
-            if (updateUser.getFirstName() != null) {
-                existingUser.setFirstName(updateUser.getFirstName());
-            }
-            if (updateUser.getLastName() != null) {
-                existingUser.setLastName(updateUser.getLastName());
-            }
-            if (updateUser.getBirth() != null) {
-                existingUser.setBirth(updateUser.getBirth());
-            }
-            if (updateUser.getAge() != null) {
-                existingUser.setAge(updateUser.getAge());
-            }
-            if (updateUser.getEmail() != null) {
-                existingUser.setEmail(updateUser.getEmail());
-            }
-            if (updateUser.getPassword() != null) {
-                existingUser.setPassword(updateUser.getPassword());
-            }
-            if (updateUser.getUserType() != null) {
-                existingUser.setUserType(updateUser.getUserType());
-            }
-            if (updateUser.getRecordStatus() != null) {
-                existingUser.setRecordStatus(updateUser.getRecordStatus());
-            }
-            if (updateUser.getBiography() != null) {
-                existingUser.setBiography(updateUser.getBiography());
             }
             //sets the last activity to now
             existingUser.setLastActivityDate(LocalDateTime.now());
@@ -238,8 +207,9 @@ public class UserService {
             }
             return reviewsDTO;
         } else {
-            throw new EntityNotFoundException("User with id: " + id + " not found");
+            logger.error("User with id: {} not found", id);
         }
+        return null;
     }
 
     // reactivate user
@@ -251,9 +221,9 @@ public class UserService {
             user.setLastActivityDate(LocalDateTime.now());
             userRepository.saveAndFlush(user);
         } else if (userOptional.isPresent() && userOptional.get().getRecordStatus().equals(RecordStatus.ACTIVE)){
-            throw new IllegalArgumentException("User with id: " + id + " is already active");
+            logger.error("User with id: {} is already active", id);
         } else {
-            throw new EntityNotFoundException("User with id: " + id + " doesn't exist");
+            logger.error("User with id: {} doesn't exist", id);
         }
     }
 
@@ -265,7 +235,7 @@ public class UserService {
             user.setRecordStatus(RecordStatus.DELETED);
             userRepository.save(user);
         } else {
-            throw new EntityNotFoundException("User with id: " + id + " doesn't exist");
+            logger.error("User with id: {} doesn't exist", id);
         }
     }
 
