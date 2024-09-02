@@ -31,23 +31,23 @@ public class UserController {
 
     // search all users
     @GetMapping("/search/list")
-    public ResponseEntity<List<User>> usersList() {
-        List<User> usersList = userService.getAllUsers();
+    public ResponseEntity<Optional<List<UserReturnDTO>>> usersList() {
+        Optional<List<UserReturnDTO>> usersList = userService.getAllUsers();
         return ResponseEntity.ok(usersList);
     }
 
     // search specific user with id
     @GetMapping("/search/{id}")
-    public ResponseEntity<User> userById(@PathVariable Integer id) {
-        Optional<User> user = userService.getUserById(id);
-        User user1 = user.get();
+    public ResponseEntity<UserReturnDTO> userById(@PathVariable Integer id) {
+        Optional<UserReturnDTO> user = userService.getUserById(id);
+        UserReturnDTO user1 = user.get();
         return ResponseEntity.ok(user1);
     }
 
     // search users by record status (active, inactive or deleted)
     @GetMapping("/search/list/{status}")
     public ResponseEntity<List<UserReturnDTO>> usersListByStatus(@PathVariable String status) {
-        List<User> users = userService.listOfUsersByStatus(status);
+        Optional<List<UserReturnDTO>> users = userService.listOfUsersByStatus(status);
         List<UserReturnDTO> users1 = users.get();
         return ResponseEntity.ok(users1);
     }
@@ -55,7 +55,7 @@ public class UserController {
     // search users by username
     @GetMapping("/search/username")
     public ResponseEntity<List<UserReturnDTO>> usersByUsername(@RequestParam String username) {
-        List<User> users = userService.getUsersByUsername(username);
+        Optional<List<UserReturnDTO>> users = userService.getUsersByUsername(username);
         List<UserReturnDTO> users1 = users.get();
         return ResponseEntity.ok(users1);
     }
