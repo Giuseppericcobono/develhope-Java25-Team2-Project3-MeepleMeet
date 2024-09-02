@@ -139,13 +139,14 @@ public class UserService {
                 }
                 existingUser.setAge(updateUser.getAge());
             }
-            //sets the last activity to now
+
             existingUser.setUsername(updateUser.getUsername());
             existingUser.setFirstName(updateUser.getFirstName());
             existingUser.setLastName(updateUser.getLastName());
             existingUser.setEmail(updateUser.getEmail());
             existingUser.setPassword(updateUser.getPassword());
             existingUser.setBiography(updateUser.getBiography());
+            //sets the last activity to now
             existingUser.setLastActivityDate(LocalDateTime.now());
 
 
