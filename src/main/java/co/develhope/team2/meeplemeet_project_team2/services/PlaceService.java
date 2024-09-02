@@ -31,8 +31,7 @@ public class PlaceService {
         return Optional.of(place);
     }
 
-    public List<PlaceDTO> listOfPlacesDTO(){
-        List<Place> places = placeRepository.findAll();
+    public List<PlaceDTO> listOfPlacesDTO(List<Place> places){
         List<PlaceDTO> placeDTOList = new ArrayList<>();
         for(Place p : places) {
             PlaceDTO placeDTO = new PlaceDTO();
@@ -49,19 +48,19 @@ public class PlaceService {
 
     // method to return a list of places based on a status
     public Optional<List<Place>> getListOfPlaces(String status) {
-        Optional<List<Place>> places;
+        List<Place> places;
         switch (status) {
             case "active" -> {
                 places = placeRepository.statusEntity(RecordStatus.ACTIVE);
-                return places;
+                return Optional.of(places);
             }
             case "deleted" -> {
                 places = placeRepository.statusEntity(RecordStatus.DELETED);
-                return places;
+                return Optional.of(places);
             }
             case "all" -> {
-                places = Optional.of(placeRepository.findAll());
-                return places;
+                places = placeRepository.findAll();
+                return Optional.of(places);
             }
             default -> {
                 return Optional.empty();
@@ -71,13 +70,13 @@ public class PlaceService {
 
     // method to return a list of places based on a place type
     public Optional<List<Place>> getListPlaceType(String placeType) {
-        Optional<List<Place>> listPlaces;
+        List<Place> listPlaces;
         if (placeType.equals("public")) {
             listPlaces = placeRepository.findPlaceType(PlaceType.PUBLIC);
-            return listPlaces;
+            return Optional.of(listPlaces);
         } else if (placeType.equals("private")) {
             listPlaces = placeRepository.findPlaceType(PlaceType.PRIVATE);
-            return listPlaces;
+            return Optional.of(listPlaces);
         } else {
             return Optional.empty();
         }
@@ -111,23 +110,25 @@ public class PlaceService {
     }
 
     // method to find a place by name
-    public Optional<List<Place>> getPlaceByName(String name) {
-        Optional<List<Place>> places = placeRepository.findByName(name);
+    public Optional<List<PlaceDTO>> getPlaceByName(String name) {
+        List<Place> places = placeRepository.findByName(name);
+        Optional<List<PlaceDTO>> placeDTOList = Optional.of(listOfPlacesDTO(places));
         if (places.isEmpty()) {
             logger.info("The place with name: " + name + " doesn't exist");
             return Optional.empty();
         }
-        return places;
+        return placeDTOList;
     }
 
     // method to find a place by address
-    public Optional<List<Place>> getPlaceByAddress(String address) {
-        Optional<List<Place>> places = placeRepository.findByAddress(address);
+    public Optional<List<PlaceDTO>> getPlaceByAddress(String address) {
+        List<Place> places = placeRepository.findByAddress(address);
+        Optional<List<PlaceDTO>> placeDTOList = Optional.of(listOfPlacesDTO(places));
         if (places.isEmpty()) {
             logger.info("The place with address: " + address + " doesn't exist");
             return Optional.empty();
         }
-        return places;
+        return placeDTOList;
     }
 
     // method to update the information of a place based on id
@@ -189,10 +190,13 @@ public class PlaceService {
     }
 
     // method to find a list of places based on a specific time
-    public Optional<List<Place>> findOpenPlace(LocalTime time) {
-        for (Place place : placeRepository.findAll()) {
+    public Optional<List<PlaceDTO>> findOpenPlace(LocalTime time) {
+        List<Place> places = placeRepository.findAll();
+        for (Place place : places) {
             if (place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
-                return placeRepository.isOpen(time);
+                List<Place> openPlace = placeRepository.isOpen(time);
+                List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
+                return Optional.of(openPlaceDTO);
             }
         }
         logger.info("There are no open place at: " + time);
@@ -200,11 +204,14 @@ public class PlaceService {
     }
 
     // method to find a list of places based on a current time
-    public Optional<List<Place>> findOpenPlaceNow() {
+    public Optional<List<PlaceDTO>> findOpenPlaceNow() {
         LocalTime now = LocalTime.now();
-        for (Place place : placeRepository.findAll()) {
+        List<Place> places = placeRepository.findAll();
+        for (Place place : places) {
             if (place.getOpening().isBefore(now) && place.getClosing().isAfter(now)) {
-                return placeRepository.isOpen(now);
+                List<Place> openPlace = placeRepository.isOpen(now);
+                List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
+                return Optional.of(openPlaceDTO);
             }
         }
         logger.info("There are no open place now");

@@ -42,15 +42,15 @@ public class PlaceController {
 
     // searches for places based on the current time
     @GetMapping("/search/time/now")
-    public ResponseEntity<Optional<List<Place>>> placeTimeList() {
-        Optional<List<Place>> listTimePlace = placeService.findOpenPlaceNow();
+    public ResponseEntity<Optional<List<PlaceDTO>>> placeTimeList() {
+        Optional<List<PlaceDTO>> listTimePlace = placeService.findOpenPlaceNow();
         return ResponseEntity.ok(listTimePlace);
     }
 
     // searches for places based on a specific time
     @GetMapping("/search/time")
-    public ResponseEntity<Optional<List<Place>>> placeTimeList2(@RequestParam(name = "at") LocalTime time) {
-        Optional<List<Place>> listTimePlace2 = placeService.findOpenPlace(time);
+    public ResponseEntity<Optional<List<PlaceDTO>>> placeTimeList2(@RequestParam(name = "at") LocalTime time) {
+        Optional<List<PlaceDTO>> listTimePlace2 = placeService.findOpenPlace(time);
         return ResponseEntity.ok(listTimePlace2);
     }
 
@@ -63,15 +63,15 @@ public class PlaceController {
 
     // searches for places based on the name
     @GetMapping("/search/n")
-    public ResponseEntity<Optional<List<Place>>> searchPlaceByName(@RequestParam(name = "name") String name) {
-        Optional<List<Place>> searchBy = placeService.getPlaceByName(name);
+    public ResponseEntity<Optional<List<PlaceDTO>>> searchPlaceByName(@RequestParam(name = "name") String name) {
+        Optional<List<PlaceDTO>> searchBy = placeService.getPlaceByName(name);
         return ResponseEntity.ok(searchBy);
     }
 
     // searches for places based on address
     @GetMapping("/search/a")
-    public ResponseEntity<Optional<List<Place>>> searchPlaceByAddress(@RequestParam(name = "address") String address) {
-        Optional<List<Place>> searchBy = placeService.getPlaceByAddress(address);
+    public ResponseEntity<Optional<List<PlaceDTO>>> searchPlaceByAddress(@RequestParam(name = "address") String address) {
+        Optional<List<PlaceDTO>> searchBy = placeService.getPlaceByAddress(address);
         return ResponseEntity.ok(searchBy);
     }
 
