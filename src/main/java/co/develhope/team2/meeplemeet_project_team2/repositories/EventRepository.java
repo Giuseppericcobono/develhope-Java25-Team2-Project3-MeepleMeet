@@ -22,7 +22,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     // Recupera un singolo evento non eliminato
     @Query("SELECT e FROM Event e WHERE e.id = :id AND e.isDeleted = false")
-    Event findByIdAndNotDeleted(Long id);
+    Event findByIdAndNotDeleted(Integer id);
 
     // Recupera solo gli eventi non eliminati
     @Query("SELECT e FROM Event e WHERE e.isDeleted = true")
@@ -30,5 +30,5 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     // Recupera un singolo evento non eliminato
     @Query("SELECT e FROM Event e WHERE e.id = :id AND e.isDeleted = true")
-    Event findByIdAndDeleted(Long id);
+    Event findByIdAndDeleted(Integer id);
 }

@@ -46,6 +46,11 @@ public class EventController {
         Optional<Event> event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
+    @GetMapping("/search/deleted/{id}")
+    public ResponseEntity<Optional<Event>> getWithIdDeleted(@PathVariable Integer id) {
+        Optional<Event> event = eventService.getEventByIdDeleted(id);
+        return ResponseEntity.ok(event);
+    }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Optional<Event>> update(@PathVariable Integer id, @RequestBody @NotNull Event event ) {

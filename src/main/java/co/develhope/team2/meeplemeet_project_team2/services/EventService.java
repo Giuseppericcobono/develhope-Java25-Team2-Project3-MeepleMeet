@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,13 +113,17 @@ public class EventService {
         List<Event> allEvent = eventRepository.findAllNotDeleted();
          return Optional.of(allEvent);
     }
+    public Optional<Event> getEventById(Integer id) {
+        Event allEventById = eventRepository.findByIdAndNotDeleted(id);
+        return Optional.of(allEventById);
+    }
     public Optional<List<Event>> getAllEventDeleted() {
         List<Event> allEventDeleted = eventRepository.findAllDeleted();
         return Optional.of(allEventDeleted);
     }
-
-    public Optional<Event> getEventById(Integer id) {
-          return eventRepository.findById(id);
+    public Optional<Event> getEventByIdDeleted(Integer id) {
+        Event allEventById = eventRepository.findByIdAndDeleted(id);
+        return Optional.of(allEventById);
     }
 
     public Optional<Event> updateEvent(Integer id, Event updatedEvent) {
@@ -247,5 +252,4 @@ public class EventService {
         place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
         placeRepository.save(place);
     }
-
 }
