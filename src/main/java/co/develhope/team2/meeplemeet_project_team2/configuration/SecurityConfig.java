@@ -28,14 +28,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/users/register", "/users/login").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/events/create").hasAnyRole("USER", "OWNER")
                         .requestMatchers("/events/**").hasAnyRole("USER", "OWNER", "ADMIN")
                         .requestMatchers("/owner/events/**").hasRole("OWNER")
-                        .anyRequest().authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(withDefaults()); // Opzionale: Abilita il form di login predefinito di Spring Security
