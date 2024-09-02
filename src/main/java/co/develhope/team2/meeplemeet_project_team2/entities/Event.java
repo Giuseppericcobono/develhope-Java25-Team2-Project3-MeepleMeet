@@ -35,7 +35,7 @@ public class Event {
     @Column(nullable = false)
     private Integer maxCapacityEvent;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "place_id")
     private Place place;
 
