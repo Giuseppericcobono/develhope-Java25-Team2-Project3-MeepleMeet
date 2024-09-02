@@ -37,7 +37,7 @@ public class EventService {
 
 
     @Transactional
-    public Event createEvent(Integer userId, Integer placeId, Event event) {
+    public Optional<Event> createEvent(Integer userId, Integer placeId, Event event) {
         Optional<User> optionalUser = userRepository.findById(userId);
         Optional<Place> optionalPlace = placeRepository.findById(placeId);
 
@@ -58,19 +58,19 @@ public class EventService {
                 place.setMaxCapacity(place.getMaxCapacity() - event.getMaxCapacityEvent());
                 usersEnrolled(user.getUserId(), event.getId());
                 placeRepository.save(place);
-                return saveEvent;
+                return Optional.of(saveEvent);
             }else {
-                throw new IllegalArgumentException("Event maxCapacity exceeds Place maxCapacity.");
+                return Optional.empty();
             }
 
         }else {
-            throw new IllegalArgumentException("User with ID " + userId + " or Place with ID " + placeId + " does not exist.");
+            return  Optional.empty();
         }
     }
 
     @Transactional
     @Scheduled(fixedDelay = 10000)
-    public Event updateAutoEventStatus() {
+    public void updateAutoEventStatus() {
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         List<Event> notStartedEvent = eventRepository.findEventsByStatus(EventStatusEnum.NOT_STARTED);
 
@@ -82,11 +82,10 @@ public class EventService {
             if (event.getEventStatusEnum() == EventStatusEnum.NOT_STARTED && event.getDateTimeEvent().isBefore(localDateTimeNow) || event.getDateTimeEvent().isEqual(localDateTimeNow)) {
                 logger.info("Status update for event with ID: {}", event.getId());
                 event.setEventStatusEnum(EventStatusEnum.IN_PROGRESS);
-                saveEvent = eventRepository.save(event);
+                eventRepository.save(event);
                 logger.info("Updated status for the event with ID: {}", event.getId());
             }
         }
-        return saveEvent;
     }
 
     @Transactional
@@ -109,46 +108,54 @@ public class EventService {
         }
     }
 
-    public List<Event> getAllEvent() {
-        return eventRepository.findAllNotDeleted();
+    public Optional<List<Event>> getAllEvent() {
+        List<Event> allEvent = eventRepository.findAllNotDeleted();
+         return Optional.of(allEvent);
     }
-    public List<Event> getAllEventDeleted() {
-        return eventRepository.findAllDeleted();
+    public Optional<List<Event>> getAllEventDeleted() {
+        List<Event> allEventDeleted = eventRepository.findAllDeleted();
+        return Optional.of(allEventDeleted);
     }
 
     public Optional<Event> getEventById(Integer id) {
-        return eventRepository.findById(id);
+          return eventRepository.findById(id);
     }
 
-    public Event updateEvent(Integer id, Event updatedEvent) {
+    public Optional<Event> updateEvent(Integer id, Event updatedEvent) {
         Optional<Event> eventOptional = eventRepository.findById(id);
-        if(eventOptional.isPresent()){
-            eventRepository.save(updatedEvent);
-        }else {
-            // Handle the case where the event with the given id is not found
-            throw new EntityNotFoundException("Event with id " + id + " not found");
+        if (eventOptional.isPresent()) {
+            Event event = eventRepository.save(updatedEvent);
+            return Optional.of(event);
+        } else {
+           return Optional.empty();
         }
-
-        return updatedEvent;
     }
 
-    public Event deleteEventById(Integer id) {
-        eventRepository.deleteById(id);
-        return null;
+    public Optional<Event>deleteEventById(Integer id) {
+        Optional<Event> eventOptional = eventRepository.findById(id);
+
+        if (eventOptional.isPresent()) {
+            Event event = eventOptional.get();
+            eventRepository.deleteById(id);
+            return Optional.of(event);
+        } else {
+            return Optional.empty();
+        }
     }
 
-    public Event terminatedEvent(Integer id){
+    public Optional<Event> terminatedEvent(Integer id){
         Optional<Event> eventOptional = eventRepository.findById(id);
         if(eventOptional.isPresent()){
             Event event = eventOptional.get();
 
             event.setEventStatusEnum(EventStatusEnum.FINISHED);
             addMaxCapacity(id);
-            return eventRepository.save(event);
+            eventRepository.save(event);
+
+            return Optional.of(event);
 
         }else {
-            // Handle the case where the event with the given id is not found
-            throw new EntityNotFoundException("Event with id " + id + " not found");
+          return Optional.empty();
         }
     }
 
@@ -160,9 +167,10 @@ public class EventService {
             Place place = event.getPlace();
             place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
             placeRepository.save(place);
-            return Optional.of(eventRepository.save(event));
+            eventRepository.save(event);
+            return eventOptional;
         }
-        return eventOptional;
+        return Optional.empty();
     }
 
     public void usersEnrolled(Integer userId, Integer eventId) {
@@ -177,7 +185,7 @@ public class EventService {
             if(event.getMaxCapacityEvent() > 0) {
                 // check if the user is already registered
                 if(event.getUsers().contains(user)) {
-                    throw new IllegalArgumentException("The user is already registered");
+                    logger.info("The user is already registered");
                 }
                 event.getUsers().add(user);
                 user.getEvent().add(event);
@@ -186,10 +194,10 @@ public class EventService {
                 eventRepository.save(event);
                 userRepository.save(user);
             } else {
-                throw new IllegalArgumentException("Event max capacity is over");
+                logger.info("Event max capacity is over");
             }
         } else {
-            throw new EntityNotFoundException("User or Event not found");
+            logger.info("User or Event not found");
         }
     }
 
@@ -214,20 +222,20 @@ public class EventService {
                 eventRepository.save(event);
                 userRepository.save(user);
             } else {
-                throw new IllegalArgumentException("User with id: " + userId + " is not registered");
+                logger.info("User with id: " + userId + " is not registered");
             }
         } else {
-            throw new EntityNotFoundException("User or Event not found");
+            logger.info("User or Event not found");
         }
     }
 
-    public List<User> listOfUserParticipateEvent(Integer eventId) {
+    public Optional<List<User>> listOfUserParticipateEvent(Integer eventId) {
         Optional<Event> eventOptional = eventRepository.findById(eventId);
         if (eventOptional.isPresent()) {
             Event event = eventOptional.get();
-            return new ArrayList<>(event.getUsers());
+            return Optional.of(new ArrayList<>(event.getUsers()));
         } else {
-            throw new EntityNotFoundException("Event with id " + eventId + " not found");
+            return Optional.empty();
         }
     }
 

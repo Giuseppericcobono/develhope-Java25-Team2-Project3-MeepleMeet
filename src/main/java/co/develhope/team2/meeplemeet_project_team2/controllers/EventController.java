@@ -19,9 +19,9 @@ public class EventController {
     private EventService eventService;
 
     @PostMapping("/create")
-    public ResponseEntity<Event> create(@RequestParam(name = "user") Integer userId, @RequestParam(name = "place") Integer placeId, @RequestBody Event event ) {
+    public ResponseEntity<Optional<Event>> create(@RequestParam(name = "user") Integer userId, @RequestParam(name = "place") Integer placeId, @RequestBody Event event ) {
         try {
-           Event createEvent = eventService.createEvent(userId, placeId, event);
+           Optional<Event> createEvent = eventService.createEvent(userId, placeId, event);
             return ResponseEntity.ok(createEvent);
 
         } catch (IllegalArgumentException e) {
@@ -31,13 +31,13 @@ public class EventController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Event>> getList() {
-        List<Event> eventList = eventService.getAllEvent();
+    public ResponseEntity<Optional<List<Event>>> getList() {
+        Optional<List<Event>> eventList = eventService.getAllEvent();
         return ResponseEntity.ok(eventList);
     }
     @GetMapping("/deleted/list")
-    public ResponseEntity<List<Event>> getListDeleted() {
-        List<Event> eventList = eventService.getAllEventDeleted();
+    public ResponseEntity<Optional<List<Event>>> getListDeleted() {
+        Optional<List<Event>> eventList = eventService.getAllEventDeleted();
         return ResponseEntity.ok(eventList);
     }
 
@@ -48,14 +48,14 @@ public class EventController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Event> update(@PathVariable Integer id, @RequestBody @NotNull Event event ) {
-        Event updateEvent = eventService.updateEvent(id,event);
+    public ResponseEntity<Optional<Event>> update(@PathVariable Integer id, @RequestBody @NotNull Event event ) {
+        Optional<Event> updateEvent = eventService.updateEvent(id,event);
         return ResponseEntity.ok(updateEvent);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Event> delete(@PathVariable Integer id) {
-        Event deletedEvent = eventService.deleteEventById(id);
+    public ResponseEntity<Optional<Event>> delete(@PathVariable Integer id) {
+        Optional<Event> deletedEvent = eventService.deleteEventById(id);
         return ResponseEntity.ok(deletedEvent);
     }
     @DeleteMapping("/delete/logic/{id}")
@@ -66,10 +66,10 @@ public class EventController {
 
     //todo: sistemare event non usato
     @PutMapping("/setStatus/{id}")
-    public ResponseEntity<Event> setStatusEvent(@PathVariable Integer id, @NotNull Event event){
+    public ResponseEntity<Optional<Event>> setStatusEvent(@PathVariable Integer id, @NotNull Event event){
 
         try {
-            Event updateEvent = eventService.terminatedEvent(id);
+            Optional<Event> updateEvent = eventService.terminatedEvent(id);
             return ResponseEntity.ok(updateEvent);
         }catch (IllegalArgumentException e){
            return ResponseEntity.notFound().build();
@@ -89,8 +89,8 @@ public class EventController {
     }
 
     @GetMapping("/enrollments/user")
-    public ResponseEntity<List<User>> listOfPartecipants(@RequestParam(name = "eventID") Integer eventId) {
-        List<User> user = eventService.listOfUserParticipateEvent(eventId);
+    public ResponseEntity<Optional<List<User>>> listOfPartecipants(@RequestParam(name = "eventID") Integer eventId) {
+        Optional<List<User>> user = eventService.listOfUserParticipateEvent(eventId);
         return ResponseEntity.ok(user);
     }
 }
