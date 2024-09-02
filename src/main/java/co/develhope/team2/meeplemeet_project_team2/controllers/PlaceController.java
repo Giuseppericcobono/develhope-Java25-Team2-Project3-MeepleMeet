@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.services.PlaceService;
 import org.antlr.v4.runtime.misc.NotNull;

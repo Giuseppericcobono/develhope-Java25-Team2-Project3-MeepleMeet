@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.PlaceDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,22 @@ public class PlaceService {
     public Optional<Place> createAPlace(Place place) {
         placeRepository.save(place);
         return Optional.of(place);
+    }
+
+    public List<PlaceDTO> listOfPlacesDTO(){
+        List<Place> places = placeRepository.findAll();
+        List<PlaceDTO> placeDTOList = new ArrayList<>();
+        for(Place p : places) {
+            PlaceDTO placeDTO = new PlaceDTO();
+            placeDTO.setName(p.getName());
+            placeDTO.setAddress(p.getAddress());
+            placeDTO.setInfo(p.getInfo());
+            placeDTO.setOpening(p.getOpening());
+            placeDTO.setClosing(p.getClosing());
+            placeDTO.setMaxCapacity(p.getMaxCapacity());
+            placeDTOList.add(placeDTO);
+        }
+        return placeDTOList;
     }
 
     // method to return a list of places based on a status
