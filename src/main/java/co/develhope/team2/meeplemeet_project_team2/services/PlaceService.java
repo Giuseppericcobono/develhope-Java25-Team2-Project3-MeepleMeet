@@ -47,7 +47,7 @@ public class PlaceService {
         }
     }
 
-    // method to return a list of places based on a placetype
+    // method to return a list of places based on a place type
     public List<Place> getListPlaceType(String placeType) {
         List<Place> listPlaces;
         if (placeType.equals("public")) {

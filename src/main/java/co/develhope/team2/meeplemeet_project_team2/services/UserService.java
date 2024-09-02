@@ -115,7 +115,7 @@ public class UserService {
         }
     }
 
-    // updates a user without re-writing the whole body.
+    //updates the user with id
     public Optional<User> updateUser(Integer id, User updateUser) {
         // finds the existing user with the id.
         Optional<User> userOptional = userRepository.findById(id);
@@ -140,7 +140,14 @@ public class UserService {
                 existingUser.setAge(updateUser.getAge());
             }
             //sets the last activity to now
+            existingUser.setUsername(updateUser.getUsername());
+            existingUser.setFirstName(updateUser.getFirstName());
+            existingUser.setLastName(updateUser.getLastName());
+            existingUser.setEmail(updateUser.getEmail());
+            existingUser.setPassword(updateUser.getPassword());
+            existingUser.setBiography(updateUser.getBiography());
             existingUser.setLastActivityDate(LocalDateTime.now());
+
 
             // saves the updated user in the db.
             userRepository.save(existingUser);
