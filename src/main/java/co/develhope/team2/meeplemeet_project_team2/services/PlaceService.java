@@ -4,8 +4,9 @@ import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.PlaceType;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.RecordStatus;
 import co.develhope.team2.meeplemeet_project_team2.repositories.PlaceRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +20,18 @@ public class PlaceService {
     @Autowired
     private PlaceRepository placeRepository;
 
+    Logger logger = LoggerFactory.getLogger(PlaceService.class);
+
     // method of creating a place
     @Transactional
-    public Place createAPlace(Place place) {
-        return placeRepository.save(place);
+    public Optional<Place> createAPlace(Place place) {
+        placeRepository.save(place);
+        return Optional.of(place);
     }
 
     // method to return a list of places based on a status
-    public List<Place> getListOfPlaces(String status) {
-        List<Place> places;
+    public Optional<List<Place>> getListOfPlaces(String status) {
+        Optional<List<Place>> places;
         switch (status) {
             case "active" -> {
                 places = placeRepository.statusEntity(RecordStatus.ACTIVE);
@@ -38,18 +42,18 @@ public class PlaceService {
                 return places;
             }
             case "all" -> {
-                places = placeRepository.findAll();
+                places = Optional.of(placeRepository.findAll());
                 return places;
             }
             default -> {
-                return null;
+                return Optional.empty();
             }
         }
     }
 
     // method to return a list of places based on a place type
-    public List<Place> getListPlaceType(String placeType) {
-        List<Place> listPlaces;
+    public Optional<List<Place>> getListPlaceType(String placeType) {
+        Optional<List<Place>> listPlaces;
         if (placeType.equals("public")) {
             listPlaces = placeRepository.findPlaceType(PlaceType.PUBLIC);
             return listPlaces;
@@ -57,7 +61,7 @@ public class PlaceService {
             listPlaces = placeRepository.findPlaceType(PlaceType.PRIVATE);
             return listPlaces;
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -67,7 +71,8 @@ public class PlaceService {
         if (place.isPresent()) {
             return placeRepository.findById(id);
         } else {
-            throw new EntityNotFoundException("The place with id:" + id + " doesn't exist");
+            logger.info("The place with id:" + id + " doesn't exist");
+            return Optional.empty();
         }
     }
 
@@ -78,47 +83,43 @@ public class PlaceService {
             if (place.get().getRecordStatusPlace() == RecordStatus.ACTIVE || place.get().getRecordStatusPlace() == RecordStatus.INACTIVE) {
                 return placeRepository.findById(id);
             } else {
-                throw new EntityNotFoundException("The place with id: " + id + " is deleted");
+                logger.info("The place with id: " + id + " is deleted");
+                return Optional.empty();
             }
         } else {
-            throw new EntityNotFoundException("The place with id:" + id + " doesn't exist");
+            logger.info("The place with id:" + id + " doesn't exist");
+            return Optional.empty();
         }
     }
 
     // method to find a place by name
-    public List<Place> getPlaceByName(String name) {
-        List<Place> places = placeRepository.findByName(name);
+    public Optional<List<Place>> getPlaceByName(String name) {
+        Optional<List<Place>> places = placeRepository.findByName(name);
         if (places.isEmpty()) {
-            throw new EntityNotFoundException("The place with name: " + name + " doesn't exist");
+            logger.info("The place with name: " + name + " doesn't exist");
+            return Optional.empty();
         }
         return places;
     }
 
     // method to find a place by address
-    public List<Place> getPlaceByAddress(String address) {
-        List<Place> places = placeRepository.findByAddress(address);
+    public Optional<List<Place>> getPlaceByAddress(String address) {
+        Optional<List<Place>> places = placeRepository.findByAddress(address);
         if (places.isEmpty()) {
-            throw new EntityNotFoundException("The place with address: " + address + " doesn't exist");
+            logger.info("The place with address: " + address + " doesn't exist");
+            return Optional.empty();
         }
-        List<Place> activePlaces = places.stream().filter(place -> place.getRecordStatusPlace() == RecordStatus.ACTIVE).toList();
-        if (activePlaces.isEmpty()) {
-            throw new EntityNotFoundException("The place with address: " + address + " is deleted");
-        }
-        return activePlaces;
+        return places;
     }
 
     // method to update the information of a place based on id
-    public Place updatePlace(Integer id, Place updatePlace) {
+    public Optional<Place> updatePlace(Integer id, Place updatePlace) {
         Optional<Place> placeOptional = placeRepository.findById(id);
         if (placeOptional.isPresent()) {
             Place existingPlace = placeOptional.get();
             if (placeOptional.get().getRecordStatusPlace() == RecordStatus.ACTIVE) {
-                if(updatePlace.getAddress() != null) {
-                    existingPlace.setAddress(updatePlace.getAddress());
-                }
-                if(updatePlace.getPlaceType() != null) {
-                    existingPlace.setPlaceType(updatePlace.getPlaceType());
-                }
+                existingPlace.setAddress(updatePlace.getAddress());
+                existingPlace.setPlaceType(updatePlace.getPlaceType());
                 existingPlace.setInfo(updatePlace.getInfo());
                 existingPlace.setName(updatePlace.getName());
                 existingPlace.setMaxCapacity(updatePlace.getMaxCapacity());
@@ -126,12 +127,14 @@ public class PlaceService {
                 existingPlace.setClosing(updatePlace.getClosing());
 
                 placeRepository.save(existingPlace);
-                return existingPlace;
+                return Optional.of(existingPlace);
             } else {
-                throw new EntityNotFoundException("Place with id: " + id + " is deleted");
+                logger.info("Place with id: " + id + " is deleted");
+                return Optional.empty();
             }
         } else {
-            throw new EntityNotFoundException("Place with id: " + id + " doesn't exist");
+            logger.info("Place with id: " + id + " doesn't exist");
+            return Optional.empty();
         }
     }
 
@@ -142,7 +145,7 @@ public class PlaceService {
             reactivePlace.setRecordStatusPlace(RecordStatus.ACTIVE);
             placeRepository.saveAndFlush(reactivePlace);
         } else {
-            throw new EntityNotFoundException("Place with id: " + id + " doesn't exist");
+            logger.info("Place with id: " + id + " doesn't exist");
         }
     }
 
@@ -153,7 +156,7 @@ public class PlaceService {
             deletePlace.setRecordStatusPlace(RecordStatus.DELETED);
             placeRepository.save(deletePlace);
         } else {
-            throw new EntityNotFoundException("Place with id: " + id + " doesn't exist");
+            logger.info("Place with id: " + id + " doesn't exist");
         }
     }
 
@@ -168,23 +171,25 @@ public class PlaceService {
     }
 
     // method to find a list of places based on a specific time
-    public List<Place> findOpenPlace(LocalTime time) {
+    public Optional<List<Place>> findOpenPlace(LocalTime time) {
         for (Place place : placeRepository.findAll()) {
             if (place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
                 return placeRepository.isOpen(time);
             }
         }
-        throw new EntityNotFoundException("There are no open place at: " + time);
+        logger.info("There are no open place at: " + time);
+        return Optional.empty();
     }
 
     // method to find a list of places based on a current time
-    public List<Place> findOpenPlaceNow() {
+    public Optional<List<Place>> findOpenPlaceNow() {
         LocalTime now = LocalTime.now();
         for (Place place : placeRepository.findAll()) {
             if (place.getOpening().isBefore(now) && place.getClosing().isAfter(now)) {
                 return placeRepository.isOpen(now);
             }
         }
-        throw new EntityNotFoundException("There are no open place now");
+        logger.info("There are no open place now");
+        return Optional.empty();
     }
 }
