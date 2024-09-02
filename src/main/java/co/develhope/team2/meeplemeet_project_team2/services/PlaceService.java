@@ -27,6 +27,7 @@ public class PlaceService {
     // method of creating a place
     @Transactional
     public Optional<Place> createAPlace(Place place) {
+        place.setRecordStatusPlace(RecordStatus.ACTIVE);
         placeRepository.save(place);
         return Optional.of(place);
     }
