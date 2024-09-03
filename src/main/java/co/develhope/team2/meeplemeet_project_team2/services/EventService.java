@@ -209,6 +209,8 @@ public class EventService {
                 event.setMaxCapacityEvent(event.getMaxCapacityEvent() - 1);
                 eventRepository.save(event);
                 userRepository.save(user);
+
+                return Optional.of(event);
             } else {
                 logger.info("Event max capacity is over");
                 return Optional.empty();
@@ -217,7 +219,6 @@ public class EventService {
             logger.info("User or Event not found");
             return Optional.empty();
         }
-        return eventOptional;
     }
 
     public void userUnsubscribe(Integer userId, Integer eventId) {
@@ -265,5 +266,22 @@ public class EventService {
         Place place = event.getPlace();
         place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
         placeRepository.save(place);
+    }
+    public Optional<List<Event>> findEventsByEventNameContaining(String name) {
+        List<Event> events = eventRepository.findEventsByEventNameContaining(name);
+        if (events.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(events);
+        }
+    }
+
+    public Optional<List<Event>> findEventsByGameNameContaining(String gameName) {
+        List<Event> events = eventRepository.findEventsByGameNameContaining(gameName);
+        if (events.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(events);
+        }
     }
 }
