@@ -129,8 +129,18 @@ public class EventService {
     public Optional<Event> updateEvent(Integer id, Event updatedEvent) {
         Optional<Event> eventOptional = eventRepository.findById(id);
         if (eventOptional.isPresent()) {
-            Event event = eventRepository.save(updatedEvent);
-            return Optional.of(event);
+            Event exsistEvent = eventOptional.get();
+
+            // Update fields of existingEvent with values from updatedEvent
+            exsistEvent.setName(updatedEvent.getName());
+            exsistEvent.setNameGame(updatedEvent.getNameGame());
+            exsistEvent.setDescriptionGame(updatedEvent.getDescriptionGame());
+            exsistEvent.setDateTimeEvent(updatedEvent.getDateTimeEvent());
+            exsistEvent.setMaxCapacityEvent(updatedEvent.getMaxCapacityEvent());
+
+            // Save the updated event
+            Event saveEvent = eventRepository.save(exsistEvent);
+            return Optional.of(saveEvent);
         } else {
            return Optional.empty();
         }
