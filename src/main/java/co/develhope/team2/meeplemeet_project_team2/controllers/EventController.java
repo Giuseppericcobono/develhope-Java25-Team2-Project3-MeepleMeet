@@ -91,9 +91,9 @@ public class EventController {
         return ResponseEntity.ok(user);
     }
     @GetMapping("/search/byEventName")
-    public ResponseEntity<List<Event>> searchEventsByName(@RequestParam String name) {
-        // Ricerca eventi per nome dell'evento
-        Optional<List<Event>> eventsOpt = eventService.findEventsByEventNameContaining(name);
+    public ResponseEntity<List<EventDTO>> searchEventsByName(@RequestParam String name) {
+        // search events for name event
+        Optional<List<EventDTO>> eventsOpt = eventService.findEventsByEventNameContaining(name);
 
         // Gestione della risposta
         if (eventsOpt.isPresent() && !eventsOpt.get().isEmpty()) {
@@ -104,9 +104,9 @@ public class EventController {
     }
 
     @GetMapping("/search/byGameName")
-    public ResponseEntity<List<Event>> searchEventsByGameName(@RequestParam String gameName) {
-        // Ricerca eventi per nome del gioco
-        Optional<List<Event>> eventsOpt = eventService.findEventsByGameNameContaining(gameName);
+    public ResponseEntity<List<EventDTO>> searchEventsByGameName(@RequestParam String gameName) {
+        // search event for name game
+        Optional<List<EventDTO>> eventsOpt = eventService.findEventsByGameNameContaining(gameName);
 
         // Gestione della risposta
         if (eventsOpt.isPresent() && !eventsOpt.get().isEmpty()) {

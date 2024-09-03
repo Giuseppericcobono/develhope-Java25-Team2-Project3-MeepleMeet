@@ -311,21 +311,23 @@ public class EventService {
         place.setMaxCapacity(place.getMaxCapacity() + event.getMaxCapacityEvent());
         placeRepository.save(place);
     }
-    public Optional<List<Event>> findEventsByEventNameContaining(String name) {
+    public Optional<List<EventDTO>> findEventsByEventNameContaining(String name) {
         List<Event> events = eventRepository.findEventsByEventNameContaining(name);
+        List<EventDTO> eventDTOList = createListEventDTO(events);
         if (events.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(events);
+            return Optional.of(eventDTOList);
         }
     }
 
-    public Optional<List<Event>> findEventsByGameNameContaining(String gameName) {
+    public Optional<List<EventDTO>> findEventsByGameNameContaining(String gameName) {
         List<Event> events = eventRepository.findEventsByGameNameContaining(gameName);
+        List<EventDTO> eventDTOList = createListEventDTO(events);
         if (events.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(events);
+            return Optional.of(eventDTOList);
         }
     }
 }
