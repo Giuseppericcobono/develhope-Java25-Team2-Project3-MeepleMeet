@@ -14,7 +14,7 @@ import java.util.List;
 public interface EventRepository extends JpaRepository<Event, Integer> {
 
     @Query("SELECT e FROM Event e WHERE e.eventStatusEnum = :status")
-    List<Event> findEventsByStatus(@Param("status")EventStatusEnum status);
+    List<Event> findEventsByStatus(@Param("status") EventStatusEnum status);
 
     // Recupera solo gli eventi non eliminati
     @Query("SELECT e FROM Event e WHERE e.isDeleted = false")
@@ -31,4 +31,11 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     // Recupera un singolo evento non eliminato
     @Query("SELECT e FROM Event e WHERE e.id = :id AND e.isDeleted = true")
     Event findByIdAndDeleted(Integer id);
+
+    // Ricerca eventi per nome dell'evento
+    @Query("SELECT e FROM Event e WHERE e.name LIKE %:name% AND e.isDeleted = false")
+    List<Event> findEventsByEventNameContaining(@Param("name") String name);
+
+    @Query("SELECT e FROM Event e WHERE e.nameGame LIKE %:gameName% AND e.isDeleted = false")
+    List<Event> findEventsByGameNameContaining(@Param("gameName") String gameName);
 }
