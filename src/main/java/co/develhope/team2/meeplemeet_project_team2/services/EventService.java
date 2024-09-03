@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.EventDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Event;
 import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 
 @Service
@@ -35,7 +36,46 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
+    // this method return a list of partecipants at the event
+    private List<String> getPartecipants(Event e) {
+        return e.getUsers().stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+    }
 
+    //this method transform an object event in an object eventDTO
+    public EventDTO createEventDTO(Event event) {
+        EventDTO eventDTO = new EventDTO();
+        eventDTO.setCreator(event.getUser().getUsername());
+        eventDTO.setName(event.getName());
+        eventDTO.setNameGame(event.getNameGame());
+        eventDTO.setDateTimeEvent(event.getDateTimeEvent());
+        eventDTO.setMaxCapacityEvent(event.getMaxCapacityEvent());
+        eventDTO.setAddress(event.getPlace().getAddress());
+        eventDTO.setPlaceName(event.getPlace().getName());
+        eventDTO.setPartecipants(getPartecipants(event));
+        eventDTO.setEventStatusEnum(event.getEventStatusEnum());
+        return eventDTO;
+    }
+
+    // this method transform an event list in an eventDTO list
+    public List<EventDTO> createListEventDTO(List<Event> event) {
+        List<EventDTO> eventDTOList = new ArrayList<>();
+        for(Event e : event) {
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setCreator(e.getUser().getUsername());
+            eventDTO.setName(e.getName());
+            eventDTO.setNameGame(e.getNameGame());
+            eventDTO.setDateTimeEvent(e.getDateTimeEvent());
+            eventDTO.setMaxCapacityEvent(e.getMaxCapacityEvent());
+            eventDTO.setAddress(e.getPlace().getAddress());
+            eventDTO.setPlaceName(e.getPlace().getName());
+            eventDTO.setPartecipants(getPartecipants(e));
+            eventDTO.setEventStatusEnum(e.getEventStatusEnum());
+            eventDTOList.add(eventDTO);
+        }
+        return eventDTOList;
+    }
 
     @Transactional
     public Optional<Event> createEvent(Integer userId, Integer placeId, Event event) {
@@ -109,21 +149,25 @@ public class EventService {
         }
     }
 
-    public Optional<List<Event>> getAllEvent() {
+    public Optional<List<EventDTO>> getAllEvent() {
         List<Event> allEvent = eventRepository.findAllNotDeleted();
-         return Optional.of(allEvent);
+        List<EventDTO> allEventDTO = createListEventDTO(allEvent);
+         return Optional.of(allEventDTO);
     }
-    public Optional<Event> getEventById(Integer id) {
-        Event allEventById = eventRepository.findByIdAndNotDeleted(id);
-        return Optional.of(allEventById);
+    public Optional<EventDTO> getEventById(Integer id) {
+        Event eventById = eventRepository.findByIdAndNotDeleted(id);
+        EventDTO eventDTO = createEventDTO(eventById);
+        return Optional.of(eventDTO);
     }
-    public Optional<List<Event>> getAllEventDeleted() {
+    public Optional<List<EventDTO>> getAllEventDeleted() {
         List<Event> allEventDeleted = eventRepository.findAllDeleted();
-        return Optional.of(allEventDeleted);
+        List<EventDTO> allEventDTODeleted = createListEventDTO(allEventDeleted);
+        return Optional.of(allEventDTODeleted);
     }
-    public Optional<Event> getEventByIdDeleted(Integer id) {
-        Event allEventById = eventRepository.findByIdAndDeleted(id);
-        return Optional.of(allEventById);
+    public Optional<EventDTO> getEventByIdDeleted(Integer id) {
+        Event eventById = eventRepository.findByIdAndDeleted(id);
+        EventDTO eventDTO = createEventDTO(eventById);
+        return Optional.of(eventDTO);
     }
 
     public Optional<Event> updateEvent(Integer id, Event updatedEvent) {
