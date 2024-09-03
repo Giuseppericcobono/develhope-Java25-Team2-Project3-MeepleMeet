@@ -64,16 +64,12 @@ public class EventController {
         return ResponseEntity.ok(deletedEvent.get());
     }
 
-    //todo: sistemare event non usato
+    //setStatusEvent a FINISHED
     @PutMapping("/setStatus/{id}")
     public ResponseEntity<Optional<Event>> setStatusEvent(@PathVariable Integer id, @NotNull Event event){
 
-        try {
             Optional<Event> updateEvent = eventService.terminatedEvent(id);
             return ResponseEntity.ok(updateEvent);
-        }catch (IllegalArgumentException e){
-           return ResponseEntity.notFound().build();
-        }
     }
 
     @PutMapping("/enrollments")

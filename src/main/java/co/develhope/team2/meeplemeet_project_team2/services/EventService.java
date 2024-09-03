@@ -188,7 +188,7 @@ public class EventService {
         return Optional.empty();
     }
 
-    public void usersEnrolled(Integer userId, Integer eventId) {
+    public Optional<Event> usersEnrolled(Integer userId, Integer eventId) {
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
@@ -201,6 +201,7 @@ public class EventService {
                 // check if the user is already registered
                 if(event.getUsers().contains(user)) {
                     logger.info("The user is already registered");
+                    return Optional.empty();
                 }
                 event.getUsers().add(user);
                 user.getEvent().add(event);
@@ -210,10 +211,13 @@ public class EventService {
                 userRepository.save(user);
             } else {
                 logger.info("Event max capacity is over");
+                return Optional.empty();
             }
         } else {
             logger.info("User or Event not found");
+            return Optional.empty();
         }
+        return eventOptional;
     }
 
     public void userUnsubscribe(Integer userId, Integer eventId) {
