@@ -32,6 +32,17 @@ public class PlaceService {
         return Optional.of(place);
     }
 
+    public PlaceDTO createPlaceDto(Place place) {
+        PlaceDTO placeDTO = new PlaceDTO();
+        placeDTO.setName(place.getName());
+        placeDTO.setAddress(place.getAddress());
+        placeDTO.setInfo(place.getInfo());
+        placeDTO.setOpening(place.getOpening());
+        placeDTO.setClosing(place.getClosing());
+        placeDTO.setMaxCapacity(place.getMaxCapacity());
+        return placeDTO;
+    }
+
     public List<PlaceDTO> listOfPlacesDTO(List<Place> places){
         List<PlaceDTO> placeDTOList = new ArrayList<>();
         for(Place p : places) {
@@ -193,9 +204,11 @@ public class PlaceService {
     // method to find a list of places based on a specific time
     public Optional<List<PlaceDTO>> findOpenPlace(LocalTime time) {
         List<Place> places = placeRepository.findAll();
+        LocalTime beforeMidnight = LocalTime.parse("23:59");
+        LocalTime midnight = LocalTime.MIDNIGHT;
         for (Place place : places) {
-            if (place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
-                List<Place> openPlace = placeRepository.isOpen(time);
+            if(place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
+                List<Place> openPlace = placeRepository.isOpen(time, beforeMidnight, midnight);
                 List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
                 return Optional.of(openPlaceDTO);
             }
@@ -206,11 +219,13 @@ public class PlaceService {
 
     // method to find a list of places based on a current time
     public Optional<List<PlaceDTO>> findOpenPlaceNow() {
-        LocalTime now = LocalTime.now();
         List<Place> places = placeRepository.findAll();
+        LocalTime now = LocalTime.now();
+        LocalTime beforeMidnight = LocalTime.parse("23:59");
+        LocalTime midnight = LocalTime.MIDNIGHT;
         for (Place place : places) {
             if (place.getOpening().isBefore(now) && place.getClosing().isAfter(now)) {
-                List<Place> openPlace = placeRepository.isOpen(now);
+                List<Place> openPlace = placeRepository.isOpen(now, beforeMidnight, midnight);
                 List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
                 return Optional.of(openPlaceDTO);
             }
