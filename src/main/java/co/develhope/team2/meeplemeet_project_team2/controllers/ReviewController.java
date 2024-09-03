@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.services.ReviewService;
 import co.develhope.team2.meeplemeet_project_team2.services.UserService;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/reviews")
@@ -26,20 +28,26 @@ public class ReviewController {
     }
 
     @GetMapping("/search/all")
-    public ResponseEntity<List<Review>> allReviews(){
-        List<Review> allReviews = reviewService.getAllReviews();
+    public ResponseEntity<Optional<List<ReviewDTO>>> allReviews(){
+        Optional<List<ReviewDTO>> allReviews = reviewService.getAllReviews();
         return ResponseEntity.ok(allReviews);
     }
 
+    @GetMapping("/search/byIDreview/{id}")
+    public ResponseEntity<Optional<ReviewDTO>> getReviewById(@PathVariable Integer id) {
+        Optional<ReviewDTO> reviewDTO = reviewService.getReviewById(id);
+        return ResponseEntity.ok(reviewDTO);
+    }
+
     @GetMapping("/search/{userId}")
-    public ResponseEntity<List<Review>> reviewsUser(@PathVariable Integer userId){
-        List<Review> reviewsUser = reviewService.getAllReviewOfAUserById(userId);
+    public ResponseEntity<Optional<List<ReviewDTO>>> reviewsUser(@PathVariable Integer userId){
+        Optional<List<ReviewDTO>> reviewsUser = reviewService.getAllReviewOfAUserById(userId);
         return ResponseEntity.ok(reviewsUser);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Review>> reviewsUsername(@RequestParam(name = "username") String username){
-        List<Review> reviews = reviewService.getAllReviewOfAUserByUsername(username);
+    public ResponseEntity<Optional<List<ReviewDTO>>> reviewsUsername(@RequestParam(name = "username") String username){
+        Optional<List<ReviewDTO>> reviews = reviewService.getAllReviewOfAUserByUsername(username);
         return ResponseEntity.ok(reviews);
     }
 

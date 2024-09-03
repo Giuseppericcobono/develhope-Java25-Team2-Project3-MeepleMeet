@@ -273,9 +273,8 @@ public class UserService {
             List<ReviewDTO> reviewsDTO = new ArrayList<>();
             for(Review r : reviews) {
                 ReviewDTO reviewDTO = new ReviewDTO();
-                reviewDTO.setId(r.getId());
                 reviewDTO.setDescription(r.getDescription());
-                reviewDTO.setRating(r.getRating());
+                reviewDTO.setRating(r.getRating().getStars());
                 reviewsDTO.add(reviewDTO);
             }
             return reviewsDTO;

@@ -1,14 +1,18 @@
 package co.develhope.team2.meeplemeet_project_team2.services;
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.ReviewDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.Review;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
 import co.develhope.team2.meeplemeet_project_team2.repositories.ReviewRepository;
 import co.develhope.team2.meeplemeet_project_team2.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +24,28 @@ public class ReviewService {
 
     @Autowired
     private UserRepository userRepository;
+
+    Logger logger = LoggerFactory.getLogger(ReviewService.class);
+
+    private ReviewDTO createReviewDTO(Review review) {
+        ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setUsername(review.getUser().getUsername());
+        reviewDTO.setDescription(review.getDescription());
+        reviewDTO.setRating(review.getRating().getStars());
+        return reviewDTO;
+    }
+
+    private List<ReviewDTO> createDTOListReview(List<Review> reviews) {
+        List<ReviewDTO> reviewDTOList = new ArrayList<>();
+        for(Review r : reviews) {
+            ReviewDTO reviewDTO = new ReviewDTO();
+            reviewDTO.setUsername(r.getUser().getUsername());
+            reviewDTO.setDescription(r.getDescription());
+            reviewDTO.setRating(r.getRating().getStars());
+            reviewDTOList.add(reviewDTO);
+        }
+        return reviewDTOList;
+    }
 
     public Review createReview(Review review) {
         User user = userRepository.findById(review.getUser().getUserId())
@@ -77,26 +103,47 @@ public class ReviewService {
         }
     }
 
-    public List<Review> getAllReviewOfAUserById(Integer id) {
+    public Optional<ReviewDTO> getReviewById(Integer id) {
+        Optional<Review> review = reviewRepository.findById(id);
+        if(review.isPresent()) {
+            ReviewDTO reviewDTO = createReviewDTO(review.get());
+            return Optional.of(reviewDTO);
+        } else {
+            logger.info("Review with id: " + id + " not found");
+            return Optional.empty();
+        }
+    }
+
+    public Optional<List<ReviewDTO>> getAllReviewOfAUserById(Integer id) {
         Optional<User> optionalUser = userRepository.findById(id);
         if(optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return user.getReviews();
+            List<Review> reviewList = optionalUser.get().getReviews();
+            List<ReviewDTO> reviewDTOList = createDTOListReview(reviewList);
+            return Optional.of(reviewDTOList);
         } else {
-            throw new EntityNotFoundException("User with id: " + id + " not found");
+            logger.info("User with id: " + id + " not found");
+            return Optional.empty();
         }
     }
 
-    public List<Review> getAllReviewOfAUserByUsername(String username) {
+    public Optional<List<ReviewDTO>> getAllReviewOfAUserByUsername(String username) {
         List<Review> reviews = reviewRepository.findReviewsByUsername(username);
+        List<ReviewDTO> reviewDTOList = createDTOListReview(reviews);
         if (reviews.isEmpty()) {
-            throw new EntityNotFoundException("Username " + username + "doesn't exist");
+            logger.info("Username " + username + "doesn't exist");
+            return Optional.empty();
         }
-        return reviews;
+        return Optional.of(reviewDTOList);
     }
 
-    public List<Review> getAllReviews(){
-        return reviewRepository.findAll();
+    public Optional<List<ReviewDTO>> getAllReviews(){
+        List<Review> reviewList = reviewRepository.findAll();
+        List<ReviewDTO> reviewDTOList = createDTOListReview(reviewList);
+        if(reviewDTOList.isEmpty()){
+            logger.info("no reviews");
+            return Optional.empty();
+        }
+        return Optional.of(reviewDTOList);
     }
 
     public Review updateReview (Integer id, Review updateReview){

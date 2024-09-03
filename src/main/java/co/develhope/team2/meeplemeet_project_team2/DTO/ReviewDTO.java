@@ -1,21 +1,10 @@
 package co.develhope.team2.meeplemeet_project_team2.DTO;
 
-import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
-
 public class ReviewDTO {
 
-    private Integer id;
     private String username;
     private String description;
     private String rating;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
