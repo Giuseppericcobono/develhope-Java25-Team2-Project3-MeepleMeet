@@ -1,6 +1,7 @@
 package co.develhope.team2.meeplemeet_project_team2.controllers;
 
 
+import co.develhope.team2.meeplemeet_project_team2.DTO.EventDTO;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.services.EventService;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -26,24 +27,24 @@ public class EventController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Optional<List<Event>>> getList() {
-        Optional<List<Event>> eventList = eventService.getAllEvent();
+    public ResponseEntity<Optional<List<EventDTO>>> getList() {
+        Optional<List<EventDTO>> eventList = eventService.getAllEvent();
         return ResponseEntity.ok(eventList);
     }
     @GetMapping("/deleted/list")
-    public ResponseEntity<Optional<List<Event>>> getListDeleted() {
-        Optional<List<Event>> eventList = eventService.getAllEventDeleted();
+    public ResponseEntity<Optional<List<EventDTO>>> getListDeleted() {
+        Optional<List<EventDTO>> eventList = eventService.getAllEventDeleted();
         return ResponseEntity.ok(eventList);
     }
 
     @GetMapping("/search/{id}")
-    public ResponseEntity<Optional<Event>> getWithId(@PathVariable Integer id) {
-        Optional<Event> event = eventService.getEventById(id);
+    public ResponseEntity<Optional<EventDTO>> getWithId(@PathVariable Integer id) {
+        Optional<EventDTO> event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
     @GetMapping("/search/deleted/{id}")
-    public ResponseEntity<Optional<Event>> getWithIdDeleted(@PathVariable Integer id) {
-        Optional<Event> event = eventService.getEventByIdDeleted(id);
+    public ResponseEntity<Optional<EventDTO>> getWithIdDeleted(@PathVariable Integer id) {
+        Optional<EventDTO> event = eventService.getEventByIdDeleted(id);
         return ResponseEntity.ok(event);
     }
 

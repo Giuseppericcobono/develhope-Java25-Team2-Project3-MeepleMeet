@@ -1,5 +1,6 @@
 package co.develhope.team2.meeplemeet_project_team2.DTO;
 
+import co.develhope.team2.meeplemeet_project_team2.entities.Place;
 import co.develhope.team2.meeplemeet_project_team2.entities.User;
 import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.EventStatusEnum;
 
@@ -8,13 +9,24 @@ import java.util.List;
 
 public class EventDTO {
 
+    private String Creator;
     private String name;
     private String nameGame;
     private String descriptionGame;
     private LocalDateTime dateTimeEvent;
     private Integer maxCapacityEvent;
+    private String address;
+    private String placeName;
     private EventStatusEnum eventStatusEnum;
-    private List<User> users;
+    private List<String> partecipants;
+
+    public String getCreator() {
+        return Creator;
+    }
+
+    public void setCreator(String creator) {
+        Creator = creator;
+    }
 
     public String getName() {
         return name;
@@ -56,6 +68,22 @@ public class EventDTO {
         this.maxCapacityEvent = maxCapacityEvent;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPlaceName() {
+        return placeName;
+    }
+
+    public void setPlaceName(String placeName) {
+        this.placeName = placeName;
+    }
+
     public EventStatusEnum getEventStatusEnum() {
         return eventStatusEnum;
     }
@@ -64,11 +92,11 @@ public class EventDTO {
         this.eventStatusEnum = eventStatusEnum;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<String> getPartecipants() {
+        return partecipants;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setPartecipants(List<String> partecipants) {
+        this.partecipants = partecipants;
     }
 }
