@@ -5,8 +5,9 @@ import co.develhope.team2.meeplemeet_project_team2.entities.enumerated.Rating;
 public class ReviewDTO {
 
     private Integer id;
+    private String username;
     private String description;
-    private Rating rating;
+    private String rating;
 
     public Integer getId() {
         return id;
@@ -14,6 +15,14 @@ public class ReviewDTO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getDescription() {
@@ -24,11 +33,11 @@ public class ReviewDTO {
         this.description = description;
     }
 
-    public Rating getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(Rating rating) {
+    public void setRating(String rating) {
         this.rating = rating;
     }
 }
