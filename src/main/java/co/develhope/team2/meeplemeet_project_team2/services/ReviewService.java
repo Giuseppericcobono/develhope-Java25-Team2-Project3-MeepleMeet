@@ -146,7 +146,7 @@ public class ReviewService {
         return Optional.of(reviewDTOList);
     }
 
-    public Review updateReview (Integer id, Review updateReview){
+    public Optional<Review> updateReview (Integer id, Review updateReview){
         Optional<Review> optionalReview = reviewRepository.findById(id);
         if(optionalReview.isPresent()) {
             Review existingReview = optionalReview.get();
@@ -156,9 +156,10 @@ public class ReviewService {
             reviewRepository.save(existingReview);
             existingReview.getUser().setStarRating(averageStarRating(existingReview.getUser().getUserId())); // update the StarRating of the selected user
             userRepository.save(existingReview.getUser());
-            return existingReview;
+            return Optional.of(existingReview);
         }
-        throw new EntityNotFoundException("Review with id: " + id + " not found");
+        logger.info("Review with id: " + id + " not found");
+        return Optional.empty();
     }
 
     public void deleteReviewById (Integer id) {
