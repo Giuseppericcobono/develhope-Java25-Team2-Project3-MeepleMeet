@@ -151,6 +151,9 @@ public class EventService {
 
     public Optional<List<EventDTO>> getAllEvent() {
         List<Event> allEvent = eventRepository.findAllNotDeleted();
+        if(allEvent.isEmpty()) {
+            return Optional.empty();
+        }
         List<EventDTO> allEventDTO = createListEventDTO(allEvent);
          return Optional.of(allEventDTO);
     }
@@ -161,6 +164,9 @@ public class EventService {
     }
     public Optional<List<EventDTO>> getAllEventDeleted() {
         List<Event> allEventDeleted = eventRepository.findAllDeleted();
+        if(allEventDeleted.isEmpty()) {
+            return Optional.empty();
+        }
         List<EventDTO> allEventDTODeleted = createListEventDTO(allEventDeleted);
         return Optional.of(allEventDTODeleted);
     }
@@ -265,7 +271,7 @@ public class EventService {
         }
     }
 
-    public void userUnsubscribe(Integer userId, Integer eventId) {
+    public Optional<Event> userUnsubscribe(Integer userId, Integer eventId) {
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Event> eventOptional = eventRepository.findById(eventId);
 
@@ -285,11 +291,15 @@ public class EventService {
                 event.setMaxCapacityEvent(event.getMaxCapacityEvent() + 1);
                 eventRepository.save(event);
                 userRepository.save(user);
+
+                return Optional.of(event);
             } else {
                 logger.info("User with id: " + userId + " is not registered");
+                return Optional.empty();
             }
         } else {
             logger.info("User or Event not found");
+            return Optional.empty();
         }
     }
 
