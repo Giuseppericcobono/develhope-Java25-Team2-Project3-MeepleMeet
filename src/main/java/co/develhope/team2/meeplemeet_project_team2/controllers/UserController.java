@@ -33,6 +33,9 @@ public class UserController {
     @GetMapping("/search/list")
     public ResponseEntity<Optional<List<UserReturnDTO>>> usersList() {
         Optional<List<UserReturnDTO>> usersList = userService.getAllUsers();
+        if(usersList.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(usersList);
     }
 
@@ -40,8 +43,11 @@ public class UserController {
     @GetMapping("/search/{id}")
     public ResponseEntity<UserReturnDTO> userById(@PathVariable Integer id) {
         Optional<UserReturnDTO> user = userService.getUserById(id);
-        UserReturnDTO user1 = user.get();
-        return ResponseEntity.ok(user1);
+        if(user.isPresent()) {
+            UserReturnDTO user1 = user.get();
+            return ResponseEntity.ok(user1);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     // search users by record status (active, inactive or deleted)
@@ -54,48 +60,61 @@ public class UserController {
 
     // search users by username
     @GetMapping("/search/username")
-    public ResponseEntity<List<UserReturnDTO>> usersByUsername(@RequestParam String username) {
-        Optional<List<UserReturnDTO>> users = userService.getUsersByUsername(username);
-        List<UserReturnDTO> users1 = users.get();
-        return ResponseEntity.ok(users1);
+    public ResponseEntity<Optional<UserReturnDTO>> usersByUsername(@RequestParam String username) {
+        Optional<UserReturnDTO> user = userService.getUsersByUsername(username);
+        if(user.isPresent()) {
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     // search users by first name
     @GetMapping("/search/firstName")
-    public ResponseEntity<List<UserReturnDTO>> usersByFirstName(@RequestParam String firstName) {
+    public ResponseEntity<Optional<List<UserReturnDTO>>> usersByFirstName(@RequestParam String firstName) {
         Optional<List<UserReturnDTO>> users = userService.getUsersByFirstName(firstName);
-        List<UserReturnDTO> users1 = users.get();
-        return ResponseEntity.ok(users1);
+        if(users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
     }
 
     // search users by last name
     @GetMapping("/search/lastName")
-    public ResponseEntity<List<UserReturnDTO>> usersByLastName(@RequestParam String lastName) {
+    public ResponseEntity<Optional<List<UserReturnDTO>>> usersByLastName(@RequestParam String lastName) {
         Optional<List<UserReturnDTO>> users = userService.getUsersByLastName(lastName);
-        List<UserReturnDTO> users1 = users.get();
-        return ResponseEntity.ok(users1);
+        if(users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
     }
 
     // search users by full name
     @GetMapping("/search/fullName")
-    public ResponseEntity<List<UserReturnDTO>> usersByFullName(@RequestParam String firstName, String lastName) {
+    public ResponseEntity<Optional<List<UserReturnDTO>>> usersByFullName(@RequestParam String firstName, String lastName) {
         Optional<List<UserReturnDTO>> users = userService.getUsersByFullName(firstName, lastName);
-        List<UserReturnDTO> users1 = users.get();
-        return ResponseEntity.ok(users1);
+        if(users.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(users);
     }
 
     // Find the list of events a user is subscribed to
     @GetMapping("search/list/events")
-    public ResponseEntity<List<Event>> listOfEvents(@RequestParam(name = "userID") Integer id) {
+    public ResponseEntity<Optional<List<Event>>> listOfEvents(@RequestParam(name = "userID") Integer id) {
         Optional<List<Event>> events = userService.listOfEventsParticipate(id);
-        List<Event> events1 = events.get();
-        return ResponseEntity.ok(events1);
+        if(events.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(events);
     }
 
     // search for a user's list of reviews
     @GetMapping("search/list/reviews")
-    public ResponseEntity<List<ReviewDTO>> listOfReviews(@RequestParam(name = "userID") Integer id) {
-        List<ReviewDTO> reviews = userService.getAllReviewOfAUserById(id);
+    public ResponseEntity<Optional<List<ReviewDTO>>> listOfReviews(@RequestParam(name = "userID") Integer id) {
+        Optional<List<ReviewDTO>> reviews = userService.getAllReviewOfAUserById(id);
+        if(reviews.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(reviews);
     }
 
@@ -114,26 +133,35 @@ public class UserController {
     @PatchMapping("/reactivate/{id}")
     public ResponseEntity<Void> reactivationOfUser(@PathVariable Integer id) {
         Optional<UserReturnDTO> userReturnDTO = userService.getUserById(id);
-        User user = new User();
-        BeanUtils.copyProperties(userReturnDTO, user);
-        userService.reactivationOfUser(id);
-        return ResponseEntity.ok().build();
+        if(userReturnDTO.isPresent()) {
+            User user = new User();
+            BeanUtils.copyProperties(userReturnDTO, user);
+            userService.reactivationOfUser(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     // logical deletion
     @DeleteMapping("delete/logical/{id}")
     public ResponseEntity<User> deletionLogical(@PathVariable Integer id) {
         Optional<UserReturnDTO> userReturnDTO = userService.getUserById(id);
-        userService.deleteLogical(id);
-        return ResponseEntity.ok().build();
+        if(userReturnDTO.isPresent()) {
+            userService.deleteLogical(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     // delete user with id
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<User> deletionById(@PathVariable Integer id) {
         Optional<UserReturnDTO> userReturnDTO = userService.getUserById(id);
-        userService.deleteById(id);
-        return ResponseEntity.ok().build();
+        if(userReturnDTO.isPresent()) {
+            userService.deleteById(id);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     //delete all users
