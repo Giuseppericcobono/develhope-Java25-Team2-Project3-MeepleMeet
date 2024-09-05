@@ -203,34 +203,22 @@ public class PlaceService {
 
     // method to find a list of places based on a specific time
     public Optional<List<PlaceDTO>> findOpenPlace(LocalTime time) {
-        List<Place> places = placeRepository.findAll();
-        LocalTime beforeMidnight = LocalTime.parse("23:59");
-        LocalTime midnight = LocalTime.MIDNIGHT;
-        for (Place place : places) {
-            if(place.getOpening().isBefore(time) && place.getClosing().isAfter(time)) {
-                List<Place> openPlace = placeRepository.isOpen(time, beforeMidnight, midnight);
-                List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
-                return Optional.of(openPlaceDTO);
+            List<Place> openPlace = placeRepository.isOpen(time);
+            if(openPlace.isEmpty()) {
+                return Optional.empty();
             }
-        }
-        logger.info("There are no open place at: " + time);
-        return Optional.empty();
+            List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
+            return Optional.of(openPlaceDTO);
     }
 
     // method to find a list of places based on a current time
     public Optional<List<PlaceDTO>> findOpenPlaceNow() {
-        List<Place> places = placeRepository.findAll();
         LocalTime now = LocalTime.now();
-        LocalTime beforeMidnight = LocalTime.parse("23:59");
-        LocalTime midnight = LocalTime.MIDNIGHT;
-        for (Place place : places) {
-            if (place.getOpening().isBefore(now) && place.getClosing().isAfter(now)) {
-                List<Place> openPlace = placeRepository.isOpen(now, beforeMidnight, midnight);
-                List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
-                return Optional.of(openPlaceDTO);
-            }
+        List<Place> openPlace = placeRepository.isOpen(now);
+        if(openPlace.isEmpty()) {
+            return Optional.empty();
         }
-        logger.info("There are no open place now");
-        return Optional.empty();
+        List<PlaceDTO> openPlaceDTO = listOfPlacesDTO(openPlace);
+        return Optional.of(openPlaceDTO);
     }
 }

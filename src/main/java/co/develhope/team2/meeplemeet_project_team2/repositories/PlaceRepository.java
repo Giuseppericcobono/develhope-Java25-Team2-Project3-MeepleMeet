@@ -26,11 +26,9 @@ public interface PlaceRepository extends JpaRepository<Place, Integer> {
     List<Place> findPlaceType(@Param("placeType")PlaceType placeType);
 
     @Query("SELECT place FROM Place place WHERE " +
-            "((:time BETWEEN place.opening AND place.closing AND place.opening <= place.closing) " +
-            "OR (:time BETWEEN place.opening AND :beforeMidnight AND place.opening > place.closing) " +
-            "OR (:time BETWEEN :midnight AND place.closing AND place.opening > place.closing)) " +
+            "(:time BETWEEN place.opening AND place.closing AND place.opening < place.closing) " +
+            "OR (:time >= place.opening AND place.opening > place.closing) " +
+            "OR (:time <= place.closing AND place.opening > place.closing) " +
             "AND place.recordStatusPlace = 'ACTIVE'")
-    List<Place> isOpen(@Param("time") LocalTime time,
-                       @Param("beforeMidnight") LocalTime beforeMidnight,
-                       @Param("midnight") LocalTime midnight);
+    List<Place> isOpen(@Param("time") LocalTime time);
 }

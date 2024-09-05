@@ -72,10 +72,10 @@ public class UserService {
         }
         List<UserReturnDTO> userReturnDTOList = new ArrayList<>();
         for (User user : userList) {
-            UserReturnDTO userReturnDTO = new UserReturnDTO();
-            fromUserToDTO(user);
+            UserReturnDTO userReturnDTO = fromUserToDTO(user);
             userReturnDTOList.add(userReturnDTO);
-        } return Optional.of(userReturnDTOList);
+        }
+        return Optional.of(userReturnDTOList);
     }
 
     public Optional<UserReturnDTO> getUserById(Integer id) {
