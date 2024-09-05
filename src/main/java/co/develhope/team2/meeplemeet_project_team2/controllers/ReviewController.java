@@ -36,6 +36,9 @@ public class ReviewController {
     @GetMapping("/search/byIDreview/{id}")
     public ResponseEntity<Optional<ReviewDTO>> getReviewById(@PathVariable Integer id) {
         Optional<ReviewDTO> reviewDTO = reviewService.getReviewById(id);
+        if(reviewDTO.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(reviewDTO);
     }
 
