@@ -2,12 +2,12 @@ package co.develhope.team2.meeplemeet_project_team2.entities.enumerated;
 
 public enum Rating {
 
-    STAR0(0.0, "☆☆☆☆☆"),
-    STAR1(1.0, "★☆☆☆☆"),
-    STAR2(2.0, "★★☆☆☆"),
-    STAR3(3.0, "★★★☆☆"),
-    STAR4(4.0, "★★★★☆"),
-    STAR5(5.0, "★★★★★");
+    ZERO(0.0, "☆☆☆☆☆"),
+    ONE(1.0, "★☆☆☆☆"),
+    TWO(2.0, "★★☆☆☆"),
+    THREE(3.0, "★★★☆☆"),
+    FOUR(4.0, "★★★★☆"),
+    FIVE(5.0, "★★★★★");
 
     private final Double value;
     private final String stars;

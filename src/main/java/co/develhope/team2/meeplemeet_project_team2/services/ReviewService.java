@@ -79,22 +79,22 @@ public class ReviewService {
                 return "No ratings found";
             }
 
-            String starRating = Rating.STAR0.getStars();
+            String starRating = Rating.ZERO.getStars();
             for (Rating rating : Rating.values()) {
                 if (rating.getValue().equals(sumRating)) {
                     starRating = rating.getStars();
                 } else if (sumRating <= 0.5) {
-                    starRating = Rating.STAR0.getStars();
+                    starRating = Rating.ZERO.getStars();
                 } else if (sumRating > 0.5 && sumRating <= 1.5) {
-                    starRating = Rating.STAR1.getStars();
+                    starRating = Rating.ONE.getStars();
                 } else if (sumRating > 1.5 && sumRating <= 2.5) {
-                    starRating = Rating.STAR2.getStars();
+                    starRating = Rating.TWO.getStars();
                 } else if (sumRating > 2.5 && sumRating <= 3.5) {
-                    starRating = Rating.STAR3.getStars();
+                    starRating = Rating.THREE.getStars();
                 } else if (sumRating > 3.5 && sumRating <= 4.5) {
-                    starRating = Rating.STAR4.getStars();
+                    starRating = Rating.FOUR.getStars();
                 } else if (sumRating > 4.5) {
-                    starRating = Rating.STAR5.getStars();
+                    starRating = Rating.FIVE.getStars();
                 }
             }
             return starRating;
