@@ -195,15 +195,38 @@ public class UserService {
                 existingUser.setAge(updateUser.getAge());
             }
 
-            existingUser.setUsername(updateUser.getUsername());
-            existingUser.setFirstName(updateUser.getFirstName());
-            existingUser.setLastName(updateUser.getLastName());
-            existingUser.setEmail(updateUser.getEmail());
-            existingUser.setPassword(updateUser.getPassword());
-            existingUser.setBiography(updateUser.getBiography());
+            if (updateUser.getUsername() != null) {
+                existingUser.setUsername(updateUser.getUsername());
+            }
+            if (updateUser.getFirstName() != null) {
+                existingUser.setFirstName(updateUser.getFirstName());
+            }
+            if (updateUser.getLastName() != null) {
+                existingUser.setLastName(updateUser.getLastName());
+            }
+            if (updateUser.getBirth() != null) {
+                existingUser.setBirth(updateUser.getBirth());
+            }
+            if (updateUser.getAge() != null) {
+                existingUser.setAge(updateUser.getAge());
+            }
+            if (updateUser.getEmail() != null) {
+                existingUser.setEmail(updateUser.getEmail());
+            }
+            if (updateUser.getUserType() != null) {
+                existingUser.setUserType(updateUser.getUserType());
+            }
+            if (updateUser.getRecordStatus() != null) {
+                existingUser.setRecordStatus(updateUser.getRecordStatus());
+            }
+            if (updateUser.getBiography() != null) {
+                existingUser.setBiography(updateUser.getBiography());
+            }
+            if(updateUser.getPassword() != null){
+                existingUser.setPassword((updateUser.getPassword()));
+            }
             //sets the last activity to now
             existingUser.setLastActivityDate(LocalDateTime.now());
-
 
             // saves the updated user in the db.
             userRepository.save(existingUser);
